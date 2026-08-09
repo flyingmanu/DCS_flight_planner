@@ -33,20 +33,19 @@ missions (aucune modification de `MissionScripting.lua` n'est nécessaire).
    - `%USERPROFILE%\Saved Games\DCS\Logs\dcs.log` (version stable)
    - `%USERPROFILE%\Saved Games\DCS.openbeta\Logs\dcs.log` (version beta)
 
-5. **Reconstituer le JSON** (nécessite Node.js installé) :
+5. **Envoie-moi directement `dcs.log`** (le fichier, ou son contenu collé) —
+   pas besoin de lancer `extract-log.mjs` toi-même, je m'en charge à partir
+   du log brut.
 
-   ```
-   node tools/dcs-export/extract-log.mjs "C:\chemin\vers\dcs.log" tools/dcs-export/output/caucasus-raw.json
-   ```
-
-6. **Envoie-moi le fichier généré** (`tools/dcs-export/output/caucasus-raw.json`,
-   ou colle son contenu) pour qu'on construise le modèle de données de
-   `packages/core` à partir de vraies données.
+`extract-log.mjs` reste dans le repo pour usage interne (c'est ce que
+j'exécute de mon côté une fois que tu m'as donné le log) ; tu n'as pas
+besoin d'y toucher.
 
 ## En cas d'erreur
 
-- Si `extract-log.mjs` dit qu'aucun marqueur `DCS_EXPORT` n'a été trouvé :
-  vérifie que le trigger s'est bien déclenché (regarde dans `dcs.log` s'il y
-  a des lignes `SCRIPTING:` autour de l'heure du lancement de la mission).
+- Si aucun marqueur `DCS_EXPORT` n'apparaît dans le log : le trigger ne
+  s'est probablement pas déclenché — vérifie qu'il y a bien des lignes
+  `SCRIPTING:` dans `dcs.log` autour de l'heure du lancement de la mission.
 - Si le script Lua a levé une erreur, elle apparaît dans `dcs.log` préfixée
-  par `DCS_EXPORT_ERROR|` — envoie-la moi, ça m'aidera à corriger le script.
+  par `DCS_EXPORT_ERROR|` — envoie-moi cette ligne, ça m'aidera à corriger
+  le script.
