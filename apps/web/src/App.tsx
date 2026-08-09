@@ -1,4 +1,4 @@
-import type { Dmpi, LatLon, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
+import type { Dmpi, Flight, LatLon, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
 import { metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
@@ -6,6 +6,9 @@ import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { getElevationAt } from "./elevation";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
+import { FlightFormDialog } from "./FlightFormDialog";
+import { FlightListDialog } from "./FlightListDialog";
+import { FlightMenu } from "./FlightMenu";
 import { Logo } from "./Logo";
 import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectListDialog } from "./ObjectListDialog";
@@ -53,6 +56,9 @@ function App() {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
   const [objectListOpen, setObjectListOpen] = useState(false);
+  const [flights, setFlights] = useState<Flight[]>([]);
+  const [flightListOpen, setFlightListOpen] = useState(false);
+  const [flightForm, setFlightForm] = useState<{ flight?: Flight } | null>(null);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -69,6 +75,7 @@ function App() {
       updatedAt: now,
       view: mapRef.current?.getView() ?? { center: [42, 43], zoom: 6 },
       objects,
+      flights,
     };
     saveMission(mission);
     setMissions(listMissions());
@@ -80,6 +87,7 @@ function App() {
     setActiveMissionId(null);
     setActiveMissionName(UNTITLED);
     setObjects([]);
+    setFlights([]);
   }
 
   function handleOpen(id: string) {
@@ -88,6 +96,7 @@ function App() {
     setActiveMissionId(mission.id);
     setActiveMissionName(mission.name);
     setObjects(mission.objects);
+    setFlights(mission.flights ?? []);
     mapRef.current?.setView(mission.view);
   }
 
@@ -177,6 +186,16 @@ function App() {
     if (obj?.type === "point") applyGroundElevation(id, obj.position);
   }
 
+  function handleFlightSave(flight: Flight) {
+    setFlights((prev) => (prev.some((f) => f.id === flight.id) ? prev.map((f) => (f.id === flight.id ? flight : f)) : [...prev, flight]));
+    setFlightForm(null);
+  }
+
+  function handleFlightDelete(id: string) {
+    setFlights((prev) => prev.filter((f) => f.id !== id));
+    setFlightForm(null);
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -211,9 +230,13 @@ function App() {
             onDelete={handleDelete}
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
+          <FlightMenu onNewFlight={() => setFlightForm({})} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
+          <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setFlightListOpen(true)}>
+            Flights ({flights.length})
+          </button>
           <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setObjectListOpen(true)}>
             Objects ({objects.length})
           </button>
@@ -255,6 +278,31 @@ function App() {
           }}
           onDelete={handleObjectDelete}
           onClose={() => setObjectListOpen(false)}
+        />
+      )}
+      {flightListOpen && (
+        <FlightListDialog
+          flights={flights}
+          onSelect={(id) => {
+            const flight = flights.find((f) => f.id === id);
+            if (flight) setFlightForm({ flight });
+            setFlightListOpen(false);
+          }}
+          onDelete={handleFlightDelete}
+          onNewFlight={() => {
+            setFlightListOpen(false);
+            setFlightForm({});
+          }}
+          onClose={() => setFlightListOpen(false)}
+        />
+      )}
+      {flightForm && (
+        <FlightFormDialog
+          airbases={theater.airbases}
+          initial={flightForm.flight}
+          onSave={handleFlightSave}
+          onDelete={flightForm.flight ? () => handleFlightDelete(flightForm.flight!.id) : undefined}
+          onCancel={() => setFlightForm(null)}
         />
       )}
       {saveAsOpen && (

@@ -35,6 +35,7 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Mission object creation (Object menu): points (aeronautical, reference, push/exit, CP, IP, target/DMPI, LZ) and polygons (freeform, oriented rectangle, circle, aeronautical orbit hold/AAR left/right-hand), saved with the mission
 - [x] Object editing (click an object → right-side panel): name, color, coordinates, DMPI altitude, orientation and size depending on type; delete
 - [x] Object list (top-right "Objects" button): overview of points/zones, click to edit, direct delete
+- [x] Flight object (Flight menu, "Flights" list): Combat Flite-inspired attributes (callsign, aircraft type, size, task, departure/arrival/alternate airbases, takeoff time, TACAN, radio, IFF modes, notes, color), saved with the mission — route/waypoint assignment comes later
 - [ ] Route/waypoint planning
 - [ ] Kneeboard export
 - [ ] Desktop application (Tauri)

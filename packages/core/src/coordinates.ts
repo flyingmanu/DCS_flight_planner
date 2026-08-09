@@ -6,6 +6,17 @@ export function toMgrs(point: LatLon, accuracy = 5): string {
   return mgrsForward([point.lon, point.lat], accuracy);
 }
 
+const MGRS_PATTERN = /^(\d{1,2}[C-HJ-NP-X])([A-Z]{2})(\d+)$/;
+
+/** Splits a raw MGRS string into readable blocks, e.g. "37TFJ7738304322" -> "37T FJ 77383 04322". */
+export function formatMgrs(mgrs: string): string {
+  const match = MGRS_PATTERN.exec(mgrs);
+  if (!match) return mgrs;
+  const [, zone, square, digits] = match;
+  const half = digits!.length / 2;
+  return `${zone} ${square} ${digits!.slice(0, half)} ${digits!.slice(half)}`;
+}
+
 function formatDdmComponent(value: number, positive: string, negative: string, degreeDigits: number): string {
   const hemisphere = value >= 0 ? positive : negative;
   const abs = Math.abs(value);

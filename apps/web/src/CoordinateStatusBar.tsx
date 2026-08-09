@@ -1,4 +1,4 @@
-import { formatLatLonDdm, metersToFeet, toMgrs } from "@dcs-flight-planner/core";
+import { formatLatLonDdm, formatMgrs, metersToFeet, toMgrs } from "@dcs-flight-planner/core";
 import type { HoverInfo } from "./TheaterMap";
 
 interface CoordinateStatusBarProps {
@@ -25,6 +25,7 @@ function Readout({ label, value, active }: { label: string; value: string; activ
         style={{
           fontFamily: "var(--dfp-font-mono)",
           fontSize: 13,
+          letterSpacing: "0.03em",
           color: active ? "var(--dfp-accent)" : "var(--dfp-text-inverse-muted)",
           transition: "color 0.15s ease",
         }}
@@ -42,7 +43,7 @@ function Divider() {
 export function CoordinateStatusBar({ hover }: CoordinateStatusBarProps) {
   const point = hover ? { lat: hover.lat, lon: hover.lon } : null;
   const coords = point ? formatLatLonDdm(point) : PLACEHOLDER;
-  const mgrs = point ? toMgrs(point) : PLACEHOLDER;
+  const mgrs = point ? formatMgrs(toMgrs(point)) : PLACEHOLDER;
   const altitude =
     hover && hover.elevationM != null
       ? `${Math.round(hover.elevationM)} m / ${Math.round(metersToFeet(hover.elevationM))} ft`

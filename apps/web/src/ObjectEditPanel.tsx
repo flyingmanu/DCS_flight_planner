@@ -16,6 +16,7 @@ import {
   type MissionObject,
 } from "@dcs-flight-planner/core";
 import type { ReactNode } from "react";
+import { ColorField } from "./ColorField";
 
 interface ObjectEditPanelProps {
   object: MissionObject;
@@ -100,57 +101,6 @@ function CoordinateFields({ point, onChange }: { point: LatLon; onChange: (p: La
   );
 }
 
-// A reasonable spread of ~20 standard colors, in addition to the free-form
-// native color picker for a precise choice.
-const PRESET_COLORS: { label: string; hex: string }[] = [
-  { label: "Red", hex: "#dc2626" },
-  { label: "Orange", hex: "#ea580c" },
-  { label: "Amber", hex: "#d97706" },
-  { label: "Yellow", hex: "#ca8a04" },
-  { label: "Lime", hex: "#65a30d" },
-  { label: "Green", hex: "#16a34a" },
-  { label: "Emerald", hex: "#059669" },
-  { label: "Teal", hex: "#0d9488" },
-  { label: "Cyan", hex: "#0891b2" },
-  { label: "Sky", hex: "#0284c7" },
-  { label: "Blue", hex: "#2563eb" },
-  { label: "Indigo", hex: "#4f46e5" },
-  { label: "Violet", hex: "#7c3aed" },
-  { label: "Purple", hex: "#9333ea" },
-  { label: "Fuchsia", hex: "#c026d3" },
-  { label: "Pink", hex: "#db2777" },
-  { label: "Rose", hex: "#e11d48" },
-  { label: "Slate", hex: "#475569" },
-  { label: "Black", hex: "#1a1a1a" },
-  { label: "White", hex: "#ffffff" },
-];
-
-function ColorField({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
-  const preset = PRESET_COLORS.find((p) => p.hex.toLowerCase() === value.toLowerCase());
-  return (
-    <Field label="Color">
-      <div style={{ display: "flex", gap: 6 }}>
-        <select
-          className="dfp-select"
-          value={preset ? preset.hex : "custom"}
-          onChange={(e) => {
-            if (e.target.value !== "custom") onChange(e.target.value);
-          }}
-          style={{ flex: 1 }}
-        >
-          <option value="custom">Custom…</option>
-          {PRESET_COLORS.map((p) => (
-            <option key={p.hex} value={p.hex}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-        <input type="color" className="dfp-color-swatch" value={value} onChange={(e) => onChange(e.target.value)} />
-      </div>
-    </Field>
-  );
-}
-
 export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDmpiElevation }: ObjectEditPanelProps) {
   const defaultColor =
     object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : DEFAULT_POLYGON_COLOR;
@@ -191,7 +141,9 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
           />
         </Field>
 
-        <ColorField value={object.color ?? defaultColor} onChange={(color) => onChange({ ...object, color })} />
+        <Field label="Color">
+          <ColorField value={object.color ?? defaultColor} onChange={(color) => onChange({ ...object, color })} />
+        </Field>
 
         {object.type === "point" && (
           <>

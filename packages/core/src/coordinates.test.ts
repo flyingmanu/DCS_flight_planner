@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLatLonDdm, parseLatDdm, parseLonDdm, toMgrs } from "./coordinates.js";
+import { formatLatLonDdm, formatMgrs, parseLatDdm, parseLonDdm, toMgrs } from "./coordinates.js";
 
 describe("formatLatLonDdm", () => {
   it("formats a northern/eastern point", () => {
@@ -41,5 +41,15 @@ describe("toMgrs", () => {
     // Grid zone 37T for this location; exact digits aren't hand-verified here,
     // but the format (zone + 100km square + 10-digit easting/northing) is.
     expect(mgrs).toMatch(/^37T[A-Z]{2}\d{10}$/);
+  });
+});
+
+describe("formatMgrs", () => {
+  it("splits a raw MGRS string into zone / 100km square / easting / northing blocks", () => {
+    expect(formatMgrs("37TFJ7738304322")).toBe("37T FJ 77383 04322");
+  });
+
+  it("leaves an unparseable string untouched", () => {
+    expect(formatMgrs("garbage")).toBe("garbage");
   });
 });

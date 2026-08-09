@@ -1,3 +1,4 @@
+import type { Flight } from "./flights.js";
 import type { MissionObject } from "./objects.js";
 
 export interface MapView {
@@ -17,4 +18,6 @@ export interface Mission {
   updatedAt: string;
   view: MapView;
   objects: MissionObject[];
+  /** Optional for backward compatibility with missions saved before flights existed. */
+  flights?: Flight[];
 }
