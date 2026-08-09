@@ -7,7 +7,6 @@ import { getElevationAt } from "./elevation";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
 import { FlightFormDialog } from "./FlightFormDialog";
-import { FlightListDialog } from "./FlightListDialog";
 import { FlightMenu } from "./FlightMenu";
 import { Logo } from "./Logo";
 import { ObjectEditPanel } from "./ObjectEditPanel";
@@ -57,7 +56,6 @@ function App() {
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
   const [objectListOpen, setObjectListOpen] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
-  const [flightListOpen, setFlightListOpen] = useState(false);
   const [flightForm, setFlightForm] = useState<{ flight?: Flight } | null>(null);
 
   useEffect(() => {
@@ -196,6 +194,11 @@ function App() {
     setFlightForm(null);
   }
 
+  function handleEditFlight(id: string) {
+    const flight = flights.find((f) => f.id === id);
+    if (flight) setFlightForm({ flight });
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -230,15 +233,12 @@ function App() {
             onDelete={handleDelete}
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
-          <FlightMenu onNewFlight={() => setFlightForm({})} />
+          <FlightMenu flights={flights} onNewFlight={() => setFlightForm({})} onEditFlight={handleEditFlight} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
-          <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setFlightListOpen(true)}>
-            Flights ({flights.length})
-          </button>
           <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setObjectListOpen(true)}>
-            Objects ({objects.length})
+            Objects ({objects.length + flights.length})
           </button>
         </div>
       </header>
@@ -272,28 +272,18 @@ function App() {
       {objectListOpen && (
         <ObjectListDialog
           objects={objects}
+          flights={flights}
           onSelect={(id) => {
             setSelectedObjectId(id);
             setObjectListOpen(false);
           }}
           onDelete={handleObjectDelete}
+          onSelectFlight={(id) => {
+            handleEditFlight(id);
+            setObjectListOpen(false);
+          }}
+          onDeleteFlight={handleFlightDelete}
           onClose={() => setObjectListOpen(false)}
-        />
-      )}
-      {flightListOpen && (
-        <FlightListDialog
-          flights={flights}
-          onSelect={(id) => {
-            const flight = flights.find((f) => f.id === id);
-            if (flight) setFlightForm({ flight });
-            setFlightListOpen(false);
-          }}
-          onDelete={handleFlightDelete}
-          onNewFlight={() => {
-            setFlightListOpen(false);
-            setFlightForm({});
-          }}
-          onClose={() => setFlightListOpen(false)}
         />
       )}
       {flightForm && (

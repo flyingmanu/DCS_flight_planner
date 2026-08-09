@@ -1,15 +1,20 @@
+import type { Flight } from "@dcs-flight-planner/core";
 import { useState } from "react";
-import { menuItemClassName, menuPanelClassName } from "./menuStyles";
+import { menuItemClassName, menuPanelClassName, submenuPanelStyle } from "./menuStyles";
 
 interface FlightMenuProps {
+  flights: Flight[];
   onNewFlight: () => void;
+  onEditFlight: (id: string) => void;
 }
 
-export function FlightMenu({ onNewFlight }: FlightMenuProps) {
+export function FlightMenu({ flights, onNewFlight, onEditFlight }: FlightMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [editSubmenuOpen, setEditSubmenuOpen] = useState(false);
 
   function closeAll() {
     setMenuOpen(false);
+    setEditSubmenuOpen(false);
   }
 
   return (
@@ -33,7 +38,7 @@ export function FlightMenu({ onNewFlight }: FlightMenuProps) {
               top: "calc(100% + 6px)",
               left: 0,
               zIndex: 11,
-              minWidth: 180,
+              minWidth: 200,
             }}
           >
             <button
@@ -46,6 +51,37 @@ export function FlightMenu({ onNewFlight }: FlightMenuProps) {
             >
               New flight...
             </button>
+
+            <div style={{ position: "relative" }}>
+              <button
+                type="button"
+                className={menuItemClassName}
+                disabled={flights.length === 0}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditSubmenuOpen((open) => !open);
+                }}
+              >
+                Edit flight ▸
+              </button>
+              {editSubmenuOpen && flights.length > 0 && (
+                <div className={menuPanelClassName} style={{ ...submenuPanelStyle, maxHeight: 300, overflowY: "auto" }}>
+                  {flights.map((flight) => (
+                    <button
+                      key={flight.id}
+                      type="button"
+                      className={menuItemClassName}
+                      onClick={() => {
+                        onEditFlight(flight.id);
+                        closeAll();
+                      }}
+                    >
+                      {flight.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}
