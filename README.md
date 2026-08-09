@@ -1,47 +1,47 @@
 # DCS Flight Planner
 
-Un équivalent moderne et maintenu de [Combat Flite](https://combatflite.com/) pour DCS World :
-planification de route, cartes de théâtre, kneeboards. Combat Flite n'est plus maintenu ;
-ce projet vise à le remplacer puis à l'améliorer.
+A modern, maintained equivalent of [Combat Flite](https://combatflite.com/) for DCS World:
+route planning, theater maps, kneeboards. Combat Flite is no longer maintained;
+this project aims to replace it and then improve on it.
 
-Projet en cours de construction, développé par morceaux.
+Work in progress, built one piece at a time.
 
-## Structure du repo
+## Repo structure
 
 ```
 apps/
-  web/           application web (Vite + React + MapLibre)
+  web/           web app (Vite + React + MapLibre)
 packages/
-  core/          logique métier partagée (waypoints, coordonnées, données théâtre)
+  core/          shared business logic (waypoints, coordinates, theater data)
 tools/
-  dcs-export/    outillage pour extraire les données statiques des théâtres DCS
+  dcs-export/    tooling to extract static data from DCS theaters
 ```
 
-## Développement
+## Development
 
 ```
 pnpm install
 pnpm --filter @dcs-flight-planner/web dev
 ```
 
-## État d'avancement
+## Progress
 
-- [x] Scaffolding du monorepo
-- [x] Extraction des données de théâtre DCS (aérodromes, runways) — Caucasus fait, fréquences pas encore disponibles via l'API DCS (à sourcer autrement)
-- [x] Modèle de données partagé (`packages/core`) — premier théâtre (Caucasus, 21 aérodromes) normalisé
-- [x] Carte interactive — marqueurs + popups sur fond OpenFreeMap (fond de carte "monde réel" provisoire, pas encore les cartes DCS elles-mêmes), relief (hillshade), outil de mesure de distance multi-points (km/NM, clic droit pour réinitialiser)
-- [x] Sauvegarde/chargement de "missions" (nom + vue carte, stocké en local dans le navigateur) — base pour y accrocher des infos propres à une mission plus tard (waypoints, notes...)
-- [x] Bandeau de statut au survol de la carte : Lat/Long (DDM, style F-16), MGRS, altitude terrain (ft/m)
-- [x] Création d'objets de mission (menu Objet) : points (aéronautique, référence, push/exit, CP, IP, target/DMPI, LZ) et polygones (libre, rectangle orienté, cercle, orbite aéronautique hold/AAR main gauche-droite), sauvegardés avec la mission
-- [x] Édition des objets (clic sur l'objet → panneau à droite) : nom, couleur, coordonnées, altitude DMPI, orientation et taille selon le type ; suppression
-- [x] Liste des objets (bouton "Objets" en haut à droite) : vue d'ensemble points/zones, clic pour éditer, suppression directe
-- [ ] Planification de route / waypoints
-- [ ] Export kneeboard
-- [ ] Application desktop (Tauri)
-- [ ] Monétisation (licence, comptes)
+- [x] Monorepo scaffolding
+- [x] DCS theater data extraction (airbases, runways) — Caucasus done, frequencies not yet available via the DCS API (need another source)
+- [x] Shared data model (`packages/core`) — first theater (Caucasus, 21 airbases) normalized
+- [x] Interactive map — markers + popups on an OpenFreeMap basemap (a "real world" basemap for now, not the actual DCS theater art yet), relief (hillshade), multi-point distance measuring tool (km/NM, right-click to reset)
+- [x] Save/load "missions" (name + map view, stored locally in the browser) — foundation for attaching mission-specific info later (waypoints, notes...)
+- [x] Status bar on map hover: lat/long (DDM, F-16 style), MGRS, terrain altitude (ft/m)
+- [x] Mission object creation (Object menu): points (aeronautical, reference, push/exit, CP, IP, target/DMPI, LZ) and polygons (freeform, oriented rectangle, circle, aeronautical orbit hold/AAR left/right-hand), saved with the mission
+- [x] Object editing (click an object → right-side panel): name, color, coordinates, DMPI altitude, orientation and size depending on type; delete
+- [x] Object list (top-right "Objects" button): overview of points/zones, click to edit, direct delete
+- [ ] Route/waypoint planning
+- [ ] Kneeboard export
+- [ ] Desktop application (Tauri)
+- [ ] Monetization (license, accounts)
 
-## Licence des données DCS
+## DCS data license
 
-Ce projet extrait des données depuis DCS World (Eagle Dynamics) pour les besoins de
-planification de vol. La conformité de cet usage avec l'EULA/ToS d'Eagle Dynamics,
-notamment dans un cadre commercial, est en cours de vérification.
+This project extracts data from DCS World (Eagle Dynamics) for flight-planning purposes.
+Compliance of this use with Eagle Dynamics' EULA/ToS, particularly in a commercial context,
+is still being verified.

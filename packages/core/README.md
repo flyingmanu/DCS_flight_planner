@@ -1,32 +1,32 @@
 # @dcs-flight-planner/core
 
-Logique métier partagée entre les futures applications web et desktop : modèles de
-données (théâtres, aérodromes, waypoints), calculs de navigation, conversions de
-coordonnées.
+Business logic shared between the future web and desktop apps: data models
+(theaters, airbases, waypoints), navigation calculations, coordinate
+conversions.
 
-## Contenu actuel
+## Current contents
 
-- `src/types.ts` — modèle de données (`Theater`, `Airbase`, `Runway`, ...)
-- `src/normalize-export.ts` — transforme le JSON brut produit par
-  `tools/dcs-export/mission_export.lua` en dataset propre
-- `src/data/*.json` — datasets normalisés par théâtre (Caucasus pour l'instant)
-- `scripts/normalize-theater.ts` — CLI pour générer/régénérer un dataset
+- `src/types.ts` — data model (`Theater`, `Airbase`, `Runway`, ...)
+- `src/normalize-export.ts` — turns the raw JSON produced by
+  `tools/dcs-export/mission_export.lua` into a clean dataset
+- `src/data/*.json` — normalized datasets per theater (Caucasus for now)
+- `scripts/normalize-theater.ts` — CLI to generate/regenerate a dataset
 
-## Régénérer un dataset
+## Regenerate a dataset
 
 ```
-pnpm --filter @dcs-flight-planner/core normalize <chemin-vers-raw.json>
+pnpm --filter @dcs-flight-planner/core normalize <path-to-raw.json>
 ```
 
-## Limites connues
+## Known limitations
 
-- Les fréquences radio ne sont pas exposées par l'API scripting DCS pour les
-  aérodromes statiques ; il faudra une autre source (charts officielles,
-  extraction manuelle) pour les ajouter.
-- Le champ `course` brut renvoyé par `getRunways()` ne correspond pas
-  directement à un cap standard ; le désignateur de piste (`Name`, ex. `22`)
-  est utilisé comme source du cap nominal (`désignateur × 10°`) à la place.
-- Un seul théâtre (Caucasus) est normalisé pour l'instant.
+- Radio frequencies are not exposed by DCS's scripting API for static
+  airbases; another source (official charts, manual extraction) will be
+  needed to add them.
+- The raw `course` field returned by `getRunways()` doesn't map directly to
+  a standard heading; the runway designator (`Name`, e.g. `22`) is used as
+  the source of the nominal heading (`designator × 10°`) instead.
+- Only one theater (Caucasus) is normalized so far.
 
 ## Tests
 

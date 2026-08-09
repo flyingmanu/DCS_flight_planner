@@ -50,7 +50,7 @@ export class ReliefControl implements maplibregl.IControl {
     this.map = map;
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    this.button = controlButton("⛰", "Afficher/masquer le relief");
+    this.button = controlButton("⛰", "Show/hide terrain relief");
     this.button.addEventListener("click", () => this.toggle());
     this.container.appendChild(this.button);
     return this.container;
@@ -140,7 +140,7 @@ export class MeasureControl implements maplibregl.IControl {
     this.map = map;
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    this.button = controlButton("📏", "Mesurer une distance (clic pour ajouter un point, clic droit pour réinitialiser)");
+    this.button = controlButton("📏", "Measure a distance (click to add a point, right-click to reset)");
     this.button.addEventListener("click", () => this.toggle());
     this.container.appendChild(this.button);
 

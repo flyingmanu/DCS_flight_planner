@@ -8,10 +8,10 @@ interface ObjectListDialogProps {
 }
 
 const POLYGON_KIND_LABEL: Record<string, string> = {
-  freeform: "Zone (libre)",
-  rectangle: "Zone rectangulaire",
-  circle: "Zone circulaire",
-  orbit: "Orbite aéronautique",
+  freeform: "Zone (freeform)",
+  rectangle: "Rectangular zone",
+  circle: "Circular zone",
+  orbit: "Aeronautical orbit",
 };
 
 function objectLabel(object: MissionObject): string {
@@ -58,7 +58,7 @@ export function ObjectListDialog({ objects, onSelect, onDelete, onClose }: Objec
         </span>
         <button
           type="button"
-          title="Supprimer"
+          title="Delete"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(object.id);
@@ -105,14 +105,14 @@ export function ObjectListDialog({ objects, onSelect, onDelete, onClose }: Objec
             borderBottom: "1px solid #eee",
           }}
         >
-          <strong style={{ fontSize: 14 }}>Objets de la mission ({objects.length})</strong>
+          <strong style={{ fontSize: 14 }}>Mission objects ({objects.length})</strong>
           <button type="button" onClick={onClose} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 16 }}>
             ×
           </button>
         </div>
 
         <div style={{ padding: "8px 12px", overflowY: "auto", flex: 1 }}>
-          {objects.length === 0 && <div style={{ color: "#888", fontSize: 13, padding: 8 }}>Aucun objet pour l'instant.</div>}
+          {objects.length === 0 && <div style={{ color: "#888", fontSize: 13, padding: 8 }}>No objects yet.</div>}
 
           {points.length > 0 && (
             <>

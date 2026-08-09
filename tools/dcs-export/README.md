@@ -1,51 +1,46 @@
 # DCS data export
 
-Outillage pour extraire les données statiques d'un théâtre DCS (aérodromes,
-runways, fréquences...) afin de construire le modèle de données de
-`packages/core`.
+Tooling to extract static data from a DCS theater (airbases, runways,
+frequencies...) in order to build the `packages/core` data model.
 
-`mission_export.lua` est un script de **découverte** : on ne connaît pas encore
-précisément quelles méthodes de l'API scripting DCS sont disponibles/utiles,
-donc il sonde une liste de méthodes connues sur chaque `Airbase` et inclut
-tout ce qui répond. Les champs non supportés par ta version de DCS
-ressortiront simplement à `null` — c'est normal et c'est aussi une info utile
-pour la suite.
+`mission_export.lua` is a **discovery** script: we don't yet know precisely
+which DCS scripting API methods are available/useful, so it probes a list of
+known methods on each `Airbase` and includes anything that responds. Fields
+not supported by your DCS version will simply come back as `null` — that's
+expected, and it's also useful info for later.
 
-Le script tourne entièrement dans l'environnement Lua sandboxé standard des
-missions (aucune modification de `MissionScripting.lua` n'est nécessaire).
+The script runs entirely in the standard sandboxed mission Lua environment
+(no `MissionScripting.lua` modification needed).
 
-## Étapes
+## Steps
 
-1. **Créer une mission de test** dans le Mission Editor DCS, sur le théâtre
-   voulu (commencer par Caucasus, inclus gratuitement dans DCS).
+1. **Create a test mission** in the DCS Mission Editor, on the desired
+   theater (start with Caucasus, included for free with DCS).
 
-2. **Ajouter un trigger** :
-   - Type : `MISSION START` (ONCE)
-   - Action : `DO SCRIPT FILE`
-   - Fichier : pointer vers `mission_export.lua` (copie-le n'importe où
-     accessible depuis ta machine, ex: `Saved Games\DCS\Missions\mission_export.lua`)
+2. **Add a trigger**:
+   - Type: `MISSION START` (ONCE)
+   - Action: `DO SCRIPT FILE`
+   - File: point it to `mission_export.lua` (copy it anywhere accessible
+     from your machine, e.g. `Saved Games\DCS\Missions\mission_export.lua`)
 
-3. **Lancer la mission** (pas besoin d'avion jouable, juste que le trigger
-   MISSION START se déclenche — quelques secondes en jeu suffisent avant de
-   quitter).
+3. **Launch the mission** (no need for a playable aircraft, just enough for
+   the MISSION START trigger to fire — a few seconds in-game is enough
+   before quitting).
 
-4. **Récupérer `dcs.log`**, en général situé dans :
-   - `%USERPROFILE%\Saved Games\DCS\Logs\dcs.log` (version stable)
-   - `%USERPROFILE%\Saved Games\DCS.openbeta\Logs\dcs.log` (version beta)
+4. **Retrieve `dcs.log`**, usually located at:
+   - `%USERPROFILE%\Saved Games\DCS\Logs\dcs.log` (stable version)
+   - `%USERPROFILE%\Saved Games\DCS.openbeta\Logs\dcs.log` (beta version)
 
-5. **Envoie-moi directement `dcs.log`** (le fichier, ou son contenu collé) —
-   pas besoin de lancer `extract-log.mjs` toi-même, je m'en charge à partir
-   du log brut.
+5. **Send me `dcs.log` directly** (the file, or its pasted content) — no
+   need to run `extract-log.mjs` yourself, I'll handle it from the raw log.
 
-`extract-log.mjs` reste dans le repo pour usage interne (c'est ce que
-j'exécute de mon côté une fois que tu m'as donné le log) ; tu n'as pas
-besoin d'y toucher.
+`extract-log.mjs` stays in the repo for internal use (it's what I run on my
+end once you've given me the log); you don't need to touch it.
 
-## En cas d'erreur
+## Troubleshooting
 
-- Si aucun marqueur `DCS_EXPORT` n'apparaît dans le log : le trigger ne
-  s'est probablement pas déclenché — vérifie qu'il y a bien des lignes
-  `SCRIPTING:` dans `dcs.log` autour de l'heure du lancement de la mission.
-- Si le script Lua a levé une erreur, elle apparaît dans `dcs.log` préfixée
-  par `DCS_EXPORT_ERROR|` — envoie-moi cette ligne, ça m'aidera à corriger
-  le script.
+- If no `DCS_EXPORT` marker appears in the log: the trigger probably didn't
+  fire — check that there are `SCRIPTING:` lines in `dcs.log` around the
+  time the mission was launched.
+- If the Lua script raised an error, it appears in `dcs.log` prefixed with
+  `DCS_EXPORT_ERROR|` — send me that line, it'll help me fix the script.

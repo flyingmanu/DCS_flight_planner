@@ -19,10 +19,10 @@ const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
-  airdrome: "Aérodrome",
-  helipad: "Hélipad",
-  ship: "Navire",
-  unknown: "Inconnu",
+  airdrome: "Airdrome",
+  helipad: "Helipad",
+  ship: "Ship",
+  unknown: "Unknown",
 };
 
 // Sectional-chart-style airport symbol: a circle with a bar for the primary
@@ -72,7 +72,7 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
   return `
     <strong>${airbase.name}</strong><br />
     ${CATEGORY_LABEL[airbase.category]}<br />
-    ${runways || "Piste inconnue"}
+    ${runways || "Runway unknown"}
   `;
 }
 

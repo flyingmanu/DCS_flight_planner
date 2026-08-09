@@ -64,7 +64,7 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
             }}
           >
             <button type="button" style={menuButtonStyle} onClick={() => run(onNew)}>
-              Nouveau
+              New
             </button>
 
             <div style={{ position: "relative" }}>
@@ -76,13 +76,13 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
                   setOpenSubmenu((open) => !open);
                 }}
               >
-                Ouvrir ▸
+                Open ▸
               </button>
               {openSubmenu && (
                 <div style={{ ...submenuPanelStyle, maxHeight: 300, overflowY: "auto" }}>
                   {missions.length === 0 ? (
                     <div style={{ padding: "6px 16px", color: "#888", fontSize: 13 }}>
-                      (aucune mission enregistrée)
+                      (no saved missions)
                     </div>
                   ) : (
                     missions.map((m) => (
@@ -106,10 +106,10 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
             <div style={{ borderTop: "1px solid #eee", margin: "4px 0" }} />
 
             <button type="button" style={menuButtonStyle} onClick={() => run(onSave)}>
-              Enregistrer
+              Save
             </button>
             <button type="button" style={menuButtonStyle} onClick={() => run(onSaveAs)}>
-              Enregistrer sous...
+              Save as...
             </button>
 
             <div style={{ borderTop: "1px solid #eee", margin: "4px 0" }} />
@@ -120,7 +120,7 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
               disabled={!activeMissionId}
               onClick={() => run(onDelete)}
             >
-              Supprimer
+              Delete
             </button>
           </div>
         </>

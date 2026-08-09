@@ -3,8 +3,8 @@ import type { LatLon } from "./geo.js";
 export type PointKind = "airNav" | "reference" | "push" | "exit" | "cp" | "ip" | "target" | "lz";
 
 export const POINT_KIND_LABEL: Record<PointKind, string> = {
-  airNav: "Point aéronautique",
-  reference: "Point référence",
+  airNav: "Aeronautical point",
+  reference: "Reference point",
   push: "Push point",
   exit: "Exit point",
   cp: "CP",

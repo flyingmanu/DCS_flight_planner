@@ -10,10 +10,10 @@ interface ObjectMenuProps {
 const POINT_KINDS: PointKind[] = ["airNav", "reference", "push", "exit", "cp", "ip", "target", "lz"];
 
 const ORBIT_OPTIONS: Array<{ hand: Hand; variant: OrbitVariant; label: string }> = [
-  { hand: "right", variant: "hold", label: "Hold simple — main droite" },
-  { hand: "left", variant: "hold", label: "Hold simple — main gauche" },
-  { hand: "right", variant: "aar", label: "AAR — main droite" },
-  { hand: "left", variant: "aar", label: "AAR — main gauche" },
+  { hand: "right", variant: "hold", label: "Standard hold — right-hand" },
+  { hand: "left", variant: "hold", label: "Standard hold — left-hand" },
+  { hand: "right", variant: "aar", label: "AAR — right-hand" },
+  { hand: "left", variant: "aar", label: "AAR — left-hand" },
 ];
 
 export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
@@ -45,7 +45,7 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
           fontSize: 14,
         }}
       >
-        Objet
+        Object
       </button>
 
       {menuOpen && (
@@ -103,7 +103,7 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                   setSubmenu((s) => (s === "polygon" ? null : "polygon"));
                 }}
               >
-                Polygone ▸
+                Polygon ▸
               </button>
               {submenu === "polygon" && (
                 <div style={submenuPanelStyle}>
@@ -112,21 +112,21 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                     style={menuButtonStyle}
                     onClick={() => request({ kind: "polygon", polygonKind: "freeform" })}
                   >
-                    Complexe (points multiples)
+                    Freeform (multiple points)
                   </button>
                   <button
                     type="button"
                     style={menuButtonStyle}
                     onClick={() => request({ kind: "polygon", polygonKind: "rectangle" })}
                   >
-                    Carré / rectangle
+                    Square / rectangle
                   </button>
                   <button
                     type="button"
                     style={menuButtonStyle}
                     onClick={() => request({ kind: "polygon", polygonKind: "circle" })}
                   >
-                    Cercle
+                    Circle
                   </button>
                   <div style={{ position: "relative" }}>
                     <button
@@ -137,7 +137,7 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                         setOrbitOpen((open) => !open);
                       }}
                     >
-                      Orbite aéronautique ▸
+                      Aeronautical orbit ▸
                     </button>
                     {orbitOpen && (
                       <div style={submenuPanelStyle}>

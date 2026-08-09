@@ -13,18 +13,18 @@ import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap"
 import type { CreationRequest, ObjectDraft } from "./placement";
 
 const theater = caucasus as Theater;
-const UNTITLED = "Sans titre";
+const UNTITLED = "Untitled";
 
 const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
   freeform: "Zone",
-  rectangle: "Zone rectangulaire",
-  circle: "Zone circulaire",
-  orbit: "Orbite",
+  rectangle: "Rectangular zone",
+  circle: "Circular zone",
+  orbit: "Orbit",
 };
 
 function defaultObjectName(draft: ObjectDraft): string {
   if (draft.type === "point") return POINT_KIND_LABEL[draft.kind];
-  return POLYGON_KIND_DEFAULT_NAME[draft.shape.kind] ?? "Objet";
+  return POLYGON_KIND_DEFAULT_NAME[draft.shape.kind] ?? "Object";
 }
 
 function draftToObject(draft: ObjectDraft, name: string): MissionObject {
@@ -147,12 +147,12 @@ function App() {
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
           <div>
-            <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} aérodromes) —{" "}
+            <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} airbases) —{" "}
             <em>{activeMissionName}</em>
           </div>
         </div>
         <button type="button" onClick={() => setObjectListOpen(true)} style={{ padding: "4px 12px", fontSize: 14, cursor: "pointer" }}>
-          Objets ({objects.length})
+          Objects ({objects.length})
         </button>
       </header>
       <div style={{ flex: 1, minHeight: 0 }}>
@@ -192,16 +192,16 @@ function App() {
       )}
       {saveAsOpen && (
         <PromptDialog
-          title="Enregistrer sous"
+          title="Save as"
           defaultValue={activeMissionName === UNTITLED ? "" : activeMissionName}
-          fallbackValue="Mission sans nom"
+          fallbackValue="Untitled mission"
           onConfirm={handleSaveAsConfirm}
           onCancel={() => setSaveAsOpen(false)}
         />
       )}
       {pendingDraft && (
         <PromptDialog
-          title="Nommer l'objet"
+          title="Name the object"
           defaultValue={defaultObjectName(pendingDraft)}
           fallbackValue={defaultObjectName(pendingDraft)}
           onConfirm={handleObjectNameConfirm}

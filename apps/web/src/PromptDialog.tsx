@@ -13,7 +13,7 @@ export function PromptDialog({
   title,
   defaultValue,
   fallbackValue,
-  confirmLabel = "Enregistrer",
+  confirmLabel = "Save",
   onConfirm,
   onCancel,
 }: PromptDialogProps) {
@@ -66,7 +66,7 @@ export function PromptDialog({
         />
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
           <button type="button" onClick={onCancel}>
-            Annuler
+            Cancel
           </button>
           <button type="button" onClick={confirm}>
             {confirmLabel}

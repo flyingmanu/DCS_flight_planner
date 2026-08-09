@@ -87,14 +87,14 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
           borderBottom: "1px solid #eee",
         }}
       >
-        <strong style={{ fontSize: 13 }}>Propriétés</strong>
-        <button type="button" onClick={onClose} title="Fermer" style={{ border: "none", background: "none", cursor: "pointer", fontSize: 16 }}>
+        <strong style={{ fontSize: 13 }}>Properties</strong>
+        <button type="button" onClick={onClose} title="Close" style={{ border: "none", background: "none", cursor: "pointer", fontSize: 16 }}>
           ×
         </button>
       </div>
 
       <div style={{ padding: 12, overflowY: "auto", flex: 1 }}>
-        <Field label="Nom">
+        <Field label="Name">
           <input
             type="text"
             defaultValue={object.name}
@@ -107,7 +107,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
           />
         </Field>
 
-        <Field label="Couleur">
+        <Field label="Color">
           <input
             type="color"
             value={object.color ?? defaultColor}
@@ -123,7 +123,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
 
             {object.kind === "target" && (
               <NumberField
-                label="Altitude DMPI (ft)"
+                label="DMPI altitude (ft)"
                 step={1}
                 value={object.dmpis?.[0]?.elevationFt ?? 0}
                 onCommit={(elevationFt) => {
@@ -157,7 +157,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
                     }}
                   />
                   <NumberField
-                    label="Largeur (m)"
+                    label="Width (m)"
                     step={1}
                     value={Math.abs(size.x)}
                     onCommit={(width) =>
@@ -168,7 +168,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
                     }
                   />
                   <NumberField
-                    label="Hauteur (m)"
+                    label="Height (m)"
                     step={1}
                     value={Math.abs(size.y)}
                     onCommit={(height) =>
@@ -193,7 +193,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
                 <>
                   <CoordinateFields point={shape.center} onChange={(center) => onChange({ ...polygon, shape: { ...shape, center } })} />
                   <NumberField
-                    label="Rayon (m)"
+                    label="Radius (m)"
                     step={1}
                     value={shape.radiusM}
                     onCommit={(radiusM) => onChange({ ...polygon, shape: { ...shape, radiusM } })}
@@ -207,19 +207,19 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
                 <>
                   <CoordinateFields point={shape.center} onChange={(center) => onChange({ ...polygon, shape: { ...shape, center } })} />
                   <NumberField
-                    label="Cap / orientation (°)"
+                    label="Course / orientation (°)"
                     step={1}
                     value={shape.courseDeg}
                     onCommit={(courseDeg) => onChange({ ...polygon, shape: { ...shape, courseDeg } })}
                   />
                   <NumberField
-                    label="Longueur de branche (NM)"
+                    label="Leg length (NM)"
                     step={0.5}
                     value={shape.legLengthNm}
                     onCommit={(legLengthNm) => onChange({ ...polygon, shape: { ...shape, legLengthNm } })}
                   />
                   <NumberField
-                    label="Rayon de virage (NM)"
+                    label="Turn radius (NM)"
                     step={0.1}
                     value={shape.turnRadiusNm ?? DEFAULT_ORBIT_TURN_RADIUS_NM}
                     onCommit={(turnRadiusNm) => onChange({ ...polygon, shape: { ...shape, turnRadiusNm } })}
@@ -238,7 +238,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
           onClick={onDelete}
           style={{ width: "100%", padding: 6, color: "#c02020", cursor: "pointer" }}
         >
-          Supprimer
+          Delete
         </button>
       </div>
     </div>
