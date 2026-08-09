@@ -6,6 +6,7 @@ import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { getElevationAt } from "./elevation";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
+import { Logo } from "./Logo";
 import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
@@ -180,15 +181,26 @@ function App() {
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
         style={{
-          padding: "4px 12px",
-          borderBottom: "1px solid #3333",
+          padding: "6px 16px",
+          background: "var(--dfp-navy-900)",
+          color: "var(--dfp-text-inverse)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 16,
+          boxShadow: "0 1px 0 var(--dfp-accent-dark), var(--dfp-shadow-sm)",
+          zIndex: 1,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <Logo />
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginRight: 6 }}>
+            <strong style={{ fontSize: 15, letterSpacing: "0.01em" }}>DCS Flight Planner</strong>
+            <span style={{ fontSize: 12, color: "var(--dfp-text-inverse-muted)" }}>
+              {theater.name} · {theater.airbases.length} airbases
+            </span>
+          </div>
+          <div style={{ width: 1, alignSelf: "stretch", background: "rgba(255,255,255,0.14)" }} />
           <FileMenu
             missions={missions}
             activeMissionId={activeMissionId}
@@ -199,14 +211,13 @@ function App() {
             onDelete={handleDelete}
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
-          <div>
-            <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} airbases) —{" "}
-            <em>{activeMissionName}</em>
-          </div>
         </div>
-        <button type="button" onClick={() => setObjectListOpen(true)} style={{ padding: "4px 12px", fontSize: 14, cursor: "pointer" }}>
-          Objects ({objects.length})
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
+          <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setObjectListOpen(true)}>
+            Objects ({objects.length})
+          </button>
+        </div>
       </header>
       <div style={{ flex: 1, minHeight: 0 }}>
         <TheaterMap

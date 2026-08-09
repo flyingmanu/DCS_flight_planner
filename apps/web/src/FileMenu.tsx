@@ -1,6 +1,6 @@
 import type { Mission } from "@dcs-flight-planner/core";
 import { useState } from "react";
-import { menuButtonStyle, submenuPanelStyle } from "./menuStyles";
+import { menuItemClassName, menuPanelClassName, submenuPanelStyle } from "./menuStyles";
 
 interface FileMenuProps {
   missions: Mission[];
@@ -30,14 +30,9 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
     <div style={{ position: "relative" }}>
       <button
         type="button"
+        className="dfp-btn dfp-btn-onnavy"
+        data-open={menuOpen}
         onClick={() => setMenuOpen((open) => !open)}
-        style={{
-          padding: "4px 12px",
-          background: menuOpen ? "#dbeafe" : "transparent",
-          border: "1px solid transparent",
-          cursor: "pointer",
-          fontSize: 14,
-        }}
       >
         File
       </button>
@@ -45,32 +40,25 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
       {menuOpen && (
         <>
           {/* Click-outside-to-close overlay */}
+          <div onClick={closeAll} style={{ position: "fixed", inset: 0, zIndex: 10 }} />
           <div
-            onClick={closeAll}
-            style={{ position: "fixed", inset: 0, zIndex: 10 }}
-          />
-          <div
+            className={menuPanelClassName}
             style={{
               position: "absolute",
-              top: "100%",
+              top: "calc(100% + 6px)",
               left: 0,
               zIndex: 11,
-              background: "#fff",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              paddingBlock: 4,
               minWidth: 200,
             }}
           >
-            <button type="button" style={menuButtonStyle} onClick={() => run(onNew)}>
+            <button type="button" className={menuItemClassName} onClick={() => run(onNew)}>
               New
             </button>
 
             <div style={{ position: "relative" }}>
               <button
                 type="button"
-                style={menuButtonStyle}
+                className={menuItemClassName}
                 onClick={(e) => {
                   e.stopPropagation();
                   setOpenSubmenu((open) => !open);
@@ -79,20 +67,16 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
                 Open ▸
               </button>
               {openSubmenu && (
-                <div style={{ ...submenuPanelStyle, maxHeight: 300, overflowY: "auto" }}>
+                <div className={menuPanelClassName} style={{ ...submenuPanelStyle, maxHeight: 300, overflowY: "auto" }}>
                   {missions.length === 0 ? (
-                    <div style={{ padding: "6px 16px", color: "#888", fontSize: 13 }}>
-                      (no saved missions)
-                    </div>
+                    <div style={{ padding: "6px 16px", color: "var(--dfp-text-muted)", fontSize: 13 }}>(no saved missions)</div>
                   ) : (
                     missions.map((m) => (
                       <button
                         key={m.id}
                         type="button"
-                        style={{
-                          ...menuButtonStyle,
-                          fontWeight: m.id === activeMissionId ? 700 : 400,
-                        }}
+                        className={menuItemClassName}
+                        style={{ fontWeight: m.id === activeMissionId ? 700 : 400 }}
                         onClick={() => run(() => onOpen(m.id))}
                       >
                         {m.name}
@@ -103,20 +87,21 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
               )}
             </div>
 
-            <div style={{ borderTop: "1px solid #eee", margin: "4px 0" }} />
+            <div className="dfp-menu-divider" />
 
-            <button type="button" style={menuButtonStyle} onClick={() => run(onSave)}>
+            <button type="button" className={menuItemClassName} onClick={() => run(onSave)}>
               Save
             </button>
-            <button type="button" style={menuButtonStyle} onClick={() => run(onSaveAs)}>
+            <button type="button" className={menuItemClassName} onClick={() => run(onSaveAs)}>
               Save as...
             </button>
 
-            <div style={{ borderTop: "1px solid #eee", margin: "4px 0" }} />
+            <div className="dfp-menu-divider" />
 
             <button
               type="button"
-              style={{ ...menuButtonStyle, color: activeMissionId ? "#c02020" : "#aaa" }}
+              className={menuItemClassName}
+              style={{ color: activeMissionId ? "var(--dfp-danger)" : undefined }}
               disabled={!activeMissionId}
               onClick={() => run(onDelete)}
             >

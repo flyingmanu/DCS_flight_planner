@@ -4,6 +4,44 @@
      dark-mode default text color, white, inherit into places like MapLibre's
      popup, which sets an explicit white background but no text color). */
   color-scheme: light;
+
+  /* Aeronautical theme: deep instrument-panel navy + amber accent, on a
+     clean paper-white working surface (sectional-chart feel). */
+  --dfp-navy-950: #081521;
+  --dfp-navy-900: #0d1f30;
+  --dfp-navy-800: #132c44;
+  --dfp-navy-700: #1c3c5c;
+  --dfp-navy-600: #2b527b;
+
+  --dfp-accent: #e8a33d;
+  --dfp-accent-dark: #c17f22;
+  --dfp-accent-soft: #fbe7c4;
+
+  --dfp-blue: #2563eb;
+  --dfp-blue-soft: #dbeafe;
+
+  --dfp-bg: #eef2f6;
+  --dfp-panel: #ffffff;
+  --dfp-border: #d7dee6;
+  --dfp-border-strong: #b7c3d0;
+
+  --dfp-text: #142433;
+  --dfp-text-muted: #5b6b7a;
+  --dfp-text-inverse: #eef3f8;
+  --dfp-text-inverse-muted: #9fb2c4;
+
+  --dfp-danger: #b8382c;
+  --dfp-danger-soft: #fbe4e1;
+
+  --dfp-radius-sm: 4px;
+  --dfp-radius: 6px;
+  --dfp-radius-lg: 10px;
+
+  --dfp-shadow: 0 8px 24px rgba(8, 21, 33, 0.18);
+  --dfp-shadow-sm: 0 2px 8px rgba(8, 21, 33, 0.14);
+
+  --dfp-font-sans: "Segoe UI", system-ui, Roboto, sans-serif;
+  --dfp-font-mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
 }
 
 html,
@@ -14,13 +52,271 @@ body,
 }
 
 body {
-  font: 15px/1.4 system-ui, "Segoe UI", Roboto, sans-serif;
-  color: #1a1a1a;
-  background: #fff;
+  font: 14px/1.4 var(--dfp-font-sans);
+  color: var(--dfp-text);
+  background: var(--dfp-bg);
+}
+
+button,
+input,
+select {
+  font-family: inherit;
 }
 
 /* Defensive: keep popup text readable regardless of any future theming,
    since MapLibre's own CSS sets a white popup background but no text color. */
 .maplibregl-popup-content {
-  color: #1a1a1a;
+  color: var(--dfp-text);
+  font-family: var(--dfp-font-sans);
+  border-radius: var(--dfp-radius);
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.dfp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: var(--dfp-radius);
+  border: 1px solid var(--dfp-border-strong);
+  background: var(--dfp-panel);
+  color: var(--dfp-text);
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    color 0.12s ease;
+}
+.dfp-btn:hover {
+  background: var(--dfp-blue-soft);
+  border-color: var(--dfp-blue);
+}
+.dfp-btn:active {
+  transform: translateY(1px);
+}
+.dfp-btn:disabled {
+  cursor: default;
+  color: #a7b1ba;
+  background: var(--dfp-panel);
+  border-color: var(--dfp-border);
+}
+.dfp-btn:disabled:hover {
+  background: var(--dfp-panel);
+  border-color: var(--dfp-border);
+}
+
+.dfp-btn-accent {
+  background: var(--dfp-accent);
+  border-color: var(--dfp-accent-dark);
+  color: #2a1a02;
+}
+.dfp-btn-accent:hover {
+  background: var(--dfp-accent-dark);
+  border-color: var(--dfp-accent-dark);
+  color: #fff;
+}
+
+.dfp-btn-danger {
+  background: transparent;
+  border-color: var(--dfp-danger);
+  color: var(--dfp-danger);
+}
+.dfp-btn-danger:hover {
+  background: var(--dfp-danger-soft);
+  border-color: var(--dfp-danger);
+}
+
+.dfp-btn-ghost {
+  border-color: transparent;
+  background: transparent;
+}
+.dfp-btn-ghost:hover {
+  background: var(--dfp-blue-soft);
+  border-color: transparent;
+}
+
+/* On-dark-navy variant, used in the top header bar. */
+.dfp-btn-onnavy {
+  border-color: transparent;
+  background: transparent;
+  color: var(--dfp-text-inverse);
+}
+.dfp-btn-onnavy:hover,
+.dfp-btn-onnavy[data-open="true"] {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: transparent;
+  color: #fff;
+}
+.dfp-btn-onnavy[data-open="true"] {
+  background: var(--dfp-accent);
+  color: #2a1a02;
+}
+
+/* --- Menus ---------------------------------------------------------------
+   Used by File / Object menu dropdowns and their submenus. */
+
+.dfp-menu-panel {
+  background: var(--dfp-panel);
+  border: 1px solid var(--dfp-border);
+  border-radius: var(--dfp-radius);
+  box-shadow: var(--dfp-shadow);
+  padding-block: 4px;
+}
+
+.dfp-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 7px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--dfp-text);
+  white-space: nowrap;
+}
+.dfp-menu-item:hover {
+  background: var(--dfp-blue-soft);
+}
+.dfp-menu-item:disabled {
+  color: #a7b1ba;
+  cursor: default;
+}
+.dfp-menu-item:disabled:hover {
+  background: none;
+}
+
+.dfp-menu-divider {
+  border-top: 1px solid var(--dfp-border);
+  margin: 4px 0;
+}
+
+/* --- Form fields ---------------------------------------------------------- */
+
+.dfp-input {
+  width: 100%;
+  padding: 6px 9px;
+  font-size: 13px;
+  border: 1px solid var(--dfp-border-strong);
+  border-radius: var(--dfp-radius-sm);
+  background: #fff;
+  color: var(--dfp-text);
+  box-sizing: border-box;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.dfp-input:focus {
+  outline: none;
+  border-color: var(--dfp-blue);
+  box-shadow: 0 0 0 3px var(--dfp-blue-soft);
+}
+.dfp-input-mono {
+  font-family: var(--dfp-font-mono);
+}
+
+.dfp-select {
+  padding: 6px 8px;
+  font-size: 13px;
+  border: 1px solid var(--dfp-border-strong);
+  border-radius: var(--dfp-radius-sm);
+  background: #fff;
+  color: var(--dfp-text);
+}
+.dfp-select:focus {
+  outline: none;
+  border-color: var(--dfp-blue);
+  box-shadow: 0 0 0 3px var(--dfp-blue-soft);
+}
+
+.dfp-color-swatch {
+  width: 36px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--dfp-border-strong);
+  border-radius: var(--dfp-radius-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.dfp-label {
+  display: block;
+  color: var(--dfp-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* --- Panels & dialogs ------------------------------------------------------ */
+
+.dfp-panel {
+  background: var(--dfp-panel);
+  border: 1px solid var(--dfp-border);
+  box-shadow: var(--dfp-shadow);
+}
+
+.dfp-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--dfp-navy-900);
+  color: var(--dfp-text-inverse);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.dfp-panel-header-close {
+  border: none;
+  background: none;
+  color: var(--dfp-text-inverse-muted);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: var(--dfp-radius-sm);
+}
+.dfp-panel-header-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.dfp-list-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: var(--dfp-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+.dfp-list-row:hover {
+  background: var(--dfp-blue-soft);
+}
+
+.dfp-list-row-delete {
+  border: none;
+  background: none;
+  color: var(--dfp-danger);
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: var(--dfp-radius-sm);
+  padding: 3px 5px;
+}
+.dfp-list-row-delete:hover {
+  background: var(--dfp-danger-soft);
+}
+
+::backdrop,
+.dfp-scrim {
+  background: rgba(8, 21, 33, 0.45);
 }

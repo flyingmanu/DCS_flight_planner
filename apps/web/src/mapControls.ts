@@ -35,7 +35,19 @@ function controlButton(label: string, title: string): HTMLButtonElement {
   button.title = title;
   button.textContent = label;
   button.style.fontSize = "16px";
+  button.style.transition = "background-color 0.12s ease";
+  button.addEventListener("mouseenter", () => {
+    if (button.dataset.active !== "true") button.style.backgroundColor = "var(--dfp-blue-soft)";
+  });
+  button.addEventListener("mouseleave", () => {
+    if (button.dataset.active !== "true") button.style.backgroundColor = "";
+  });
   return button;
+}
+
+function setButtonActive(button: HTMLButtonElement, active: boolean): void {
+  button.dataset.active = active ? "true" : "false";
+  button.style.backgroundColor = active ? "var(--dfp-accent-soft)" : "";
 }
 
 /** Adds a hillshade relief layer to the map (hidden by default). */
@@ -86,7 +98,7 @@ export class ReliefControl implements maplibregl.IControl {
     if (!this.map || !this.map.getLayer(HILLSHADE_LAYER_ID)) return;
     this.visible = !this.visible;
     this.map.setLayoutProperty(HILLSHADE_LAYER_ID, "visibility", this.visible ? "visible" : "none");
-    this.button.style.backgroundColor = this.visible ? "#dbeafe" : "";
+    setButtonActive(this.button, this.visible);
   }
 }
 
@@ -199,7 +211,7 @@ export class MeasureControl implements maplibregl.IControl {
     if (!this.map) return;
     this.resetPath();
     this.active = true;
-    this.button.style.backgroundColor = "#dbeafe";
+    setButtonActive(this.button, true);
     this.map.getCanvas().style.cursor = "crosshair";
     this.map.on("click", this.onClick);
     this.map.on("contextmenu", this.onContextMenu);
@@ -209,7 +221,7 @@ export class MeasureControl implements maplibregl.IControl {
   private deactivate(): void {
     if (!this.map) return;
     this.active = false;
-    this.button.style.backgroundColor = "";
+    setButtonActive(this.button, false);
     this.map.getCanvas().style.cursor = "";
     this.map.off("click", this.onClick);
     this.map.off("contextmenu", this.onContextMenu);

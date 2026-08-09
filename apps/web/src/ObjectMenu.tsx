@@ -1,6 +1,6 @@
 import { POINT_KIND_LABEL, type Hand, type OrbitVariant, type PointKind } from "@dcs-flight-planner/core";
 import { useState } from "react";
-import { menuButtonStyle, submenuPanelStyle } from "./menuStyles";
+import { menuItemClassName, menuPanelClassName, submenuPanelStyle } from "./menuStyles";
 import type { CreationRequest } from "./placement";
 
 interface ObjectMenuProps {
@@ -36,14 +36,9 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
     <div style={{ position: "relative" }}>
       <button
         type="button"
+        className="dfp-btn dfp-btn-onnavy"
+        data-open={menuOpen}
         onClick={() => setMenuOpen((open) => !open)}
-        style={{
-          padding: "4px 12px",
-          background: menuOpen ? "#dbeafe" : "transparent",
-          border: "1px solid transparent",
-          cursor: "pointer",
-          fontSize: 14,
-        }}
       >
         Object
       </button>
@@ -52,23 +47,19 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
         <>
           <div onClick={closeAll} style={{ position: "fixed", inset: 0, zIndex: 10 }} />
           <div
+            className={menuPanelClassName}
             style={{
               position: "absolute",
-              top: "100%",
+              top: "calc(100% + 6px)",
               left: 0,
               zIndex: 11,
-              background: "#fff",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-              paddingBlock: 4,
               minWidth: 180,
             }}
           >
             <div style={{ position: "relative" }}>
               <button
                 type="button"
-                style={menuButtonStyle}
+                className={menuItemClassName}
                 onClick={(e) => {
                   e.stopPropagation();
                   setOrbitOpen(false);
@@ -78,12 +69,12 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                 Point ▸
               </button>
               {submenu === "point" && (
-                <div style={submenuPanelStyle}>
+                <div className={menuPanelClassName} style={submenuPanelStyle}>
                   {POINT_KINDS.map((kind) => (
                     <button
                       key={kind}
                       type="button"
-                      style={menuButtonStyle}
+                      className={menuItemClassName}
                       onClick={() => request({ kind: "point", pointKind: kind })}
                     >
                       {POINT_KIND_LABEL[kind]}
@@ -96,7 +87,7 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
             <div style={{ position: "relative" }}>
               <button
                 type="button"
-                style={menuButtonStyle}
+                className={menuItemClassName}
                 onClick={(e) => {
                   e.stopPropagation();
                   setOrbitOpen(false);
@@ -106,24 +97,24 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                 Polygon ▸
               </button>
               {submenu === "polygon" && (
-                <div style={submenuPanelStyle}>
+                <div className={menuPanelClassName} style={submenuPanelStyle}>
                   <button
                     type="button"
-                    style={menuButtonStyle}
+                    className={menuItemClassName}
                     onClick={() => request({ kind: "polygon", polygonKind: "freeform" })}
                   >
                     Freeform (multiple points)
                   </button>
                   <button
                     type="button"
-                    style={menuButtonStyle}
+                    className={menuItemClassName}
                     onClick={() => request({ kind: "polygon", polygonKind: "rectangle" })}
                   >
                     Square / rectangle
                   </button>
                   <button
                     type="button"
-                    style={menuButtonStyle}
+                    className={menuItemClassName}
                     onClick={() => request({ kind: "polygon", polygonKind: "circle" })}
                   >
                     Circle
@@ -131,7 +122,7 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                   <div style={{ position: "relative" }}>
                     <button
                       type="button"
-                      style={menuButtonStyle}
+                      className={menuItemClassName}
                       onClick={(e) => {
                         e.stopPropagation();
                         setOrbitOpen((open) => !open);
@@ -140,12 +131,12 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                       Aeronautical orbit ▸
                     </button>
                     {orbitOpen && (
-                      <div style={submenuPanelStyle}>
+                      <div className={menuPanelClassName} style={submenuPanelStyle}>
                         {ORBIT_OPTIONS.map((opt) => (
                           <button
                             key={`${opt.hand}-${opt.variant}`}
                             type="button"
-                            style={menuButtonStyle}
+                            className={menuItemClassName}
                             onClick={() =>
                               request({ kind: "polygon", polygonKind: "orbit", hand: opt.hand, variant: opt.variant })
                             }

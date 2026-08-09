@@ -31,11 +31,11 @@ export function PromptDialog({
 
   return (
     <div
+      className="dfp-scrim"
       onClick={onCancel}
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.3)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -43,34 +43,35 @@ export function PromptDialog({
       }}
     >
       <div
+        className="dfp-panel"
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#fff",
-          borderRadius: 6,
-          padding: 20,
-          width: 320,
-          boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+          borderRadius: "var(--dfp-radius-lg)",
+          width: 340,
+          overflow: "hidden",
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 12 }}>{title}</div>
-        <input
-          ref={inputRef}
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") confirm();
-            if (e.key === "Escape") onCancel();
-          }}
-          style={{ width: "100%", padding: 6, boxSizing: "border-box", fontSize: 14 }}
-        />
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
-          <button type="button" onClick={onCancel}>
-            Cancel
-          </button>
-          <button type="button" onClick={confirm}>
-            {confirmLabel}
-          </button>
+        <div className="dfp-panel-header">{title}</div>
+        <div style={{ padding: 18 }}>
+          <input
+            ref={inputRef}
+            type="text"
+            className="dfp-input"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") confirm();
+              if (e.key === "Escape") onCancel();
+            }}
+          />
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>
+            <button type="button" className="dfp-btn" onClick={onCancel}>
+              Cancel
+            </button>
+            <button type="button" className="dfp-btn dfp-btn-accent" onClick={confirm}>
+              {confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>

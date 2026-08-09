@@ -29,41 +29,29 @@ export function ObjectListDialog({ objects, onSelect, onDelete, onClose }: Objec
 
   function renderRow(object: MissionObject) {
     return (
-      <div
-        key={object.id}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          padding: "6px 8px",
-          borderRadius: 4,
-          cursor: "pointer",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = "#f2f2f2")}
-        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-        onClick={() => onSelect(object.id)}
-      >
+      <div key={object.id} className="dfp-list-row" onClick={() => onSelect(object.id)}>
         <span
           style={{
             width: 12,
             height: 12,
             borderRadius: object.type === "point" ? "50%" : 2,
             background: objectColor(object),
+            border: "1px solid rgba(0,0,0,0.15)",
             flexShrink: 0,
           }}
         />
         <span style={{ flex: 1, fontSize: 13 }}>
           {object.name}
-          <span style={{ color: "#888", marginLeft: 6, fontSize: 12 }}>{objectLabel(object)}</span>
+          <span style={{ color: "var(--dfp-text-muted)", marginLeft: 6, fontSize: 12 }}>{objectLabel(object)}</span>
         </span>
         <button
           type="button"
           title="Delete"
+          className="dfp-list-row-delete"
           onClick={(e) => {
             e.stopPropagation();
             onDelete(object.id);
           }}
-          style={{ border: "none", background: "none", color: "#c02020", cursor: "pointer", fontSize: 14 }}
         >
           🗑
         </button>
@@ -73,11 +61,11 @@ export function ObjectListDialog({ objects, onSelect, onDelete, onClose }: Objec
 
   return (
     <div
+      className="dfp-scrim"
       onClick={onClose}
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.3)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -85,45 +73,41 @@ export function ObjectListDialog({ objects, onSelect, onDelete, onClose }: Objec
       }}
     >
       <div
+        className="dfp-panel"
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "#fff",
-          borderRadius: 6,
+          borderRadius: "var(--dfp-radius-lg)",
           width: 420,
           maxHeight: "70vh",
           display: "flex",
           flexDirection: "column",
-          boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
+          overflow: "hidden",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "10px 16px",
-            borderBottom: "1px solid #eee",
-          }}
-        >
-          <strong style={{ fontSize: 14 }}>Mission objects ({objects.length})</strong>
-          <button type="button" onClick={onClose} style={{ border: "none", background: "none", cursor: "pointer", fontSize: 16 }}>
+        <div className="dfp-panel-header">
+          <span>Mission objects ({objects.length})</span>
+          <button type="button" className="dfp-panel-header-close" onClick={onClose}>
             ×
           </button>
         </div>
 
         <div style={{ padding: "8px 12px", overflowY: "auto", flex: 1 }}>
-          {objects.length === 0 && <div style={{ color: "#888", fontSize: 13, padding: 8 }}>No objects yet.</div>}
+          {objects.length === 0 && <div style={{ color: "var(--dfp-text-muted)", fontSize: 13, padding: 8 }}>No objects yet.</div>}
 
           {points.length > 0 && (
             <>
-              <div style={{ fontSize: 11, color: "#888", textTransform: "uppercase", margin: "8px 4px 2px" }}>Points</div>
+              <div className="dfp-label" style={{ margin: "8px 4px 2px" }}>
+                Points
+              </div>
               {points.map(renderRow)}
             </>
           )}
 
           {polygons.length > 0 && (
             <>
-              <div style={{ fontSize: 11, color: "#888", textTransform: "uppercase", margin: "8px 4px 2px" }}>Zones</div>
+              <div className="dfp-label" style={{ margin: "8px 4px 2px" }}>
+                Zones
+              </div>
               {polygons.map(renderRow)}
             </>
           )}

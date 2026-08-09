@@ -19,6 +19,8 @@ const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
 const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
 const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
+const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
+const OBJECTS_ORBIT_ANCHOR_LAYER_ID = "mission-objects-orbit-anchors-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -123,6 +125,23 @@ function orbitArrowFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureColl
           type: "Feature" as const,
           properties: { bearing: arrow.bearingDeg },
           geometry: { type: "Point" as const, coordinates: [arrow.position.lon, arrow.position.lat] },
+        },
+      ];
+    }),
+  };
+}
+
+function orbitAnchorFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.flatMap((p) => {
+      if (p.shape.kind !== "orbit") return [];
+      const { center } = p.shape;
+      return [
+        {
+          type: "Feature" as const,
+          properties: {},
+          geometry: { type: "Point" as const, coordinates: [center.lon, center.lat] },
         },
       ];
     }),
@@ -235,11 +254,13 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       if (!map) return;
       const data = polygonsToFeatureCollection(polygonsRef.current);
       const arrowData = orbitArrowFeatureCollection(polygonsRef.current);
+      const anchorData = orbitAnchorFeatureCollection(polygonsRef.current);
       const source = map.getSource(OBJECTS_POLYGON_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
 
       if (source) {
         source.setData(data);
         (map.getSource(OBJECTS_ORBIT_ARROW_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(arrowData);
+        (map.getSource(OBJECTS_ORBIT_ANCHOR_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(anchorData);
         return;
       }
 
@@ -270,6 +291,20 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
           "icon-rotation-alignment": "map",
           "icon-allow-overlap": true,
           "icon-size": 0.9,
+        },
+      });
+
+      // The orbit's anchor/fix point, shown as a small waypoint dot.
+      map.addSource(OBJECTS_ORBIT_ANCHOR_SOURCE_ID, { type: "geojson", data: anchorData });
+      map.addLayer({
+        id: OBJECTS_ORBIT_ANCHOR_LAYER_ID,
+        type: "circle",
+        source: OBJECTS_ORBIT_ANCHOR_SOURCE_ID,
+        paint: {
+          "circle-radius": 4,
+          "circle-color": "#000000",
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#ffffff",
         },
       });
 
@@ -312,6 +347,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         );
         (map.getSource(OBJECTS_POLYGON_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(polygonsToFeatureCollection(preview));
         (map.getSource(OBJECTS_ORBIT_ARROW_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(orbitArrowFeatureCollection(preview));
+        (map.getSource(OBJECTS_ORBIT_ANCHOR_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(orbitAnchorFeatureCollection(preview));
       });
 
       map.on("mouseup", (e) => {
