@@ -4,7 +4,7 @@ Outillage pour extraire les données statiques d'un théâtre DCS (aérodromes,
 runways, fréquences...) afin de construire le modèle de données de
 `packages/core`.
 
-`Export.lua` est un script de **découverte** : on ne connaît pas encore
+`mission_export.lua` est un script de **découverte** : on ne connaît pas encore
 précisément quelles méthodes de l'API scripting DCS sont disponibles/utiles,
 donc il sonde une liste de méthodes connues sur chaque `Airbase` et inclut
 tout ce qui répond. Les champs non supportés par ta version de DCS
@@ -22,8 +22,8 @@ missions (aucune modification de `MissionScripting.lua` n'est nécessaire).
 2. **Ajouter un trigger** :
    - Type : `MISSION START` (ONCE)
    - Action : `DO SCRIPT FILE`
-   - Fichier : pointer vers `Export.lua` (copie-le n'importe où accessible
-     depuis ta machine, ex: `Saved Games\DCS\Missions\Export.lua`)
+   - Fichier : pointer vers `mission_export.lua` (copie-le n'importe où
+     accessible depuis ta machine, ex: `Saved Games\DCS\Missions\mission_export.lua`)
 
 3. **Lancer la mission** (pas besoin d'avion jouable, juste que le trigger
    MISSION START se déclenche — quelques secondes en jeu suffisent avant de
