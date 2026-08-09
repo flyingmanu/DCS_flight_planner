@@ -2,6 +2,7 @@ import type { Theater } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
+import { addHillshadeLayer, MeasureControl, ReliefControl } from "./mapControls";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
 // It's a real-world basemap, so it only approximates DCS terrain art; good
@@ -85,6 +86,11 @@ export function TheaterMap({ theater }: TheaterMapProps) {
     });
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
+    map.on("load", () => {
+      addHillshadeLayer(map);
+      map.addControl(new ReliefControl(), "top-left");
+      map.addControl(new MeasureControl(), "top-left");
+    });
 
     const bounds = new maplibregl.LngLatBounds();
     const markers: maplibregl.Marker[] = [];

@@ -1,0 +1,223 @@
+import { distanceKm, distanceNm } from "@dcs-flight-planner/core";
+import maplibregl from "maplibre-gl";
+
+const HILLSHADE_SOURCE_ID = "terrain-dem";
+const HILLSHADE_LAYER_ID = "hillshade";
+
+// AWS's public elevation-tiles-prod bucket (Terrarium encoding, Mapzen/OSM
+// data) - free, no API key, usable commercially with attribution.
+const TERRAIN_TILES_URL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+
+function controlButton(label: string, title: string): HTMLButtonElement {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.title = title;
+  button.textContent = label;
+  button.style.fontSize = "16px";
+  return button;
+}
+
+/** Adds a hillshade relief layer to the map (hidden by default). */
+export function addHillshadeLayer(map: maplibregl.Map): void {
+  if (map.getSource(HILLSHADE_SOURCE_ID)) return;
+
+  map.addSource(HILLSHADE_SOURCE_ID, {
+    type: "raster-dem",
+    tiles: [TERRAIN_TILES_URL],
+    tileSize: 256,
+    encoding: "terrarium",
+    maxzoom: 15,
+    attribution: "Terrain data © Mapzen, OpenStreetMap contributors",
+  });
+
+  map.addLayer({
+    id: HILLSHADE_LAYER_ID,
+    type: "hillshade",
+    source: HILLSHADE_SOURCE_ID,
+    layout: { visibility: "none" },
+    paint: { "hillshade-exaggeration": 0.7 },
+  });
+}
+
+/** Toggle button that shows/hides the hillshade relief layer. */
+export class ReliefControl implements maplibregl.IControl {
+  private map?: maplibregl.Map;
+  private container!: HTMLDivElement;
+  private button!: HTMLButtonElement;
+  private visible = false;
+
+  onAdd(map: maplibregl.Map): HTMLElement {
+    this.map = map;
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this.button = controlButton("⛰", "Afficher/masquer le relief");
+    this.button.addEventListener("click", () => this.toggle());
+    this.container.appendChild(this.button);
+    return this.container;
+  }
+
+  onRemove(): void {
+    this.container.remove();
+    this.map = undefined;
+  }
+
+  private toggle(): void {
+    if (!this.map || !this.map.getLayer(HILLSHADE_LAYER_ID)) return;
+    this.visible = !this.visible;
+    this.map.setLayoutProperty(HILLSHADE_LAYER_ID, "visibility", this.visible ? "visible" : "none");
+    this.button.style.backgroundColor = this.visible ? "#dbeafe" : "";
+  }
+}
+
+const MEASURE_LINE_SOURCE_ID = "measure-line";
+const MEASURE_LINE_LAYER_ID = "measure-line-layer";
+
+function formatDistance(km: number, nm: number): string {
+  return `${km.toFixed(1)} km · ${nm.toFixed(1)} NM`;
+}
+
+function pointMarkerElement(): HTMLElement {
+  const el = document.createElement("div");
+  el.style.width = "10px";
+  el.style.height = "10px";
+  el.style.borderRadius = "50%";
+  el.style.background = "#c02020";
+  el.style.border = "2px solid #fff";
+  el.style.boxShadow = "0 0 2px rgba(0,0,0,0.5)";
+  return el;
+}
+
+function labelMarkerElement(text: string): HTMLElement {
+  const el = document.createElement("div");
+  el.textContent = text;
+  el.style.background = "#fff";
+  el.style.color = "#1a1a1a";
+  el.style.padding = "2px 8px";
+  el.style.borderRadius = "10px";
+  el.style.fontSize = "12px";
+  el.style.fontWeight = "600";
+  el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.3)";
+  el.style.whiteSpace = "nowrap";
+  return el;
+}
+
+/**
+ * Toggle button that starts a two-click distance measurement: first click
+ * places point A, second click places point B and draws the segment with
+ * its great-circle distance in km/NM. A new measurement (button pressed
+ * again) clears the previous one.
+ */
+export class MeasureControl implements maplibregl.IControl {
+  private map?: maplibregl.Map;
+  private container!: HTMLDivElement;
+  private button!: HTMLButtonElement;
+  private active = false;
+  private points: maplibregl.LngLat[] = [];
+  private markers: maplibregl.Marker[] = [];
+  private readonly onClick = (e: maplibregl.MapMouseEvent) => this.handleMapClick(e);
+  private readonly onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "Escape") this.deactivate();
+  };
+
+  onAdd(map: maplibregl.Map): HTMLElement {
+    this.map = map;
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this.button = controlButton("📏", "Mesurer une distance (clic, puis clic)");
+    this.button.addEventListener("click", () => this.toggle());
+    this.container.appendChild(this.button);
+
+    map.addSource(MEASURE_LINE_SOURCE_ID, {
+      type: "geojson",
+      data: { type: "FeatureCollection", features: [] },
+    });
+    map.addLayer({
+      id: MEASURE_LINE_LAYER_ID,
+      type: "line",
+      source: MEASURE_LINE_SOURCE_ID,
+      paint: { "line-color": "#c02020", "line-width": 2, "line-dasharray": [2, 1] },
+    });
+
+    return this.container;
+  }
+
+  onRemove(): void {
+    this.deactivate();
+    if (this.map?.getLayer(MEASURE_LINE_LAYER_ID)) this.map.removeLayer(MEASURE_LINE_LAYER_ID);
+    if (this.map?.getSource(MEASURE_LINE_SOURCE_ID)) this.map.removeSource(MEASURE_LINE_SOURCE_ID);
+    this.container.remove();
+    this.map = undefined;
+  }
+
+  private toggle(): void {
+    if (this.active) {
+      this.deactivate();
+    } else {
+      this.activate();
+    }
+  }
+
+  private activate(): void {
+    if (!this.map) return;
+    this.clearMeasurement();
+    this.active = true;
+    this.button.style.backgroundColor = "#dbeafe";
+    this.map.getCanvas().style.cursor = "crosshair";
+    this.map.on("click", this.onClick);
+    window.addEventListener("keydown", this.onKeyDown);
+  }
+
+  private deactivate(): void {
+    if (!this.map) return;
+    this.active = false;
+    this.button.style.backgroundColor = "";
+    this.map.getCanvas().style.cursor = "";
+    this.map.off("click", this.onClick);
+    window.removeEventListener("keydown", this.onKeyDown);
+  }
+
+  private clearMeasurement(): void {
+    this.points = [];
+    for (const marker of this.markers) marker.remove();
+    this.markers = [];
+    const source = this.map?.getSource(MEASURE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+    source?.setData({ type: "FeatureCollection", features: [] });
+  }
+
+  private handleMapClick(e: maplibregl.MapMouseEvent): void {
+    if (!this.map) return;
+    this.points.push(e.lngLat);
+    this.markers.push(new maplibregl.Marker({ element: pointMarkerElement() }).setLngLat(e.lngLat).addTo(this.map));
+
+    if (this.points.length < 2) return;
+
+    const [a, b] = this.points;
+    const source = this.map.getSource(MEASURE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource;
+    source.setData({
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: {},
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [a.lng, a.lat],
+              [b.lng, b.lat],
+            ],
+          },
+        },
+      ],
+    });
+
+    const pointA = { lat: a.lat, lon: a.lng };
+    const pointB = { lat: b.lat, lon: b.lng };
+    const label = formatDistance(distanceKm(pointA, pointB), distanceNm(pointA, pointB));
+    const midpoint: [number, number] = [(a.lng + b.lng) / 2, (a.lat + b.lat) / 2];
+    this.markers.push(
+      new maplibregl.Marker({ element: labelMarkerElement(label) }).setLngLat(midpoint).addTo(this.map),
+    );
+
+    this.deactivate();
+  }
+}
