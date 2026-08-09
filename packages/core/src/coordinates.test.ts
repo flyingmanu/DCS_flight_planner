@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatLatLonDdm, toMgrs } from "./coordinates.js";
+import { formatLatLonDdm, parseLatDdm, parseLonDdm, toMgrs } from "./coordinates.js";
 
 describe("formatLatLonDdm", () => {
   it("formats a northern/eastern point", () => {
@@ -11,6 +11,27 @@ describe("formatLatLonDdm", () => {
 
   it("formats southern/western hemispheres", () => {
     expect(formatLatLonDdm({ lat: -10.5, lon: -20.25 })).toBe("S10°30.000' W020°15.000'");
+  });
+});
+
+describe("parseLatDdm / parseLonDdm", () => {
+  it("round-trips a formatted DDM point", () => {
+    const lat = 43 + 25.31 / 60;
+    const lon = 40 + 15.22 / 60;
+    expect(parseLatDdm("N43°25.310'")).toBeCloseTo(lat, 6);
+    expect(parseLonDdm("E040°15.220'")).toBeCloseTo(lon, 6);
+  });
+
+  it("handles southern/western hemispheres", () => {
+    expect(parseLatDdm("S10°30.000'")).toBeCloseTo(-10.5, 6);
+    expect(parseLonDdm("W020°15.000'")).toBeCloseTo(-20.25, 6);
+  });
+
+  it("rejects malformed or out-of-range input", () => {
+    expect(parseLatDdm("not a coordinate")).toBeNull();
+    expect(parseLatDdm("N95°00.000'")).toBeNull();
+    expect(parseLonDdm("E040°61.000'")).toBeNull();
+    expect(parseLonDdm("N43°25.310'")).toBeNull();
   });
 });
 

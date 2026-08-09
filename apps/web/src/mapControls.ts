@@ -4,6 +4,27 @@ import maplibregl from "maplibre-gl";
 const HILLSHADE_SOURCE_ID = "terrain-dem";
 const HILLSHADE_LAYER_ID = "hillshade";
 
+export const ORBIT_ARROW_IMAGE_ID = "orbit-arrow-icon";
+
+/** Registers the black triangular icon used to show orbit direction-of-travel (idempotent). */
+export function ensureOrbitArrowImage(map: maplibregl.Map): void {
+  if (map.hasImage(ORBIT_ARROW_IMAGE_ID)) return;
+  const size = 20;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  ctx.fillStyle = "#000000";
+  ctx.beginPath();
+  ctx.moveTo(size / 2, 0);
+  ctx.lineTo(size, size);
+  ctx.lineTo(0, size);
+  ctx.closePath();
+  ctx.fill();
+  map.addImage(ORBIT_ARROW_IMAGE_ID, ctx.getImageData(0, 0, size, size));
+}
+
 // AWS's public elevation-tiles-prod bucket (Terrarium encoding, Mapzen/OSM
 // data) - free, no API key, usable commercially with attribution.
 const TERRAIN_TILES_URL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";

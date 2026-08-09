@@ -110,3 +110,33 @@ export function orbitTrackPoints({
 
   return points.map((p) => fromLocalMeters(center, p));
 }
+
+export interface OrbitDirectionArrow {
+  position: LatLon;
+  bearingDeg: number;
+}
+
+/**
+ * Position and heading of an arrow showing the direction of travel around an
+ * orbit track, placed at the midpoint of the outbound leg (away from the
+ * fix/anchor point).
+ */
+export function orbitDirectionArrow({ center, hand, courseDeg, legLengthNm, turnRadiusNm = 1 }: OrbitTrackParams): OrbitDirectionArrow {
+  const u = bearingUnitVector(courseDeg);
+  const vRight: LocalMeters = { x: u.y, y: -u.x };
+  const v = hand === "right" ? vRight : { x: -vRight.x, y: -vRight.y };
+
+  const L = legLengthNm * NM_TO_M;
+  const r = turnRadiusNm * NM_TO_M;
+
+  const c1: LocalMeters = { x: r * v.x, y: r * v.y };
+  const c2: LocalMeters = { x: c1.x - L * u.x, y: c1.y - L * u.y };
+  const p1: LocalMeters = { x: c1.x + r * v.x, y: c1.y + r * v.y };
+  const p2: LocalMeters = { x: c2.x + r * v.x, y: c2.y + r * v.y };
+  const mid: LocalMeters = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+
+  // Travel along the outbound leg runs from p1 to p2, i.e. along -u (away from the fix).
+  const bearingDeg = ((Math.atan2(-u.x, -u.y) * 180) / Math.PI + 360) % 360;
+
+  return { position: fromLocalMeters(center, mid), bearingDeg };
+}

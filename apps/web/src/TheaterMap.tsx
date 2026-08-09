@@ -1,11 +1,11 @@
-import type { MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
+import type { LatLon, MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
 import { DEFAULT_POLYGON_COLOR } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { getElevationAt } from "./elevation";
-import { addHillshadeLayer, MeasureControl, ReliefControl } from "./mapControls";
-import { polygonRing } from "./objectGeometry";
+import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
+import { orbitArrow, polygonRing, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
 import { setupPlacement, type CreationRequest, type ObjectDraft } from "./placement";
 
@@ -17,6 +17,8 @@ const BASEMAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 const OBJECTS_POLYGON_SOURCE_ID = "mission-objects-polygons";
 const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
+const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
+const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -89,6 +91,8 @@ interface TheaterMapProps {
   onDraftComplete: (draft: ObjectDraft) => void;
   onCreationCancel: () => void;
   onSelectObject?: (id: string) => void;
+  onMovePoint?: (id: string, position: LatLon) => void;
+  onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -97,8 +101,36 @@ export interface TheaterMapHandle {
   setView: (view: MapView) => void;
 }
 
+function polygonsToFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.map((p) => ({
+      type: "Feature",
+      properties: { id: p.id, name: p.name, color: p.color ?? DEFAULT_POLYGON_COLOR, isOrbit: p.shape.kind === "orbit" },
+      geometry: { type: "Polygon", coordinates: [polygonRing(p)] },
+    })),
+  };
+}
+
+function orbitArrowFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.flatMap((p) => {
+      const arrow = orbitArrow(p.shape);
+      if (!arrow) return [];
+      return [
+        {
+          type: "Feature" as const,
+          properties: { bearing: arrow.bearingDeg },
+          geometry: { type: "Point" as const, coordinates: [arrow.position.lon, arrow.position.lat] },
+        },
+      ];
+    }),
+  };
+}
+
 export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
-  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onSelectObject, onHover },
+  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onSelectObject, onMovePoint, onMovePolygon, onHover },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -111,6 +143,11 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onCreationCancelRef.current = onCreationCancel;
   const onSelectObjectRef = useRef(onSelectObject);
   onSelectObjectRef.current = onSelectObject;
+  const onMovePointRef = useRef(onMovePoint);
+  onMovePointRef.current = onMovePoint;
+  const onMovePolygonRef = useRef(onMovePolygon);
+  onMovePolygonRef.current = onMovePolygon;
+  const polygonsRef = useRef<PolygonObject[]>([]);
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -139,6 +176,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
       addHillshadeLayer(map);
+      ensureOrbitArrowImage(map);
       map.addControl(new ReliefControl(), "top-left");
       map.addControl(new MeasureControl(), "top-left");
     });
@@ -191,45 +229,101 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     if (!map) return;
 
     const polygons = objects.filter((o): o is PolygonObject => o.type === "polygon");
+    polygonsRef.current = polygons;
 
     function renderPolygons() {
       if (!map) return;
-      const data: GeoJSON.FeatureCollection = {
-        type: "FeatureCollection",
-        features: polygons.map((p) => ({
-          type: "Feature",
-          properties: { id: p.id, name: p.name, color: p.color ?? DEFAULT_POLYGON_COLOR },
-          geometry: { type: "Polygon", coordinates: [polygonRing(p)] },
-        })),
-      };
+      const data = polygonsToFeatureCollection(polygonsRef.current);
+      const arrowData = orbitArrowFeatureCollection(polygonsRef.current);
       const source = map.getSource(OBJECTS_POLYGON_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+
       if (source) {
         source.setData(data);
-      } else {
-        map.addSource(OBJECTS_POLYGON_SOURCE_ID, { type: "geojson", data });
-        map.addLayer({
-          id: OBJECTS_POLYGON_FILL_ID,
-          type: "fill",
-          source: OBJECTS_POLYGON_SOURCE_ID,
-          paint: { "fill-color": ["get", "color"], "fill-opacity": 0.15 },
-        });
-        map.addLayer({
-          id: OBJECTS_POLYGON_LINE_ID,
-          type: "line",
-          source: OBJECTS_POLYGON_SOURCE_ID,
-          paint: { "line-color": ["get", "color"], "line-width": 2 },
-        });
-        map.on("click", OBJECTS_POLYGON_FILL_ID, (e) => {
-          const id = e.features?.[0]?.properties?.id as string | undefined;
-          if (id) onSelectObjectRef.current?.(id);
-        });
-        map.on("mouseenter", OBJECTS_POLYGON_FILL_ID, () => {
-          map.getCanvas().style.cursor = "pointer";
-        });
-        map.on("mouseleave", OBJECTS_POLYGON_FILL_ID, () => {
-          map.getCanvas().style.cursor = "";
-        });
+        (map.getSource(OBJECTS_ORBIT_ARROW_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(arrowData);
+        return;
       }
+
+      map.addSource(OBJECTS_POLYGON_SOURCE_ID, { type: "geojson", data });
+      map.addLayer({
+        id: OBJECTS_POLYGON_FILL_ID,
+        type: "fill",
+        source: OBJECTS_POLYGON_SOURCE_ID,
+        // Orbit tracks are shown as an outline only, never filled.
+        paint: { "fill-color": ["get", "color"], "fill-opacity": ["case", ["get", "isOrbit"], 0, 0.15] },
+      });
+      map.addLayer({
+        id: OBJECTS_POLYGON_LINE_ID,
+        type: "line",
+        source: OBJECTS_POLYGON_SOURCE_ID,
+        paint: { "line-color": ["case", ["get", "isOrbit"], "#000000", ["get", "color"]], "line-width": 2 },
+      });
+
+      ensureOrbitArrowImage(map);
+      map.addSource(OBJECTS_ORBIT_ARROW_SOURCE_ID, { type: "geojson", data: arrowData });
+      map.addLayer({
+        id: OBJECTS_ORBIT_ARROW_LAYER_ID,
+        type: "symbol",
+        source: OBJECTS_ORBIT_ARROW_SOURCE_ID,
+        layout: {
+          "icon-image": ORBIT_ARROW_IMAGE_ID,
+          "icon-rotate": ["get", "bearing"],
+          "icon-rotation-alignment": "map",
+          "icon-allow-overlap": true,
+          "icon-size": 0.9,
+        },
+      });
+
+      let dragging: { id: string; startLng: number; startLat: number; shape: PolygonObject["shape"] } | null = null;
+      let dragMoved = false;
+
+      map.on("click", OBJECTS_POLYGON_FILL_ID, (e) => {
+        if (dragMoved) {
+          dragMoved = false;
+          return;
+        }
+        const id = e.features?.[0]?.properties?.id as string | undefined;
+        if (id) onSelectObjectRef.current?.(id);
+      });
+      map.on("mouseenter", OBJECTS_POLYGON_FILL_ID, () => {
+        if (!dragging) map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", OBJECTS_POLYGON_FILL_ID, () => {
+        if (!dragging) map.getCanvas().style.cursor = "";
+      });
+
+      map.on("mousedown", OBJECTS_POLYGON_FILL_ID, (e) => {
+        const id = e.features?.[0]?.properties?.id as string | undefined;
+        const polygon = polygonsRef.current.find((p) => p.id === id);
+        if (!id || !polygon) return;
+        e.preventDefault();
+        dragging = { id, startLng: e.lngLat.lng, startLat: e.lngLat.lat, shape: polygon.shape };
+        dragMoved = false;
+        map.getCanvas().style.cursor = "grabbing";
+        map.dragPan.disable();
+      });
+
+      map.on("mousemove", (e) => {
+        if (!dragging) return;
+        dragMoved = true;
+        const dLat = e.lngLat.lat - dragging.startLat;
+        const dLon = e.lngLat.lng - dragging.startLng;
+        const preview = polygonsRef.current.map((p) =>
+          p.id === dragging!.id ? { ...p, shape: translatePolygonShape(dragging!.shape, dLat, dLon) } : p,
+        );
+        (map.getSource(OBJECTS_POLYGON_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(polygonsToFeatureCollection(preview));
+        (map.getSource(OBJECTS_ORBIT_ARROW_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(orbitArrowFeatureCollection(preview));
+      });
+
+      map.on("mouseup", (e) => {
+        if (!dragging) return;
+        const dLat = e.lngLat.lat - dragging.startLat;
+        const dLon = e.lngLat.lng - dragging.startLng;
+        const id = dragging.id;
+        dragging = null;
+        map.getCanvas().style.cursor = "";
+        map.dragPan.enable();
+        if (dragMoved) onMovePolygonRef.current?.(id, dLat, dLon);
+      });
     }
 
     if (map.isStyleLoaded()) {
@@ -242,13 +336,27 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     for (const obj of objects) {
       if (obj.type !== "point") continue;
       const element = pointMarkerElement(obj.kind, obj.color);
-      element.addEventListener("click", (e) => {
-        e.stopPropagation();
-        onSelectObjectRef.current?.(obj.id);
-      });
-      const marker = new maplibregl.Marker({ element })
+      const marker = new maplibregl.Marker({ element, draggable: true })
         .setLngLat([obj.position.lon, obj.position.lat])
         .addTo(map);
+
+      let didDrag = false;
+      marker.on("dragstart", () => {
+        didDrag = true;
+      });
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        onMovePointRef.current?.(obj.id, { lat: lngLat.lat, lon: lngLat.lng });
+      });
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (didDrag) {
+          didDrag = false;
+          return;
+        }
+        onSelectObjectRef.current?.(obj.id);
+      });
+
       pointMarkers.push(marker);
     }
 

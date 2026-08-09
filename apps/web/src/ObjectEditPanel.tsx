@@ -2,9 +2,14 @@ import {
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
+  formatLatDdm,
+  formatLonDdm,
   fromLocalMeters,
+  parseLatDdm,
+  parseLonDdm,
   POINT_KIND_LABEL,
   toLocalMeters,
+  type Dmpi,
   type LatLon,
   type MissionObject,
 } from "@dcs-flight-planner/core";
@@ -15,6 +20,7 @@ interface ObjectEditPanelProps {
   onChange: (updated: MissionObject) => void;
   onDelete: () => void;
   onClose: () => void;
+  onResetDmpiElevation: () => void;
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -49,16 +55,107 @@ function NumberField({ label, value, onCommit, step = 0.0001 }: { label: string;
   );
 }
 
+function DdmField({
+  label,
+  value,
+  format,
+  parse,
+  onCommit,
+}: {
+  label: string;
+  value: number;
+  format: (v: number) => string;
+  parse: (s: string) => number | null;
+  onCommit: (v: number) => void;
+}) {
+  return (
+    <Field label={label}>
+      <input
+        type="text"
+        defaultValue={format(value)}
+        key={value}
+        style={{ ...numberInputStyle, fontFamily: "ui-monospace, Consolas, monospace" }}
+        onBlur={(e) => {
+          const parsed = parse(e.target.value);
+          if (parsed !== null) {
+            onCommit(parsed);
+          } else {
+            e.target.value = format(value);
+          }
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.currentTarget.blur();
+        }}
+      />
+    </Field>
+  );
+}
+
 function CoordinateFields({ point, onChange }: { point: LatLon; onChange: (p: LatLon) => void }) {
   return (
     <>
-      <NumberField label="Latitude" value={point.lat} onCommit={(lat) => onChange({ ...point, lat })} />
-      <NumberField label="Longitude" value={point.lon} onCommit={(lon) => onChange({ ...point, lon })} />
+      <DdmField label="Latitude" value={point.lat} format={formatLatDdm} parse={parseLatDdm} onCommit={(lat) => onChange({ ...point, lat })} />
+      <DdmField label="Longitude" value={point.lon} format={formatLonDdm} parse={parseLonDdm} onCommit={(lon) => onChange({ ...point, lon })} />
     </>
   );
 }
 
-export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectEditPanelProps) {
+// A reasonable spread of ~20 standard colors, in addition to the free-form
+// native color picker for a precise choice.
+const PRESET_COLORS: { label: string; hex: string }[] = [
+  { label: "Red", hex: "#dc2626" },
+  { label: "Orange", hex: "#ea580c" },
+  { label: "Amber", hex: "#d97706" },
+  { label: "Yellow", hex: "#ca8a04" },
+  { label: "Lime", hex: "#65a30d" },
+  { label: "Green", hex: "#16a34a" },
+  { label: "Emerald", hex: "#059669" },
+  { label: "Teal", hex: "#0d9488" },
+  { label: "Cyan", hex: "#0891b2" },
+  { label: "Sky", hex: "#0284c7" },
+  { label: "Blue", hex: "#2563eb" },
+  { label: "Indigo", hex: "#4f46e5" },
+  { label: "Violet", hex: "#7c3aed" },
+  { label: "Purple", hex: "#9333ea" },
+  { label: "Fuchsia", hex: "#c026d3" },
+  { label: "Pink", hex: "#db2777" },
+  { label: "Rose", hex: "#e11d48" },
+  { label: "Slate", hex: "#475569" },
+  { label: "Black", hex: "#1a1a1a" },
+  { label: "White", hex: "#ffffff" },
+];
+
+function ColorField({ value, onChange }: { value: string; onChange: (hex: string) => void }) {
+  const preset = PRESET_COLORS.find((p) => p.hex.toLowerCase() === value.toLowerCase());
+  return (
+    <Field label="Color">
+      <div style={{ display: "flex", gap: 6 }}>
+        <select
+          value={preset ? preset.hex : "custom"}
+          onChange={(e) => {
+            if (e.target.value !== "custom") onChange(e.target.value);
+          }}
+          style={{ flex: 1, padding: 4, fontSize: 13 }}
+        >
+          <option value="custom">Custom…</option>
+          {PRESET_COLORS.map((p) => (
+            <option key={p.hex} value={p.hex}>
+              {p.label}
+            </option>
+          ))}
+        </select>
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={{ width: 36, height: 28, padding: 0, border: "1px solid #ccc" }}
+        />
+      </div>
+    </Field>
+  );
+}
+
+export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDmpiElevation }: ObjectEditPanelProps) {
   const defaultColor =
     object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : DEFAULT_POLYGON_COLOR;
 
@@ -107,34 +204,48 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose }: ObjectE
           />
         </Field>
 
-        <Field label="Color">
-          <input
-            type="color"
-            value={object.color ?? defaultColor}
-            onChange={(e) => onChange({ ...object, color: e.target.value })}
-            style={{ width: "100%", height: 28, padding: 0, border: "1px solid #ccc" }}
-          />
-        </Field>
+        <ColorField value={object.color ?? defaultColor} onChange={(color) => onChange({ ...object, color })} />
 
         {object.type === "point" && (
           <>
-            <div style={{ fontSize: 12, color: "#555", marginBottom: 8 }}>{POINT_KIND_LABEL[object.kind]}</div>
-            <CoordinateFields point={object.position} onChange={(position) => onChange({ ...object, position })} />
+            {(() => {
+              const point = object;
+              return (
+                <>
+            <div style={{ fontSize: 12, color: "#555", marginBottom: 8 }}>{POINT_KIND_LABEL[point.kind]}</div>
+            <CoordinateFields point={point.position} onChange={(position) => onChange({ ...point, position })} />
 
-            {object.kind === "target" && (
-              <NumberField
-                label="DMPI altitude (ft)"
-                step={1}
-                value={object.dmpis?.[0]?.elevationFt ?? 0}
-                onCommit={(elevationFt) => {
-                  const dmpi = object.dmpis?.[0];
-                  const dmpis = dmpi
-                    ? [{ ...dmpi, elevationFt }, ...(object.dmpis?.slice(1) ?? [])]
-                    : [{ id: crypto.randomUUID(), name: object.name, position: object.position, elevationFt }];
-                  onChange({ ...object, dmpis });
-                }}
-              />
-            )}
+            {point.kind === "target" &&
+              (() => {
+                const dmpi = point.dmpis?.[0];
+                const elevationFt = dmpi?.elevationFt ?? 0;
+                const isManual = dmpi?.elevationManual ?? false;
+
+                function commitElevation(elevationFt: number) {
+                  const updated: Dmpi = dmpi
+                    ? { ...dmpi, elevationFt, elevationManual: true }
+                    : { id: crypto.randomUUID(), name: point.name, position: point.position, elevationFt, elevationManual: true };
+                  onChange({ ...point, dmpis: [updated, ...(point.dmpis?.slice(1) ?? [])] });
+                }
+
+                return (
+                  <>
+                    <NumberField label={isManual ? "DMPI altitude (ft)" : "DMPI altitude (ft) — ground"} step={1} value={elevationFt} onCommit={commitElevation} />
+                    {isManual && (
+                      <button
+                        type="button"
+                        onClick={onResetDmpiElevation}
+                        style={{ width: "100%", padding: 5, marginBottom: 10, fontSize: 12, cursor: "pointer" }}
+                      >
+                        Reset to ground level
+                      </button>
+                    )}
+                  </>
+                );
+              })()}
+                </>
+              );
+            })()}
           </>
         )}
 

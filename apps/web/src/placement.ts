@@ -98,7 +98,7 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
   let torndown = false;
 
   function on<E extends maplibregl.MapMouseEvent | maplibregl.MapTouchEvent>(
-    type: "click" | "dblclick" | "mousemove",
+    type: "click" | "dblclick" | "mousemove" | "contextmenu",
     fn: (e: E) => void,
   ) {
     map.on(type, fn as (e: maplibregl.MapMouseEvent) => void);
@@ -147,6 +147,11 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
       }
     });
     on("dblclick", (e: maplibregl.MapMouseEvent) => {
+      e.preventDefault();
+      if (vertices.length < 3) return;
+      finish({ type: "polygon", shape: { kind: "freeform", vertices } });
+    });
+    on("contextmenu", (e: maplibregl.MapMouseEvent) => {
       e.preventDefault();
       if (vertices.length < 3) return;
       finish({ type: "polygon", shape: { kind: "freeform", vertices } });

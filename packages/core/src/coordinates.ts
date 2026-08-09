@@ -28,3 +28,29 @@ export function formatLonDdm(lon: number): string {
 export function formatLatLonDdm(point: LatLon): string {
   return `${formatLatDdm(point.lat)} ${formatLonDdm(point.lon)}`;
 }
+
+const DDM_PATTERN = /^\s*([NSEW])\s*0*(\d{1,3})\s*°?\s*(\d{1,2}(?:\.\d+)?)\s*'?\s*$/i;
+
+function parseDdmComponent(raw: string, positive: string, negative: string, maxAbs: number): number | null {
+  const match = DDM_PATTERN.exec(raw);
+  if (!match) return null;
+  const [, hemisphere, degStr, minStr] = match;
+  const upper = hemisphere!.toUpperCase();
+  const sign = upper === positive ? 1 : upper === negative ? -1 : null;
+  if (sign === null) return null;
+  const degrees = Number.parseInt(degStr!, 10);
+  const minutes = Number.parseFloat(minStr!);
+  if (!Number.isFinite(degrees) || !Number.isFinite(minutes) || minutes >= 60) return null;
+  const value = sign * (degrees + minutes / 60);
+  return Math.abs(value) <= maxAbs ? value : null;
+}
+
+/** Parses a DDM latitude string (e.g. "N43°25.310'"), or null if not a valid latitude. */
+export function parseLatDdm(raw: string): number | null {
+  return parseDdmComponent(raw, "N", "S", 90);
+}
+
+/** Parses a DDM longitude string (e.g. "E040°15.220'"), or null if not a valid longitude. */
+export function parseLonDdm(raw: string): number | null {
+  return parseDdmComponent(raw, "E", "W", 180);
+}

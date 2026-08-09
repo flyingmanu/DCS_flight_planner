@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { distanceKm, toLocalMeters, type LatLon } from "./geo.js";
-import { circlePoints, orbitTrackPoints, rectangleCorners } from "./shapes.js";
+import { circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
 
 const ORIGIN: LatLon = { lat: 45, lon: 40 };
 
@@ -67,5 +67,17 @@ describe("orbitTrackPoints", () => {
     const northOffsets = points.map((p) => toLocalMeters(ORIGIN, p).y);
     const span = Math.max(...northOffsets) - Math.min(...northOffsets);
     expect(span).toBeCloseTo((legLengthNm + 2 * turnRadiusNm) * 1852, -2);
+  });
+});
+
+describe("orbitDirectionArrow", () => {
+  it("points along the outbound leg, away from the fix, for a north-course pattern", () => {
+    const arrow = orbitDirectionArrow({ center: ORIGIN, hand: "right", courseDeg: 0, legLengthNm: 5 });
+    expect(arrow.bearingDeg).toBeCloseTo(180, 0);
+  });
+
+  it("sits on the bulging side of the track", () => {
+    const arrow = orbitDirectionArrow({ center: ORIGIN, hand: "right", courseDeg: 0, legLengthNm: 5 });
+    expect(toLocalMeters(ORIGIN, arrow.position).x).toBeGreaterThan(0);
   });
 });

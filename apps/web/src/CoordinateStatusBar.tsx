@@ -5,14 +5,16 @@ interface CoordinateStatusBarProps {
   hover: HoverInfo | null;
 }
 
-export function CoordinateStatusBar({ hover }: CoordinateStatusBarProps) {
-  if (!hover) return null;
+const PLACEHOLDER = "—";
 
-  const point = { lat: hover.lat, lon: hover.lon };
+export function CoordinateStatusBar({ hover }: CoordinateStatusBarProps) {
+  const point = hover ? { lat: hover.lat, lon: hover.lon } : null;
+  const coords = point ? formatLatLonDdm(point) : PLACEHOLDER;
+  const mgrs = point ? toMgrs(point) : PLACEHOLDER;
   const altitude =
-    hover.elevationM == null
-      ? "alt. —"
-      : `alt. ${Math.round(hover.elevationM)} m / ${Math.round(metersToFeet(hover.elevationM))} ft`;
+    hover && hover.elevationM != null
+      ? `alt. ${Math.round(hover.elevationM)} m / ${Math.round(metersToFeet(hover.elevationM))} ft`
+      : `alt. ${PLACEHOLDER}`;
 
   return (
     <footer
@@ -24,10 +26,11 @@ export function CoordinateStatusBar({ hover }: CoordinateStatusBarProps) {
         fontFamily: "ui-monospace, Consolas, monospace",
         fontSize: 13,
         background: "#f5f5f5",
+        color: hover ? undefined : "#999",
       }}
     >
-      <span>{formatLatLonDdm(point)}</span>
-      <span>MGRS {toMgrs(point)}</span>
+      <span>{coords}</span>
+      <span>MGRS {mgrs}</span>
       <span>{altitude}</span>
     </footer>
   );

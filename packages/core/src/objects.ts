@@ -31,6 +31,8 @@ export interface Dmpi {
   name: string;
   position: LatLon;
   elevationFt?: number;
+  /** True once the user has typed an altitude by hand; otherwise elevationFt tracks ground level. */
+  elevationManual?: boolean;
 }
 
 export interface PointObject {
