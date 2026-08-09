@@ -2,21 +2,17 @@ import {
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
-  formatLatDdm,
-  formatLonDdm,
   fromLocalMeters,
   metersToNm,
   nmToMeters,
-  parseLatDdm,
-  parseLonDdm,
   POINT_KIND_LABEL,
   toLocalMeters,
   type Dmpi,
-  type LatLon,
   type MissionObject,
 } from "@dcs-flight-planner/core";
-import type { ReactNode } from "react";
 import { ColorField } from "./ColorField";
+import { CoordinateFields } from "./CoordinateFields";
+import { Field } from "./FormField";
 
 interface ObjectEditPanelProps {
   object: MissionObject;
@@ -24,15 +20,6 @@ interface ObjectEditPanelProps {
   onDelete: () => void;
   onClose: () => void;
   onResetDmpiElevation: () => void;
-}
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <label style={{ display: "block", marginBottom: 12 }}>
-      <span className="dfp-label">{label}</span>
-      {children}
-    </label>
-  );
 }
 
 function NumberField({ label, value, onCommit, step = 0.0001 }: { label: string; value: number; onCommit: (v: number) => void; step?: number }) {
@@ -53,51 +40,6 @@ function NumberField({ label, value, onCommit, step = 0.0001 }: { label: string;
         }}
       />
     </Field>
-  );
-}
-
-function DdmField({
-  label,
-  value,
-  format,
-  parse,
-  onCommit,
-}: {
-  label: string;
-  value: number;
-  format: (v: number) => string;
-  parse: (s: string) => number | null;
-  onCommit: (v: number) => void;
-}) {
-  return (
-    <Field label={label}>
-      <input
-        type="text"
-        defaultValue={format(value)}
-        key={value}
-        className="dfp-input dfp-input-mono"
-        onBlur={(e) => {
-          const parsed = parse(e.target.value);
-          if (parsed !== null) {
-            onCommit(parsed);
-          } else {
-            e.target.value = format(value);
-          }
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.currentTarget.blur();
-        }}
-      />
-    </Field>
-  );
-}
-
-function CoordinateFields({ point, onChange }: { point: LatLon; onChange: (p: LatLon) => void }) {
-  return (
-    <>
-      <DdmField label="Latitude" value={point.lat} format={formatLatDdm} parse={parseLatDdm} onCommit={(lat) => onChange({ ...point, lat })} />
-      <DdmField label="Longitude" value={point.lon} format={formatLonDdm} parse={parseLonDdm} onCommit={(lon) => onChange({ ...point, lon })} />
-    </>
   );
 }
 

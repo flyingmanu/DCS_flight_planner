@@ -36,9 +36,9 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Object editing (click an object → right-side panel): name, color, coordinates, DMPI altitude, orientation and size depending on type; delete
 - [x] Object list (top-right "Objects" button): overview of points/zones, click to edit, direct delete
 - [x] Flight object (Flight menu: create, edit, delete; also listed alongside points/zones in the Objects popup): Combat Flite-inspired attributes (callsign, aircraft, size, task, departure/arrival/alternate airbases, takeoff time, TACAN, radio, IFF modes, notes, color), saved with the mission
-- [x] Aircraft catalog (`packages/core`): all playable DCS modules (fixed-wing + helicopters) with standard DCS task types and approximate performance figures (max speed, ceiling, combat radius, internal fuel) — the performance-management foundation for a key advantage over Combat Flite — plus a starter set of AI-only aircraft; picked from a dropdown in the flight form, with category icons (fixed-wing / helicopter) shown on the map at each flight's departure airbase
-- [x] Waypoint add/remove for a flight's route, Combat-Flite style: click "Add waypoint on map" then click the map; route previewed live on the map; remove from the list; per-waypoint altitude/airspeed
-- [ ] Full route planning (leg distances, ETAs/TOT, editing waypoint position)
+- [x] Aircraft catalog (`packages/core`): all playable DCS modules (fixed-wing + helicopters) with standard DCS task types, approximate performance figures (max speed, ceiling, combat radius, internal fuel), and a typical-weapons reference — the performance/armament-management foundation for a key advantage over Combat Flite — plus a starter set of AI-only aircraft; picked from a dropdown in the flight form, with category icons (fixed-wing / helicopter) shown on the map at each flight's departure airbase; free-text loadout field with a "typical weapons" hint
+- [x] Waypoint add/remove/edit for a flight's route, Combat-Flite style: click "Add waypoint on map" then click the map; route drawn live on the map as numbered, draggable markers whenever the flight is open (from its map marker or the Objects list); position editable via DDM fields or by dragging on the map, altitude/airspeed editable, remove from the list
+- [ ] Full route planning (leg distances, ETAs/TOT)
 - [ ] Kneeboard export
 - [ ] Desktop application (Tauri)
 - [ ] Monetization (license, accounts)

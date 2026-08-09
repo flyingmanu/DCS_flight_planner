@@ -26,6 +26,12 @@ describe("AIRCRAFT_CATALOG", () => {
       expect(aircraft.standardTasks.length, aircraft.name).toBeGreaterThan(0);
     }
   });
+
+  it("gives every playable module a weapons reference list", () => {
+    for (const aircraft of AIRCRAFT_CATALOG.filter((a) => a.playable)) {
+      expect(aircraft.weapons?.length, aircraft.name).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("findAircraft", () => {

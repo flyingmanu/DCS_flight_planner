@@ -2,16 +2,17 @@ import {
   AIRCRAFT_CATALOG,
   DEFAULT_FLIGHT_COLOR,
   findAircraft,
-  formatLatDdm,
-  formatLonDdm,
   TASK_TYPE_LABEL,
   type Airbase,
   type Flight,
+  type LatLon,
   type TaskType,
   type Waypoint,
 } from "@dcs-flight-planner/core";
 import type { ReactNode } from "react";
 import { ColorField } from "./ColorField";
+import { CoordinateFields } from "./CoordinateFields";
+import { Field } from "./FormField";
 
 interface FlightFormDialogProps {
   airbases: Airbase[];
@@ -30,15 +31,6 @@ const PLAYABLE_FIXED_WING = AIRCRAFT_CATALOG.filter((a) => a.playable && a.categ
 const PLAYABLE_HELICOPTERS = AIRCRAFT_CATALOG.filter((a) => a.playable && a.category === "helicopter");
 const AI_FIXED_WING = AIRCRAFT_CATALOG.filter((a) => !a.playable && a.category === "fixed-wing");
 const AI_HELICOPTERS = AIRCRAFT_CATALOG.filter((a) => !a.playable && a.category === "helicopter");
-
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <label style={{ display: "block" }}>
-      <span className="dfp-label">{label}</span>
-      {children}
-    </label>
-  );
-}
 
 function Row({ children }: { children: ReactNode }) {
   return <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>{children}</div>;
@@ -119,7 +111,6 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
             value={flight.name}
             onChange={(e) => set("name", e.target.value)}
             autoFocus
-            style={{ marginBottom: 12 }}
           />
         </Field>
 
@@ -177,7 +168,7 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
         <Field label="Task">
           <select
             className="dfp-select"
-            style={{ width: "100%", marginBottom: 12 }}
+            style={{ width: "100%" }}
             value={flight.taskType}
             onChange={(e) => set("taskType", e.target.value as TaskType)}
           >
@@ -244,11 +235,25 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
           <textarea
             className="dfp-input"
             rows={2}
-            style={{ resize: "vertical", fontFamily: "var(--dfp-font-sans)", marginBottom: 14 }}
+            style={{ resize: "vertical", fontFamily: "var(--dfp-font-sans)" }}
             value={flight.notes ?? ""}
             onChange={(e) => set("notes", e.target.value)}
           />
         </Field>
+
+        <Field label="Loadout">
+          <textarea
+            className="dfp-input"
+            rows={2}
+            placeholder="e.g. 4x AIM-120C, 2x AIM-9X, 2x GBU-12"
+            style={{ resize: "vertical", fontFamily: "var(--dfp-font-sans)" }}
+            value={flight.loadout ?? ""}
+            onChange={(e) => set("loadout", e.target.value)}
+          />
+        </Field>
+        {aircraft?.weapons && (
+          <div style={{ fontSize: 11, color: "var(--dfp-text-muted)", marginTop: -8, marginBottom: 14 }}>Typical: {aircraft.weapons.join(", ")}</div>
+        )}
 
         <div className="dfp-label" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span>Route ({route.length})</span>
@@ -262,9 +267,7 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
                 🗑
               </button>
             </div>
-            <div style={{ fontFamily: "var(--dfp-font-mono)", fontSize: 11.5, color: "var(--dfp-text-muted)", marginBottom: 6 }}>
-              {formatLatDdm(wp.position.lat)} {formatLonDdm(wp.position.lon)}
-            </div>
+            <CoordinateFields point={wp.position} onChange={(position: LatLon) => updateWaypoint(wp.id, { position })} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <input
                 type="number"

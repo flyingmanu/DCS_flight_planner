@@ -24,9 +24,6 @@ const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
 const OBJECTS_ORBIT_ANCHOR_LAYER_ID = "mission-objects-orbit-anchors-layer";
 const EDITING_ROUTE_LINE_SOURCE_ID = "editing-route-line";
 const EDITING_ROUTE_LINE_LAYER_ID = "editing-route-line-layer";
-const EDITING_ROUTE_POINTS_SOURCE_ID = "editing-route-points";
-const EDITING_ROUTE_POINTS_LAYER_ID = "editing-route-points-layer";
-const EDITING_ROUTE_LABELS_LAYER_ID = "editing-route-labels-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -86,6 +83,28 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
   `;
 }
 
+// Small numbered, draggable waypoint marker used while a flight's route is
+// being edited (index is 1-based, matching the "WP{n}" labels in the panel).
+function waypointMarkerElement(index: number, color: string): HTMLElement {
+  const el = document.createElement("div");
+  el.style.width = "20px";
+  el.style.height = "20px";
+  el.style.borderRadius = "50%";
+  el.style.background = color;
+  el.style.border = "2px solid #fff";
+  el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.4)";
+  el.style.display = "flex";
+  el.style.alignItems = "center";
+  el.style.justifyContent = "center";
+  el.style.color = "#fff";
+  el.style.fontSize = "10px";
+  el.style.fontWeight = "700";
+  el.style.fontFamily = "system-ui, sans-serif";
+  el.style.cursor = "grab";
+  el.textContent = String(index);
+  return el;
+}
+
 export interface HoverInfo {
   lat: number;
   lon: number;
@@ -105,6 +124,7 @@ interface TheaterMapProps {
   onSelectFlight?: (id: string) => void;
   onMovePoint?: (id: string, position: LatLon) => void;
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
+  onMoveWaypoint?: (waypointId: string, position: LatLon) => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -171,6 +191,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     onSelectFlight,
     onMovePoint,
     onMovePolygon,
+    onMoveWaypoint,
     onHover,
   },
   ref,
@@ -191,6 +212,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onMovePointRef.current = onMovePoint;
   const onMovePolygonRef = useRef(onMovePolygon);
   onMovePolygonRef.current = onMovePolygon;
+  const onMoveWaypointRef = useRef(onMoveWaypoint);
+  onMoveWaypointRef.current = onMoveWaypoint;
   const polygonsRef = useRef<PolygonObject[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -230,20 +253,6 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         type: "line",
         source: EDITING_ROUTE_LINE_SOURCE_ID,
         paint: { "line-color": ["get", "color"], "line-width": 2, "line-dasharray": [3, 2] },
-      });
-      map.addSource(EDITING_ROUTE_POINTS_SOURCE_ID, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
-      map.addLayer({
-        id: EDITING_ROUTE_POINTS_LAYER_ID,
-        type: "circle",
-        source: EDITING_ROUTE_POINTS_SOURCE_ID,
-        paint: { "circle-radius": 9, "circle-color": ["get", "color"], "circle-stroke-width": 2, "circle-stroke-color": "#ffffff" },
-      });
-      map.addLayer({
-        id: EDITING_ROUTE_LABELS_LAYER_ID,
-        type: "symbol",
-        source: EDITING_ROUTE_POINTS_SOURCE_ID,
-        layout: { "text-field": ["get", "label"], "text-size": 10, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true },
-        paint: { "text-color": "#ffffff" },
       });
     });
 
@@ -488,42 +497,58 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const map = mapRef.current;
     if (!map) return;
 
-    function render() {
-      if (!map) return;
-      const route = editingFlight?.route ?? [];
-      const color = editingFlight?.color ?? DEFAULT_FLIGHT_COLOR;
+    const route = editingFlight?.route ?? [];
+    const color = editingFlight?.color ?? DEFAULT_FLIGHT_COLOR;
 
-      const lineData: GeoJSON.FeatureCollection = {
+    function lineFeatureCollection(positions: LatLon[]): GeoJSON.FeatureCollection {
+      return {
         type: "FeatureCollection",
         features:
-          route.length >= 2
+          positions.length >= 2
             ? [
                 {
                   type: "Feature",
                   properties: { color },
-                  geometry: { type: "LineString", coordinates: route.map((wp) => [wp.position.lon, wp.position.lat]) },
+                  geometry: { type: "LineString", coordinates: positions.map((p) => [p.lon, p.lat]) },
                 },
               ]
             : [],
       };
-      const pointsData: GeoJSON.FeatureCollection = {
-        type: "FeatureCollection",
-        features: route.map((wp, i) => ({
-          type: "Feature",
-          properties: { color, label: String(i + 1) },
-          geometry: { type: "Point", coordinates: [wp.position.lon, wp.position.lat] },
-        })),
-      };
+    }
 
-      (map.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(lineData);
-      (map.getSource(EDITING_ROUTE_POINTS_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(pointsData);
+    function renderLine(positions: LatLon[]) {
+      (map?.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(lineFeatureCollection(positions));
     }
 
     if (map.isStyleLoaded() && map.getSource(EDITING_ROUTE_LINE_SOURCE_ID)) {
-      render();
+      renderLine(route.map((wp) => wp.position));
     } else {
-      map.once("load", render);
+      map.once("load", () => renderLine(route.map((wp) => wp.position)));
     }
+
+    const waypointMarkers: maplibregl.Marker[] = [];
+    route.forEach((wp, index) => {
+      const element = waypointMarkerElement(index + 1, color);
+      const marker = new maplibregl.Marker({ element, draggable: true })
+        .setLngLat([wp.position.lon, wp.position.lat])
+        .addTo(map);
+
+      marker.on("drag", () => {
+        const lngLat = marker.getLngLat();
+        const positions = route.map((w, i) => (i === index ? { lat: lngLat.lat, lon: lngLat.lng } : w.position));
+        renderLine(positions);
+      });
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        onMoveWaypointRef.current?.(wp.id, { lat: lngLat.lat, lon: lngLat.lng });
+      });
+
+      waypointMarkers.push(marker);
+    });
+
+    return () => {
+      for (const marker of waypointMarkers) marker.remove();
+    };
   }, [editingFlight]);
 
   useEffect(() => {

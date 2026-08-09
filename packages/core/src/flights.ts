@@ -54,4 +54,6 @@ export interface Flight {
   notes?: string;
   color?: string;
   route?: Waypoint[];
+  /** Free-text ordnance/loadout description for this flight, e.g. "4x AIM-120C, 2x AIM-9X, 2x GBU-12". */
+  loadout?: string;
 }

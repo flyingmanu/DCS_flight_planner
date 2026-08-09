@@ -25,6 +25,8 @@ export interface Aircraft {
   /** Typical DCS Mission Editor task types this airframe is normally assigned. */
   standardTasks: TaskType[];
   performance?: AircraftPerformance;
+  /** Typical/representative ordnance this airframe can carry (not an exhaustive DCS loadout list). Playable modules only. */
+  weapons?: string[];
 }
 
 // --- Playable modules (fixed-wing) -----------------------------------------
@@ -38,6 +40,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 380, serviceCeilingFt: 45000, combatRadiusNm: 250, internalFuelLb: 10700 },
+    weapons: ["GAU-8 30mm gun", "AGM-65 Maverick", "GBU-12/38", "Mk-82/84", "CBU-97/105", "AIM-9M"],
   },
   {
     id: "a-10c-ii",
@@ -47,6 +50,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 380, serviceCeilingFt: 45000, combatRadiusNm: 250, internalFuelLb: 10700 },
+    weapons: ["GAU-8 30mm gun", "AGM-65 Maverick", "GBU-12/38", "Mk-82/84", "CBU-97/105", "AIM-9M", "APKWS"],
   },
   {
     id: "ajs-37",
@@ -56,6 +60,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["STRIKE", "RECON"],
     performance: { maxSpeedKt: 1145, serviceCeilingFt: 59000, combatRadiusNm: 300, internalFuelLb: 10000 },
+    weapons: ["Rb 04 (anti-ship)", "Rb 05", "Rb 75 (Maverick)", "M/70 bombs", "ARAK-M rockets", "30mm ADEN gun pod"],
   },
   {
     id: "av-8b-na",
@@ -65,6 +70,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE", "CAP"],
     performance: { maxSpeedKt: 585, serviceCeilingFt: 50000, combatRadiusNm: 300, internalFuelLb: 7500 },
+    weapons: ["GAU-12 25mm gun", "AGM-65 Maverick", "GBU-12/16/32", "Mk-82/83/84", "CBU-99", "AIM-9", "AIM-120"],
   },
   {
     id: "c-101cc",
@@ -74,6 +80,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "OTHER"],
     performance: { maxSpeedKt: 400, serviceCeilingFt: 42000, combatRadiusNm: 300, internalFuelLb: 3700 },
+    weapons: ["Mk-82 bombs", "unguided rocket pods", "12.7mm gun pod"],
   },
   {
     id: "c-101eb",
@@ -83,6 +90,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["OTHER"],
     performance: { maxSpeedKt: 400, serviceCeilingFt: 42000, combatRadiusNm: 300, internalFuelLb: 3700 },
+    weapons: ["training loadout only (no combat armament)"],
   },
   {
     id: "f-5e-3",
@@ -92,6 +100,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT"],
     performance: { maxSpeedKt: 917, serviceCeilingFt: 51800, combatRadiusNm: 190, internalFuelLb: 4200 },
+    weapons: ["M39 20mm cannon", "AIM-9 Sidewinder", "Mk-82 bombs", "unguided rocket pods"],
   },
   {
     id: "f-14a",
@@ -101,6 +110,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT", "STRIKE"],
     performance: { maxSpeedKt: 1320, serviceCeilingFt: 53000, combatRadiusNm: 500, internalFuelLb: 16200 },
+    weapons: ["M61 Vulcan 20mm", "AIM-54 Phoenix", "AIM-7 Sparrow", "AIM-9 Sidewinder", "Mk-82/84", "GBU-12/16"],
   },
   {
     id: "f-14b",
@@ -110,6 +120,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT", "STRIKE"],
     performance: { maxSpeedKt: 1330, serviceCeilingFt: 53000, combatRadiusNm: 500, internalFuelLb: 16200 },
+    weapons: ["M61 Vulcan 20mm", "AIM-54 Phoenix", "AIM-7 Sparrow", "AIM-9 Sidewinder", "Mk-82/84", "GBU-12/16/24"],
   },
   {
     id: "f-15e",
@@ -119,6 +130,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["STRIKE", "CAP", "SEAD"],
     performance: { maxSpeedKt: 1434, serviceCeilingFt: 60000, combatRadiusNm: 790, internalFuelLb: 13455 },
+    weapons: ["M61 Vulcan 20mm", "AIM-120 AMRAAM", "AIM-9", "AGM-65", "AGM-88 HARM", "GBU-10/12/24/31"],
   },
   {
     id: "f-16c",
@@ -128,6 +140,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD", "CAS"],
     performance: { maxSpeedKt: 1147, serviceCeilingFt: 50000, combatRadiusNm: 340, internalFuelLb: 6972 },
+    weapons: ["M61 Vulcan 20mm", "AIM-120 AMRAAM", "AIM-9", "AGM-65 Maverick", "AGM-88 HARM", "GBU-12/31/38", "CBU-97"],
   },
   {
     id: "f-86f",
@@ -137,6 +150,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 599, serviceCeilingFt: 49000, combatRadiusNm: 300, internalFuelLb: 1500 },
+    weapons: ["M3 .50cal machine guns", "AIM-9B Sidewinder (late)", "unguided bombs"],
   },
   {
     id: "fa-18c",
@@ -146,6 +160,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD", "CAS", "ESCORT"],
     performance: { maxSpeedKt: 1030, serviceCeilingFt: 50000, combatRadiusNm: 330, internalFuelLb: 10860 },
+    weapons: ["M61 Vulcan 20mm", "AIM-120", "AIM-9", "AIM-7", "AGM-65", "AGM-88 HARM", "AGM-84 Harpoon", "JDAM (GBU-31/38)", "GBU-12/16/24"],
   },
   {
     id: "jf-17",
@@ -155,6 +170,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD", "CAS"],
     performance: { maxSpeedKt: 1000, serviceCeilingFt: 55000, combatRadiusNm: 290, internalFuelLb: 4850 },
+    weapons: ["GSh-23-2 23mm gun", "PL-5/PL-12 AAM", "LS/LT-series guided bombs", "unguided bombs"],
   },
   {
     id: "l-39c",
@@ -164,6 +180,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["OTHER"],
     performance: { maxSpeedKt: 365, serviceCeilingFt: 37725, combatRadiusNm: 250, internalFuelLb: 2350 },
+    weapons: ["training loadout only (no combat armament)"],
   },
   {
     id: "l-39za",
@@ -173,6 +190,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "OTHER"],
     performance: { maxSpeedKt: 365, serviceCeilingFt: 37725, combatRadiusNm: 250, internalFuelLb: 2350 },
+    weapons: ["GSh-23 23mm gun pod", "unguided bombs", "unguided rocket pods"],
   },
   {
     id: "m-2000c",
@@ -182,6 +200,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD"],
     performance: { maxSpeedKt: 1200, serviceCeilingFt: 59000, combatRadiusNm: 300, internalFuelLb: 6500 },
+    weapons: ["2x DEFA 30mm cannon", "Magic II", "Super 530D", "Mk-82 bombs", "laser-guided bomb pod"],
   },
   {
     id: "mb-339a",
@@ -191,6 +210,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "OTHER"],
     performance: { maxSpeedKt: 500, serviceCeilingFt: 47000, combatRadiusNm: 350, internalFuelLb: 2100 },
+    weapons: ["Mk-82 bombs", "unguided rocket pods", "gun pods"],
   },
   {
     id: "mig-15bis",
@@ -200,6 +220,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 590, serviceCeilingFt: 50855, combatRadiusNm: 220, internalFuelLb: 2650 },
+    weapons: ["N-37 37mm cannon", "2x NS-23 23mm cannon", "unguided bombs"],
   },
   {
     id: "mig-19p",
@@ -209,6 +230,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 780, serviceCeilingFt: 58725, combatRadiusNm: 140, internalFuelLb: 2650 },
+    weapons: ["NR-30 30mm cannons", "unguided rockets"],
   },
   {
     id: "mig-21bis",
@@ -218,6 +240,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "CAS"],
     performance: { maxSpeedKt: 1177, serviceCeilingFt: 57500, combatRadiusNm: 200, internalFuelLb: 4630 },
+    weapons: ["GSh-23L 23mm gun", "R-3S/R-13M/R-60 AAM", "unguided bombs", "unguided rockets"],
   },
   {
     id: "mig-29a",
@@ -227,6 +250,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "SEAD"],
     performance: { maxSpeedKt: 1320, serviceCeilingFt: 59000, combatRadiusNm: 220, internalFuelLb: 8400 },
+    weapons: ["GSh-30-1 30mm gun", "R-27", "R-73", "R-60", "unguided bombs/rockets"],
   },
   {
     id: "mig-29s",
@@ -236,6 +260,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "SEAD"],
     performance: { maxSpeedKt: 1320, serviceCeilingFt: 59000, combatRadiusNm: 240, internalFuelLb: 8400 },
+    weapons: ["GSh-30-1 30mm gun", "R-27", "R-73", "R-60", "unguided bombs/rockets"],
   },
   {
     id: "mig-29g",
@@ -245,6 +270,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD"],
     performance: { maxSpeedKt: 1320, serviceCeilingFt: 59000, combatRadiusNm: 240, internalFuelLb: 8400 },
+    weapons: ["GSh-30-1 30mm gun", "R-27", "R-73", "R-60", "Kh-25/Kh-29", "guided bombs"],
   },
   {
     id: "su-25",
@@ -254,6 +280,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 526, serviceCeilingFt: 23000, combatRadiusNm: 300, internalFuelLb: 6844 },
+    weapons: ["GSh-30-2 30mm gun", "S-8/S-13/S-24/S-25 rockets", "FAB bombs", "R-60 AAM"],
   },
   {
     id: "su-25t",
@@ -263,6 +290,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 526, serviceCeilingFt: 23000, combatRadiusNm: 300, internalFuelLb: 6844 },
+    weapons: ["GSh-30-2 30mm gun", "Kh-25ML", "Kh-29L", "S-8/S-13 rockets", "FAB bombs", "R-60 AAM"],
   },
   {
     id: "su-27",
@@ -272,6 +300,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT"],
     performance: { maxSpeedKt: 1320, serviceCeilingFt: 62000, combatRadiusNm: 750, internalFuelLb: 20950 },
+    weapons: ["GSh-30-1 30mm gun", "R-27", "R-73", "R-60", "unguided bombs/rockets"],
   },
   {
     id: "su-33",
@@ -281,6 +310,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT"],
     performance: { maxSpeedKt: 1300, serviceCeilingFt: 55000, combatRadiusNm: 690, internalFuelLb: 22000 },
+    weapons: ["GSh-30-1 30mm gun", "R-27", "R-73", "R-60", "unguided bombs/rockets"],
   },
   {
     id: "i-16",
@@ -290,6 +320,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 275, serviceCeilingFt: 29500, combatRadiusNm: 150, internalFuelLb: 300 },
+    weapons: ["ShKAS machine guns", "unguided rockets (RS-82, some variants)"],
   },
   {
     id: "spitfire-lf-mk-ix",
@@ -299,6 +330,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 340, serviceCeilingFt: 43000, combatRadiusNm: 300, internalFuelLb: 600 },
+    weapons: ["2x 20mm Hispano cannon", "2x .303 machine guns"],
   },
   {
     id: "bf-109k-4",
@@ -308,6 +340,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP"],
     performance: { maxSpeedKt: 340, serviceCeilingFt: 41000, combatRadiusNm: 200, internalFuelLb: 500 },
+    weapons: ["MK 108 30mm cannon", "2x MG 131 machine guns"],
   },
   {
     id: "fw-190d-9",
@@ -317,6 +350,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "CAS"],
     performance: { maxSpeedKt: 350, serviceCeilingFt: 39400, combatRadiusNm: 250, internalFuelLb: 600 },
+    weapons: ["2x MG 151 20mm cannon", "2x MG 131 machine guns", "unguided bombs"],
   },
   {
     id: "p-51d",
@@ -326,6 +360,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT"],
     performance: { maxSpeedKt: 380, serviceCeilingFt: 41900, combatRadiusNm: 400, internalFuelLb: 1180 },
+    weapons: ["6x .50cal machine guns", "unguided bombs", "unguided rockets"],
   },
   {
     id: "p-47d",
@@ -335,6 +370,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["CAP", "ESCORT", "CAS"],
     performance: { maxSpeedKt: 350, serviceCeilingFt: 43000, combatRadiusNm: 350, internalFuelLb: 1950 },
+    weapons: ["8x .50cal machine guns", "unguided bombs", "unguided rockets"],
   },
   {
     id: "mosquito-fb-vi",
@@ -344,6 +380,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["STRIKE", "CAS"],
     performance: { maxSpeedKt: 330, serviceCeilingFt: 33000, combatRadiusNm: 350, internalFuelLb: 2200 },
+    weapons: ["4x 20mm Hispano cannon", "4x .303 machine guns", "unguided bombs", "unguided rockets"],
   },
   {
     id: "christen-eagle-ii",
@@ -353,6 +390,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["OTHER"],
     performance: { maxSpeedKt: 130, serviceCeilingFt: 18500, combatRadiusNm: 100, internalFuelLb: 180 },
+    weapons: ["none (aerobatic trainer)"],
   },
   {
     id: "yak-52",
@@ -362,6 +400,7 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     playable: true,
     standardTasks: ["OTHER"],
     performance: { maxSpeedKt: 170, serviceCeilingFt: 13123, combatRadiusNm: 200, internalFuelLb: 250 },
+    weapons: ["none (trainer)"],
   },
 ];
 
@@ -376,6 +415,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 150, serviceCeilingFt: 21000, combatRadiusNm: 150, internalFuelLb: 2576 },
+    weapons: ["M230 30mm chain gun", "AGM-114 Hellfire", "Hydra 70 rockets"],
   },
   {
     id: "ch-47f",
@@ -385,6 +425,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["TRANSPORT"],
     performance: { maxSpeedKt: 170, serviceCeilingFt: 20000, combatRadiusNm: 200, internalFuelLb: 7000 },
+    weapons: ["door-mounted M240 machine guns (defensive)"],
   },
   {
     id: "sa342",
@@ -394,6 +435,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "ESCORT", "RECON"],
     performance: { maxSpeedKt: 145, serviceCeilingFt: 15750, combatRadiusNm: 100, internalFuelLb: 980 },
+    weapons: ["HOT ATGM", "unguided rocket pods", "20mm cannon pod (Gazelle L)"],
   },
   {
     id: "ka-50",
@@ -403,6 +445,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 180, serviceCeilingFt: 18000, combatRadiusNm: 145, internalFuelLb: 3820 },
+    weapons: ["2A42 30mm cannon", "9K121 Vikhr ATGM", "S-8/S-13 rockets", "R-73 (self-defense)"],
   },
   {
     id: "ka-50-iii",
@@ -412,6 +455,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "STRIKE"],
     performance: { maxSpeedKt: 180, serviceCeilingFt: 18000, combatRadiusNm: 145, internalFuelLb: 3820 },
+    weapons: ["2A42 30mm cannon", "9K121 Vikhr ATGM", "S-8/S-13 rockets", "R-73 (self-defense)"],
   },
   {
     id: "mi-8mtv2",
@@ -421,6 +465,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["TRANSPORT", "OTHER"],
     performance: { maxSpeedKt: 140, serviceCeilingFt: 14760, combatRadiusNm: 200, internalFuelLb: 3550 },
+    weapons: ["door-gunner machine guns", "S-8 rockets", "unguided bombs"],
   },
   {
     id: "mi-24p",
@@ -430,6 +475,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["CAS", "ESCORT"],
     performance: { maxSpeedKt: 175, serviceCeilingFt: 14750, combatRadiusNm: 100, internalFuelLb: 4400 },
+    weapons: ["GSh-30-2 30mm gun", "9M17 Skorpion/9M114 Shturm ATGM", "S-8/S-24 rockets", "unguided bombs"],
   },
   {
     id: "oh-58d",
@@ -439,6 +485,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["RECON", "CAS"],
     performance: { maxSpeedKt: 115, serviceCeilingFt: 12000, combatRadiusNm: 80, internalFuelLb: 850 },
+    weapons: [".50cal machine gun pod", "Hydra 70 rockets", "AGM-114 Hellfire", "FIM-92 Stinger"],
   },
   {
     id: "uh-1h",
@@ -448,6 +495,7 @@ const PLAYABLE_HELICOPTERS: Aircraft[] = [
     playable: true,
     standardTasks: ["TRANSPORT", "OTHER"],
     performance: { maxSpeedKt: 110, serviceCeilingFt: 12600, combatRadiusNm: 115, internalFuelLb: 1390 },
+    weapons: ["door-gunner M60/M134 machine guns", "unguided rocket pods (optional)"],
   },
 ];
 

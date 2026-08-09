@@ -212,6 +212,14 @@ function App() {
     if (flight) setFlightForm({ flight: { ...flight }, isNew: false });
   }
 
+  function handleMoveWaypoint(waypointId: string, position: LatLon) {
+    setFlightForm((prev) =>
+      prev
+        ? { ...prev, flight: { ...prev.flight, route: (prev.flight.route ?? []).map((wp) => (wp.id === waypointId ? { ...wp, position } : wp)) } }
+        : prev,
+    );
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -286,6 +294,7 @@ function App() {
           onSelectFlight={handleEditFlight}
           onMovePoint={handleMovePoint}
           onMovePolygon={handleMovePolygon}
+          onMoveWaypoint={handleMoveWaypoint}
           onHover={setHover}
         />
       </div>
