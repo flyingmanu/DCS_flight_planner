@@ -1,27 +1,30 @@
 import type { Mission, Theater } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
+import { FileMenu } from "./FileMenu";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
+import { SaveAsDialog } from "./SaveAsDialog";
 import { TheaterMap, type TheaterMapHandle } from "./TheaterMap";
 
 const theater = caucasus as Theater;
+const UNTITLED = "Sans titre";
 
 function App() {
   const mapRef = useRef<TheaterMapHandle | null>(null);
   const [missions, setMissions] = useState<Mission[]>([]);
-  const [activeMissionId, setActiveMissionId] = useState<string>("");
-  const [nameInput, setNameInput] = useState("");
+  const [activeMissionId, setActiveMissionId] = useState<string | null>(null);
+  const [activeMissionName, setActiveMissionName] = useState(UNTITLED);
+  const [saveAsOpen, setSaveAsOpen] = useState(false);
 
   useEffect(() => {
     setMissions(listMissions());
   }, []);
 
-  function handleSave() {
-    const name = nameInput.trim() || "Mission sans nom";
+  function persist(id: string, name: string) {
     const now = new Date().toISOString();
-    const existing = missions.find((m) => m.id === activeMissionId);
+    const existing = missions.find((m) => m.id === id);
     const mission: Mission = {
-      id: existing?.id ?? crypto.randomUUID(),
+      id,
       name,
       theaterId: theater.id,
       createdAt: existing?.createdAt ?? now,
@@ -31,72 +34,77 @@ function App() {
     saveMission(mission);
     setMissions(listMissions());
     setActiveMissionId(mission.id);
-    setNameInput(mission.name);
+    setActiveMissionName(mission.name);
   }
 
-  function handleSelect(id: string) {
-    setActiveMissionId(id);
-    if (!id) {
-      setNameInput("");
-      return;
-    }
+  function handleNew() {
+    setActiveMissionId(null);
+    setActiveMissionName(UNTITLED);
+  }
+
+  function handleOpen(id: string) {
     const mission = missions.find((m) => m.id === id);
     if (!mission) return;
-    setNameInput(mission.name);
+    setActiveMissionId(mission.id);
+    setActiveMissionName(mission.name);
     mapRef.current?.setView(mission.view);
+  }
+
+  function handleSave() {
+    if (activeMissionId) {
+      persist(activeMissionId, activeMissionName);
+    } else {
+      setSaveAsOpen(true);
+    }
+  }
+
+  function handleSaveAsConfirm(name: string) {
+    persist(crypto.randomUUID(), name);
+    setSaveAsOpen(false);
   }
 
   function handleDelete() {
     if (!activeMissionId) return;
     deleteMission(activeMissionId);
     setMissions(listMissions());
-    setActiveMissionId("");
-    setNameInput("");
+    handleNew();
   }
 
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
         style={{
-          padding: "8px 16px",
+          padding: "4px 12px",
           borderBottom: "1px solid #3333",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
           gap: 16,
-          flexWrap: "wrap",
         }}
       >
+        <FileMenu
+          missions={missions}
+          activeMissionId={activeMissionId}
+          onNew={handleNew}
+          onOpen={handleOpen}
+          onSave={handleSave}
+          onSaveAs={() => setSaveAsOpen(true)}
+          onDelete={handleDelete}
+        />
         <div>
-          <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} aérodromes)
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <select value={activeMissionId} onChange={(e) => handleSelect(e.target.value)}>
-            <option value="">— Nouvelle mission —</option>
-            {missions.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name} ({new Date(m.updatedAt).toLocaleString()})
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Nom de la mission"
-            value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
-            style={{ width: 160 }}
-          />
-          <button type="button" onClick={handleSave}>
-            Enregistrer
-          </button>
-          <button type="button" onClick={handleDelete} disabled={!activeMissionId} title="Supprimer">
-            🗑
-          </button>
+          <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} aérodromes) —{" "}
+          <em>{activeMissionName}</em>
         </div>
       </header>
       <div style={{ flex: 1, minHeight: 0 }}>
         <TheaterMap ref={mapRef} theater={theater} />
       </div>
+      {saveAsOpen && (
+        <SaveAsDialog
+          defaultName={activeMissionName === UNTITLED ? "" : activeMissionName}
+          onConfirm={handleSaveAsConfirm}
+          onCancel={() => setSaveAsOpen(false)}
+        />
+      )}
     </div>
   );
 }
