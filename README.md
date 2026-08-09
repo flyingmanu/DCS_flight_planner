@@ -9,11 +9,19 @@ Projet en cours de construction, développé par morceaux.
 ## Structure du repo
 
 ```
-apps/            applications (web, desktop — à venir)
+apps/
+  web/           application web (Vite + React + MapLibre)
 packages/
   core/          logique métier partagée (waypoints, coordonnées, données théâtre)
 tools/
   dcs-export/    outillage pour extraire les données statiques des théâtres DCS
+```
+
+## Développement
+
+```
+pnpm install
+pnpm --filter @dcs-flight-planner/web dev
 ```
 
 ## État d'avancement
@@ -21,7 +29,7 @@ tools/
 - [x] Scaffolding du monorepo
 - [x] Extraction des données de théâtre DCS (aérodromes, runways) — Caucasus fait, fréquences pas encore disponibles via l'API DCS (à sourcer autrement)
 - [x] Modèle de données partagé (`packages/core`) — premier théâtre (Caucasus, 21 aérodromes) normalisé
-- [ ] Carte interactive
+- [x] Carte interactive — marqueurs + popups sur fond OpenFreeMap (fond de carte "monde réel" provisoire, pas encore les cartes DCS elles-mêmes)
 - [ ] Planification de route / waypoints
 - [ ] Export kneeboard
 - [ ] Application desktop (Tauri)
