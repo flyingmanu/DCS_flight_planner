@@ -1,6 +1,6 @@
 import type { Mission } from "@dcs-flight-planner/core";
-import type { CSSProperties } from "react";
 import { useState } from "react";
+import { menuButtonStyle, submenuPanelStyle } from "./menuStyles";
 
 interface FileMenuProps {
   missions: Mission[];
@@ -11,18 +11,6 @@ interface FileMenuProps {
   onSaveAs: () => void;
   onDelete: () => void;
 }
-
-const menuButtonStyle: CSSProperties = {
-  display: "block",
-  width: "100%",
-  textAlign: "left",
-  padding: "6px 16px",
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  fontSize: 14,
-  whiteSpace: "nowrap",
-};
 
 export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onSaveAs, onDelete }: FileMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,7 +39,7 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
           fontSize: 14,
         }}
       >
-        Fichier
+        File
       </button>
 
       {menuOpen && (
@@ -91,21 +79,7 @@ export function FileMenu({ missions, activeMissionId, onNew, onOpen, onSave, onS
                 Ouvrir ▸
               </button>
               {openSubmenu && (
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "100%",
-                    top: 0,
-                    background: "#fff",
-                    border: "1px solid #ccc",
-                    borderRadius: 4,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                    paddingBlock: 4,
-                    minWidth: 220,
-                    maxHeight: 300,
-                    overflowY: "auto",
-                  }}
-                >
+                <div style={{ ...submenuPanelStyle, maxHeight: 300, overflowY: "auto" }}>
                   {missions.length === 0 ? (
                     <div style={{ padding: "6px 16px", color: "#888", fontSize: 13 }}>
                       (aucune mission enregistrée)

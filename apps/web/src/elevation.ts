@@ -62,5 +62,5 @@ export async function getElevationAt(lon: number, lat: number): Promise<number |
   const px = Math.min(imageData.width - 1, Math.max(0, Math.floor((worldX - tileX) * imageData.width)));
   const py = Math.min(imageData.height - 1, Math.max(0, Math.floor((worldY - tileY) * imageData.height)));
   const idx = (py * imageData.width + px) * 4;
-  return decodeTerrarium(imageData.data[idx], imageData.data[idx + 1], imageData.data[idx + 2]);
+  return decodeTerrarium(imageData.data[idx]!, imageData.data[idx + 1]!, imageData.data[idx + 2]!);
 }

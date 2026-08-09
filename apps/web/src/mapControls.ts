@@ -191,7 +191,7 @@ export class MeasureControl implements maplibregl.IControl {
 
     if (this.points.length < 2) return;
 
-    const [a, b] = this.points;
+    const [a, b] = this.points as [maplibregl.LngLat, maplibregl.LngLat];
     const source = this.map.getSource(MEASURE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource;
     source.setData({
       type: "FeatureCollection",

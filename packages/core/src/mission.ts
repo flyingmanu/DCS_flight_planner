@@ -1,12 +1,13 @@
+import type { MissionObject } from "./objects.js";
+
 export interface MapView {
   center: [number, number];
   zoom: number;
 }
 
 /**
- * A named, saveable session tied to a theater. Currently only carries the
- * map view; future mission-specific content (waypoints, notes, kneeboard
- * items...) will be added here as those features are built.
+ * A named, saveable session tied to a theater: the map view and the
+ * mission-specific objects placed on it (points, polygons...).
  */
 export interface Mission {
   id: string;
@@ -15,4 +16,5 @@ export interface Mission {
   createdAt: string;
   updatedAt: string;
   view: MapView;
+  objects: MissionObject[];
 }

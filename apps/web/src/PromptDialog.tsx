@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 
-interface SaveAsDialogProps {
-  defaultName: string;
-  onConfirm: (name: string) => void;
+interface PromptDialogProps {
+  title: string;
+  defaultValue: string;
+  fallbackValue: string;
+  confirmLabel?: string;
+  onConfirm: (value: string) => void;
   onCancel: () => void;
 }
 
-export function SaveAsDialog({ defaultName, onConfirm, onCancel }: SaveAsDialogProps) {
-  const [name, setName] = useState(defaultName);
+export function PromptDialog({
+  title,
+  defaultValue,
+  fallbackValue,
+  confirmLabel = "Enregistrer",
+  onConfirm,
+  onCancel,
+}: PromptDialogProps) {
+  const [value, setValue] = useState(defaultValue);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -16,7 +26,7 @@ export function SaveAsDialog({ defaultName, onConfirm, onCancel }: SaveAsDialogP
   }, []);
 
   function confirm() {
-    onConfirm(name.trim() || "Mission sans nom");
+    onConfirm(value.trim() || fallbackValue);
   }
 
   return (
@@ -42,12 +52,12 @@ export function SaveAsDialog({ defaultName, onConfirm, onCancel }: SaveAsDialogP
           boxShadow: "0 4px 16px rgba(0,0,0,0.3)",
         }}
       >
-        <div style={{ fontWeight: 700, marginBottom: 12 }}>Enregistrer sous</div>
+        <div style={{ fontWeight: 700, marginBottom: 12 }}>{title}</div>
         <input
           ref={inputRef}
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") confirm();
             if (e.key === "Escape") onCancel();
@@ -59,7 +69,7 @@ export function SaveAsDialog({ defaultName, onConfirm, onCancel }: SaveAsDialogP
             Annuler
           </button>
           <button type="button" onClick={confirm}>
-            Enregistrer
+            {confirmLabel}
           </button>
         </div>
       </div>

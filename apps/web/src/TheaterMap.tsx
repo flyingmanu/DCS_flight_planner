@@ -1,14 +1,22 @@
-import type { MapView, Theater } from "@dcs-flight-planner/core";
+import type { MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
+import { POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, MeasureControl, ReliefControl } from "./mapControls";
+import { polygonRing } from "./objectGeometry";
+import { pointMarkerElement } from "./objectIcons";
+import { setupPlacement, type CreationRequest, type ObjectDraft } from "./placement";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
 // It's a real-world basemap, so it only approximates DCS terrain art; good
 // enough to get our bearings until theater-specific map tiles are added.
 const BASEMAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
+
+const OBJECTS_POLYGON_SOURCE_ID = "mission-objects-polygons";
+const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
+const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Aérodrome",
@@ -76,6 +84,10 @@ export interface HoverInfo {
 
 interface TheaterMapProps {
   theater: Theater;
+  objects: MissionObject[];
+  creationRequest: CreationRequest | null;
+  onDraftComplete: (draft: ObjectDraft) => void;
+  onCreationCancel: () => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -85,13 +97,17 @@ export interface TheaterMapHandle {
 }
 
 export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
-  { theater, onHover },
+  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onHover },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const onHoverRef = useRef(onHover);
   onHoverRef.current = onHover;
+  const onDraftCompleteRef = useRef(onDraftComplete);
+  onDraftCompleteRef.current = onDraftComplete;
+  const onCreationCancelRef = useRef(onCreationCancel);
+  onCreationCancelRef.current = onCreationCancel;
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -166,6 +182,76 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       onHoverRef.current?.(null);
     };
   }, [theater]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const polygons = objects.filter((o): o is PolygonObject => o.type === "polygon");
+
+    function renderPolygons() {
+      if (!map) return;
+      const data: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features: polygons.map((p) => ({
+          type: "Feature",
+          properties: { name: p.name },
+          geometry: { type: "Polygon", coordinates: [polygonRing(p)] },
+        })),
+      };
+      const source = map.getSource(OBJECTS_POLYGON_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+      if (source) {
+        source.setData(data);
+      } else {
+        map.addSource(OBJECTS_POLYGON_SOURCE_ID, { type: "geojson", data });
+        map.addLayer({
+          id: OBJECTS_POLYGON_FILL_ID,
+          type: "fill",
+          source: OBJECTS_POLYGON_SOURCE_ID,
+          paint: { "fill-color": "#0f766e", "fill-opacity": 0.12 },
+        });
+        map.addLayer({
+          id: OBJECTS_POLYGON_LINE_ID,
+          type: "line",
+          source: OBJECTS_POLYGON_SOURCE_ID,
+          paint: { "line-color": "#0f766e", "line-width": 2 },
+        });
+      }
+    }
+
+    if (map.isStyleLoaded()) {
+      renderPolygons();
+    } else {
+      map.once("load", renderPolygons);
+    }
+
+    const pointMarkers: maplibregl.Marker[] = [];
+    for (const obj of objects) {
+      if (obj.type !== "point") continue;
+      const popup = new maplibregl.Popup({ offset: 14 }).setHTML(
+        `<strong>${obj.name}</strong><br />${POINT_KIND_LABEL[obj.kind]}`,
+      );
+      const marker = new maplibregl.Marker({ element: pointMarkerElement(obj.kind) })
+        .setLngLat([obj.position.lon, obj.position.lat])
+        .setPopup(popup)
+        .addTo(map);
+      pointMarkers.push(marker);
+    }
+
+    return () => {
+      for (const marker of pointMarkers) marker.remove();
+    };
+  }, [objects]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !creationRequest) return;
+
+    return setupPlacement(map, creationRequest, {
+      onComplete: (draft) => onDraftCompleteRef.current(draft),
+      onCancel: () => onCreationCancelRef.current(),
+    });
+  }, [creationRequest]);
 
   return <div ref={containerRef} data-testid="theater-map" style={{ width: "100%", height: "100%" }} />;
 });
