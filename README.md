@@ -38,10 +38,42 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Flight object (Flight menu: create, edit, delete; also listed alongside points/zones in the Objects popup): Combat Flite-inspired attributes (callsign, aircraft, size, task, departure/arrival/alternate airbases, takeoff time, TACAN, radio, IFF modes, notes, color), saved with the mission
 - [x] Aircraft catalog (`packages/core`): all playable DCS modules (fixed-wing + helicopters) with standard DCS task types, approximate performance figures (max speed, ceiling, combat radius, internal fuel), and a typical-weapons reference — the performance/armament-management foundation for a key advantage over Combat Flite — plus a starter set of AI-only aircraft; picked from a dropdown in the flight form, with category icons (fixed-wing / helicopter) shown on the map at each flight's departure airbase; free-text loadout field with a "typical weapons" hint
 - [x] Waypoint add/remove/edit for a flight's route, Combat-Flite style: click "Add waypoint on map" then click the map; route drawn live on the map as numbered, draggable markers whenever the flight is open (from its map marker or the Objects list); position editable via DDM fields or by dragging on the map, altitude/airspeed editable, remove from the list
-- [ ] Full route planning (leg distances, ETAs/TOT)
-- [ ] Kneeboard export
+- [x] Route leg calculations: each waypoint in the flight form shows distance, true track, and ETE from the previous leg, plus a running ETA once a takeoff time and every leg's airspeed are set; total route distance shown
+- [x] Mission overview ("Overview" button): read-only summary of every flight (airbases, comms, loadout, full leg table) and every mission point/zone on one screen — a first step toward kneeboard export
+- [ ] Kneeboard export (printable/image, DCS-kneeboard-ready)
+- [ ] TOT (time-on-target) planning/back-timing across a package
 - [ ] Desktop application (Tauri)
 - [ ] Monetization (license, accounts)
+
+## Audit notes (overnight session, for review)
+
+I don't have a way to see or drive the real Combat Flite application — I have
+no remote/screen access to any machine outside this repo's build sandbox. So
+this session (2026-08-09 night) I ran a self-directed regression audit
+(scripted browser pass over every feature built so far — all clear, three
+apparent failures traced to bugs in the *test script*, not the app, see the
+`git log` messages if curious) and then added the two features below from
+memory of how Combat Flite works, not from looking at it. Please sanity-check
+these against the real thing when you're back:
+
+- **Route leg table** (distance/track/ETE/ETA per waypoint) — the layout,
+  units, and which fields Combat Flite shows per leg are from memory; worth
+  comparing against an actual Combat Flite flight plan screen.
+- **Mission overview / "Overview" button** — brand new, no Combat Flite
+  reference used at all beyond "kneeboard-style summary." Layout, what's
+  included, and what a first kneeboard-export pass should actually contain
+  are all open.
+- **Aircraft catalog performance figures** (max speed, ceiling, combat
+  radius, internal fuel) and the **weapons/loadout reference lists** are
+  approximate, publicly-known reference figures I already flagged in the
+  data model's doc comments — not derived from DCS's flight model or a
+  DCS-side loadout table. Treat every number as a placeholder to verify.
+- **AI-only aircraft list** is a starter set, not exhaustive — additions
+  welcome.
+- Everything above was verified with `tsc`, `oxlint`, the `packages/core`
+  unit tests (48 passing), and a scripted Playwright pass against the built
+  app — not by a human clicking around, so UI feel/spacing/interaction
+  details haven't had a human pass since the theming work.
 
 ## DCS data license
 
