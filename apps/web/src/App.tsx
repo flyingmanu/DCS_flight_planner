@@ -6,6 +6,7 @@ import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
 import { ObjectEditPanel } from "./ObjectEditPanel";
+import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
 import { PromptDialog } from "./PromptDialog";
 import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
@@ -48,6 +49,7 @@ function App() {
   const [pendingDraft, setPendingDraft] = useState<ObjectDraft | null>(null);
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
+  const [objectListOpen, setObjectListOpen] = useState(false);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -116,10 +118,9 @@ function App() {
     setObjects((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
   }
 
-  function handleObjectDelete() {
-    if (!selectedObjectId) return;
-    setObjects((prev) => prev.filter((o) => o.id !== selectedObjectId));
-    setSelectedObjectId(null);
+  function handleObjectDelete(id: string) {
+    setObjects((prev) => prev.filter((o) => o.id !== id));
+    if (selectedObjectId === id) setSelectedObjectId(null);
   }
 
   return (
@@ -130,23 +131,29 @@ function App() {
           borderBottom: "1px solid #3333",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           gap: 16,
         }}
       >
-        <FileMenu
-          missions={missions}
-          activeMissionId={activeMissionId}
-          onNew={handleNew}
-          onOpen={handleOpen}
-          onSave={handleSave}
-          onSaveAs={() => setSaveAsOpen(true)}
-          onDelete={handleDelete}
-        />
-        <ObjectMenu onRequestCreation={setCreationRequest} />
-        <div>
-          <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} aérodromes) —{" "}
-          <em>{activeMissionName}</em>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <FileMenu
+            missions={missions}
+            activeMissionId={activeMissionId}
+            onNew={handleNew}
+            onOpen={handleOpen}
+            onSave={handleSave}
+            onSaveAs={() => setSaveAsOpen(true)}
+            onDelete={handleDelete}
+          />
+          <ObjectMenu onRequestCreation={setCreationRequest} />
+          <div>
+            <strong>DCS Flight Planner</strong> — {theater.name} ({theater.airbases.length} aérodromes) —{" "}
+            <em>{activeMissionName}</em>
+          </div>
         </div>
+        <button type="button" onClick={() => setObjectListOpen(true)} style={{ padding: "4px 12px", fontSize: 14, cursor: "pointer" }}>
+          Objets ({objects.length})
+        </button>
       </header>
       <div style={{ flex: 1, minHeight: 0 }}>
         <TheaterMap
@@ -168,8 +175,19 @@ function App() {
         <ObjectEditPanel
           object={selectedObject}
           onChange={handleObjectEdit}
-          onDelete={handleObjectDelete}
+          onDelete={() => handleObjectDelete(selectedObject.id)}
           onClose={() => setSelectedObjectId(null)}
+        />
+      )}
+      {objectListOpen && (
+        <ObjectListDialog
+          objects={objects}
+          onSelect={(id) => {
+            setSelectedObjectId(id);
+            setObjectListOpen(false);
+          }}
+          onDelete={handleObjectDelete}
+          onClose={() => setObjectListOpen(false)}
         />
       )}
       {saveAsOpen && (
