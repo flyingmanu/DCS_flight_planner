@@ -1,5 +1,9 @@
 :root {
-  color-scheme: light dark;
+  /* No dark theme designed yet - pin to light so inherited text/background
+     colors stay predictable (an unset "light dark" here made the browser's
+     dark-mode default text color, white, inherit into places like MapLibre's
+     popup, which sets an explicit white background but no text color). */
+  color-scheme: light;
 }
 
 html,
@@ -11,4 +15,12 @@ body,
 
 body {
   font: 15px/1.4 system-ui, "Segoe UI", Roboto, sans-serif;
+  color: #1a1a1a;
+  background: #fff;
+}
+
+/* Defensive: keep popup text readable regardless of any future theming,
+   since MapLibre's own CSS sets a white popup background but no text color. */
+.maplibregl-popup-content {
+  color: #1a1a1a;
 }

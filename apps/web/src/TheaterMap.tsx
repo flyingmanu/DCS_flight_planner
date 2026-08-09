@@ -15,6 +15,45 @@ const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = 
   unknown: "Inconnu",
 };
 
+// Sectional-chart-style airport symbol: a circle with a bar for the primary
+// runway, rotated to its actual compass heading (SVG's rotate() is clockwise
+// for positive angles, same direction as a compass bearing, so the heading
+// in degrees can be used directly).
+function airportMarkerElement(airbase: Theater["airbases"][number]): HTMLElement {
+  const el = document.createElement("div");
+  el.style.width = "26px";
+  el.style.height = "26px";
+  el.style.cursor = "pointer";
+
+  if (airbase.category === "helipad") {
+    el.innerHTML = `
+      <svg width="26" height="26" viewBox="0 0 26 26">
+        <circle cx="13" cy="13" r="10" fill="#fff" stroke="#1d3557" stroke-width="2" />
+        <text x="13" y="17.5" text-anchor="middle" font-size="11" font-weight="700" font-family="system-ui, sans-serif" fill="#1d3557">H</text>
+      </svg>
+    `;
+    return el;
+  }
+
+  if (airbase.category === "airdrome") {
+    const heading = airbase.runways[0] ? airbase.runways[0].designators[0] * 10 : 0;
+    el.innerHTML = `
+      <svg width="26" height="26" viewBox="0 0 26 26">
+        <circle cx="13" cy="13" r="10" fill="#fff" stroke="#1d3557" stroke-width="2" />
+        <rect x="11.5" y="6.5" width="3" height="13" rx="1" fill="#1d3557" transform="rotate(${heading} 13 13)" />
+      </svg>
+    `;
+    return el;
+  }
+
+  el.innerHTML = `
+    <svg width="26" height="26" viewBox="0 0 26 26">
+      <circle cx="13" cy="13" r="8" fill="#fff" stroke="#c02020" stroke-width="2" />
+    </svg>
+  `;
+  return el;
+}
+
 function popupHtml(airbase: Theater["airbases"][number]): string {
   const runways = airbase.runways
     .map((rw) => `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m`)
@@ -54,8 +93,8 @@ export function TheaterMap({ theater }: TheaterMapProps) {
       const lngLat: [number, number] = [airbase.position.lon, airbase.position.lat];
       bounds.extend(lngLat);
 
-      const popup = new maplibregl.Popup({ offset: 12 }).setHTML(popupHtml(airbase));
-      const marker = new maplibregl.Marker({ color: "#c02020" })
+      const popup = new maplibregl.Popup({ offset: 14 }).setHTML(popupHtml(airbase));
+      const marker = new maplibregl.Marker({ element: airportMarkerElement(airbase) })
         .setLngLat(lngLat)
         .setPopup(popup)
         .addTo(map);
