@@ -1,7 +1,7 @@
-import type { Theater } from "@dcs-flight-planner/core";
+import type { MapView, Theater } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { addHillshadeLayer, MeasureControl, ReliefControl } from "./mapControls";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
@@ -71,8 +71,29 @@ interface TheaterMapProps {
   theater: Theater;
 }
 
-export function TheaterMap({ theater }: TheaterMapProps) {
+export interface TheaterMapHandle {
+  getView: () => MapView;
+  setView: (view: MapView) => void;
+}
+
+export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
+  { theater },
+  ref,
+) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<maplibregl.Map | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    getView: () => {
+      const map = mapRef.current;
+      if (!map) return { center: [42, 43], zoom: 6 };
+      const center = map.getCenter();
+      return { center: [center.lng, center.lat], zoom: map.getZoom() };
+    },
+    setView: (view) => {
+      mapRef.current?.jumpTo({ center: view.center, zoom: view.zoom });
+    },
+  }));
 
   useEffect(() => {
     const container = containerRef.current;
@@ -84,6 +105,7 @@ export function TheaterMap({ theater }: TheaterMapProps) {
       center: [42, 43],
       zoom: 6,
     });
+    mapRef.current = map;
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
@@ -115,8 +137,9 @@ export function TheaterMap({ theater }: TheaterMapProps) {
     return () => {
       for (const marker of markers) marker.remove();
       map.remove();
+      mapRef.current = null;
     };
   }, [theater]);
 
   return <div ref={containerRef} data-testid="theater-map" style={{ width: "100%", height: "100%" }} />;
-}
+});
