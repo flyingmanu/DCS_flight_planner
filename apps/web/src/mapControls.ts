@@ -1,4 +1,4 @@
-import { distanceKm, distanceNm } from "@dcs-flight-planner/core";
+import { distanceKm } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 
 const HILLSHADE_SOURCE_ID = "terrain-dem";
@@ -72,8 +72,20 @@ export class ReliefControl implements maplibregl.IControl {
 const MEASURE_LINE_SOURCE_ID = "measure-line";
 const MEASURE_LINE_LAYER_ID = "measure-line-layer";
 
-function formatDistance(km: number, nm: number): string {
-  return `${km.toFixed(1)} km · ${nm.toFixed(1)} NM`;
+const KM_PER_NM = 1.852;
+
+function formatDistance(km: number): string {
+  return `${km.toFixed(1)} km · ${(km / KM_PER_NM).toFixed(1)} NM`;
+}
+
+function cumulativeDistanceKm(points: maplibregl.LngLat[]): number {
+  let km = 0;
+  for (let i = 1; i < points.length; i++) {
+    const a = { lat: points[i - 1]!.lat, lon: points[i - 1]!.lng };
+    const b = { lat: points[i]!.lat, lon: points[i]!.lng };
+    km += distanceKm(a, b);
+  }
+  return km;
 }
 
 function pointMarkerElement(): HTMLElement {
@@ -102,10 +114,10 @@ function labelMarkerElement(text: string): HTMLElement {
 }
 
 /**
- * Toggle button that starts a two-click distance measurement: first click
- * places point A, second click places point B and draws the segment with
- * its great-circle distance in km/NM. A new measurement (button pressed
- * again) clears the previous one.
+ * Toggle button that starts a running distance measurement: each click adds
+ * another point to the path and the cumulative distance (km/NM) updates.
+ * Right-click resets the current path without leaving measuring mode.
+ * Escape (or pressing the button again) turns the tool off entirely.
  */
 export class MeasureControl implements maplibregl.IControl {
   private map?: maplibregl.Map;
@@ -113,8 +125,13 @@ export class MeasureControl implements maplibregl.IControl {
   private button!: HTMLButtonElement;
   private active = false;
   private points: maplibregl.LngLat[] = [];
-  private markers: maplibregl.Marker[] = [];
+  private pointMarkers: maplibregl.Marker[] = [];
+  private labelMarker: maplibregl.Marker | null = null;
   private readonly onClick = (e: maplibregl.MapMouseEvent) => this.handleMapClick(e);
+  private readonly onContextMenu = (e: maplibregl.MapMouseEvent) => {
+    e.preventDefault();
+    this.resetPath();
+  };
   private readonly onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape") this.deactivate();
   };
@@ -123,7 +140,7 @@ export class MeasureControl implements maplibregl.IControl {
     this.map = map;
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    this.button = controlButton("📏", "Mesurer une distance (clic, puis clic)");
+    this.button = controlButton("📏", "Mesurer une distance (clic pour ajouter un point, clic droit pour réinitialiser)");
     this.button.addEventListener("click", () => this.toggle());
     this.container.appendChild(this.button);
 
@@ -159,11 +176,12 @@ export class MeasureControl implements maplibregl.IControl {
 
   private activate(): void {
     if (!this.map) return;
-    this.clearMeasurement();
+    this.resetPath();
     this.active = true;
     this.button.style.backgroundColor = "#dbeafe";
     this.map.getCanvas().style.cursor = "crosshair";
     this.map.on("click", this.onClick);
+    this.map.on("contextmenu", this.onContextMenu);
     window.addEventListener("keydown", this.onKeyDown);
   }
 
@@ -173,13 +191,17 @@ export class MeasureControl implements maplibregl.IControl {
     this.button.style.backgroundColor = "";
     this.map.getCanvas().style.cursor = "";
     this.map.off("click", this.onClick);
+    this.map.off("contextmenu", this.onContextMenu);
     window.removeEventListener("keydown", this.onKeyDown);
+    this.resetPath();
   }
 
-  private clearMeasurement(): void {
+  private resetPath(): void {
     this.points = [];
-    for (const marker of this.markers) marker.remove();
-    this.markers = [];
+    for (const marker of this.pointMarkers) marker.remove();
+    this.pointMarkers = [];
+    this.labelMarker?.remove();
+    this.labelMarker = null;
     const source = this.map?.getSource(MEASURE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
     source?.setData({ type: "FeatureCollection", features: [] });
   }
@@ -187,11 +209,10 @@ export class MeasureControl implements maplibregl.IControl {
   private handleMapClick(e: maplibregl.MapMouseEvent): void {
     if (!this.map) return;
     this.points.push(e.lngLat);
-    this.markers.push(new maplibregl.Marker({ element: pointMarkerElement() }).setLngLat(e.lngLat).addTo(this.map));
+    this.pointMarkers.push(new maplibregl.Marker({ element: pointMarkerElement() }).setLngLat(e.lngLat).addTo(this.map));
 
     if (this.points.length < 2) return;
 
-    const [a, b] = this.points as [maplibregl.LngLat, maplibregl.LngLat];
     const source = this.map.getSource(MEASURE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource;
     source.setData({
       type: "FeatureCollection",
@@ -201,23 +222,21 @@ export class MeasureControl implements maplibregl.IControl {
           properties: {},
           geometry: {
             type: "LineString",
-            coordinates: [
-              [a.lng, a.lat],
-              [b.lng, b.lat],
-            ],
+            coordinates: this.points.map((p) => [p.lng, p.lat]),
           },
         },
       ],
     });
 
-    const pointA = { lat: a.lat, lon: a.lng };
-    const pointB = { lat: b.lat, lon: b.lng };
-    const label = formatDistance(distanceKm(pointA, pointB), distanceNm(pointA, pointB));
-    const midpoint: [number, number] = [(a.lng + b.lng) / 2, (a.lat + b.lat) / 2];
-    this.markers.push(
-      new maplibregl.Marker({ element: labelMarkerElement(label) }).setLngLat(midpoint).addTo(this.map),
-    );
-
-    this.deactivate();
+    const label = formatDistance(cumulativeDistanceKm(this.points));
+    const last = this.points[this.points.length - 1]!;
+    if (this.labelMarker) {
+      this.labelMarker.setLngLat(last);
+      this.labelMarker.getElement().textContent = label;
+    } else {
+      this.labelMarker = new maplibregl.Marker({ element: labelMarkerElement(label), offset: [0, -16] })
+        .setLngLat(last)
+        .addTo(this.map);
+    }
   }
 }

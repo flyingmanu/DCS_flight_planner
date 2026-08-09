@@ -29,7 +29,7 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Scaffolding du monorepo
 - [x] Extraction des données de théâtre DCS (aérodromes, runways) — Caucasus fait, fréquences pas encore disponibles via l'API DCS (à sourcer autrement)
 - [x] Modèle de données partagé (`packages/core`) — premier théâtre (Caucasus, 21 aérodromes) normalisé
-- [x] Carte interactive — marqueurs + popups sur fond OpenFreeMap (fond de carte "monde réel" provisoire, pas encore les cartes DCS elles-mêmes), relief (hillshade), outil de mesure de distance (km/NM)
+- [x] Carte interactive — marqueurs + popups sur fond OpenFreeMap (fond de carte "monde réel" provisoire, pas encore les cartes DCS elles-mêmes), relief (hillshade), outil de mesure de distance multi-points (km/NM, clic droit pour réinitialiser)
 - [x] Sauvegarde/chargement de "missions" (nom + vue carte, stocké en local dans le navigateur) — base pour y accrocher des infos propres à une mission plus tard (waypoints, notes...)
 - [x] Bandeau de statut au survol de la carte : Lat/Long (DDM, style F-16), MGRS, altitude terrain (ft/m)
 - [x] Création d'objets de mission (menu Objet) : points (aéronautique, référence, push/exit, CP, IP, target/DMPI, LZ) et polygones (libre, rectangle orienté, cercle, orbite aéronautique hold/AAR main gauche-droite), sauvegardés avec la mission
