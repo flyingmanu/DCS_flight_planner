@@ -1,10 +1,11 @@
 import type { Mission, Theater } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
+import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { FileMenu } from "./FileMenu";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { SaveAsDialog } from "./SaveAsDialog";
-import { TheaterMap, type TheaterMapHandle } from "./TheaterMap";
+import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
 
 const theater = caucasus as Theater;
 const UNTITLED = "Sans titre";
@@ -15,6 +16,7 @@ function App() {
   const [activeMissionId, setActiveMissionId] = useState<string | null>(null);
   const [activeMissionName, setActiveMissionName] = useState(UNTITLED);
   const [saveAsOpen, setSaveAsOpen] = useState(false);
+  const [hover, setHover] = useState<HoverInfo | null>(null);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -96,8 +98,9 @@ function App() {
         </div>
       </header>
       <div style={{ flex: 1, minHeight: 0 }}>
-        <TheaterMap ref={mapRef} theater={theater} />
+        <TheaterMap ref={mapRef} theater={theater} onHover={setHover} />
       </div>
+      <CoordinateStatusBar hover={hover} />
       {saveAsOpen && (
         <SaveAsDialog
           defaultName={activeMissionName === UNTITLED ? "" : activeMissionName}

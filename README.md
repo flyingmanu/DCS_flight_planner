@@ -31,6 +31,7 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Modèle de données partagé (`packages/core`) — premier théâtre (Caucasus, 21 aérodromes) normalisé
 - [x] Carte interactive — marqueurs + popups sur fond OpenFreeMap (fond de carte "monde réel" provisoire, pas encore les cartes DCS elles-mêmes), relief (hillshade), outil de mesure de distance (km/NM)
 - [x] Sauvegarde/chargement de "missions" (nom + vue carte, stocké en local dans le navigateur) — base pour y accrocher des infos propres à une mission plus tard (waypoints, notes...)
+- [x] Bandeau de statut au survol de la carte : Lat/Long (DDM, style F-16), MGRS, altitude terrain (ft/m)
 - [ ] Planification de route / waypoints
 - [ ] Export kneeboard
 - [ ] Application desktop (Tauri)

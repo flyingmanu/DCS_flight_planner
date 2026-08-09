@@ -2,6 +2,7 @@ import type { MapView, Theater } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, MeasureControl, ReliefControl } from "./mapControls";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
@@ -67,8 +68,15 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
   `;
 }
 
+export interface HoverInfo {
+  lat: number;
+  lon: number;
+  elevationM: number | null;
+}
+
 interface TheaterMapProps {
   theater: Theater;
+  onHover?: (info: HoverInfo | null) => void;
 }
 
 export interface TheaterMapHandle {
@@ -77,11 +85,13 @@ export interface TheaterMapHandle {
 }
 
 export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
-  { theater },
+  { theater, onHover },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  const onHoverRef = useRef(onHover);
+  onHoverRef.current = onHover;
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -114,6 +124,21 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       map.addControl(new MeasureControl(), "top-left");
     });
 
+    // Monotonically increasing id so a slow elevation lookup for a
+    // now-stale cursor position can't overwrite a newer one.
+    let hoverRequestId = 0;
+    map.on("mousemove", (e) => {
+      const requestId = ++hoverRequestId;
+      const lat = e.lngLat.lat;
+      const lon = e.lngLat.lng;
+      onHoverRef.current?.({ lat, lon, elevationM: null });
+      getElevationAt(lon, lat).then((elevationM) => {
+        if (requestId !== hoverRequestId) return;
+        onHoverRef.current?.({ lat, lon, elevationM });
+      });
+    });
+    map.on("mouseout", () => onHoverRef.current?.(null));
+
     const bounds = new maplibregl.LngLatBounds();
     const markers: maplibregl.Marker[] = [];
 
@@ -138,6 +163,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       for (const marker of markers) marker.remove();
       map.remove();
       mapRef.current = null;
+      onHoverRef.current?.(null);
     };
   }, [theater]);
 
