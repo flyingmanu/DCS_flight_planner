@@ -1,5 +1,5 @@
 import type { Dmpi, Flight, LatLon, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
-import { metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
+import { DEFAULT_FLIGHT_COLOR, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
@@ -20,6 +20,9 @@ import type { CreationRequest, ObjectDraft } from "./placement";
 const theater = caucasus as Theater;
 const UNTITLED = "Untitled";
 
+/** ObjectDraft narrowed to the kinds that become a MissionObject (waypoints are routed elsewhere). */
+type PlaceableObjectDraft = Exclude<ObjectDraft, { type: "waypoint" }>;
+
 const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
   freeform: "Zone",
   rectangle: "Rectangular zone",
@@ -27,12 +30,12 @@ const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
   orbit: "Orbit",
 };
 
-function defaultObjectName(draft: ObjectDraft): string {
+function defaultObjectName(draft: PlaceableObjectDraft): string {
   if (draft.type === "point") return POINT_KIND_LABEL[draft.kind];
   return POLYGON_KIND_DEFAULT_NAME[draft.shape.kind] ?? "Object";
 }
 
-function draftToObject(draft: ObjectDraft, name: string): MissionObject {
+function draftToObject(draft: PlaceableObjectDraft, name: string): MissionObject {
   const id = crypto.randomUUID();
   if (draft.type === "point") {
     const dmpis: Dmpi[] | undefined =
@@ -40,6 +43,10 @@ function draftToObject(draft: ObjectDraft, name: string): MissionObject {
     return { id, type: "point", name, kind: draft.kind, position: draft.position, dmpis };
   }
   return { id, type: "polygon", name, shape: draft.shape };
+}
+
+function makeBlankFlight(): Flight {
+  return { id: crypto.randomUUID(), name: "", aircraftType: "", size: 2, taskType: "CAP", color: DEFAULT_FLIGHT_COLOR, route: [] };
 }
 
 function App() {
@@ -51,12 +58,12 @@ function App() {
   const [hover, setHover] = useState<HoverInfo | null>(null);
   const [objects, setObjects] = useState<MissionObject[]>([]);
   const [creationRequest, setCreationRequest] = useState<CreationRequest | null>(null);
-  const [pendingDraft, setPendingDraft] = useState<ObjectDraft | null>(null);
+  const [pendingDraft, setPendingDraft] = useState<PlaceableObjectDraft | null>(null);
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
   const [objectListOpen, setObjectListOpen] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
-  const [flightForm, setFlightForm] = useState<{ flight?: Flight } | null>(null);
+  const [flightForm, setFlightForm] = useState<{ flight: Flight; isNew: boolean } | null>(null);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -184,19 +191,25 @@ function App() {
     if (obj?.type === "point") applyGroundElevation(id, obj.position);
   }
 
-  function handleFlightSave(flight: Flight) {
+  function handleFlightSave() {
+    if (!flightForm) return;
+    const flight = flightForm.flight;
     setFlights((prev) => (prev.some((f) => f.id === flight.id) ? prev.map((f) => (f.id === flight.id ? flight : f)) : [...prev, flight]));
     setFlightForm(null);
   }
 
   function handleFlightDelete(id: string) {
     setFlights((prev) => prev.filter((f) => f.id !== id));
-    setFlightForm(null);
+    if (flightForm?.flight.id === id) setFlightForm(null);
+  }
+
+  function handleNewFlight() {
+    setFlightForm({ flight: makeBlankFlight(), isNew: true });
   }
 
   function handleEditFlight(id: string) {
     const flight = flights.find((f) => f.id === id);
-    if (flight) setFlightForm({ flight });
+    if (flight) setFlightForm({ flight: { ...flight }, isNew: false });
   }
 
   return (
@@ -233,7 +246,7 @@ function App() {
             onDelete={handleDelete}
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
-          <FlightMenu flights={flights} onNewFlight={() => setFlightForm({})} onEditFlight={handleEditFlight} />
+          <FlightMenu flights={flights} onNewFlight={handleNewFlight} onEditFlight={handleEditFlight} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
@@ -247,13 +260,30 @@ function App() {
           ref={mapRef}
           theater={theater}
           objects={objects}
+          flights={flights}
+          editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
           onDraftComplete={(draft) => {
             setCreationRequest(null);
+            if (draft.type === "waypoint") {
+              setFlightForm((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      flight: {
+                        ...prev.flight,
+                        route: [...(prev.flight.route ?? []), { id: crypto.randomUUID(), position: draft.position }],
+                      },
+                    }
+                  : prev,
+              );
+              return;
+            }
             setPendingDraft(draft);
           }}
           onCreationCancel={() => setCreationRequest(null)}
           onSelectObject={setSelectedObjectId}
+          onSelectFlight={handleEditFlight}
           onMovePoint={handleMovePoint}
           onMovePolygon={handleMovePolygon}
           onHover={setHover}
@@ -286,13 +316,16 @@ function App() {
           onClose={() => setObjectListOpen(false)}
         />
       )}
-      {flightForm && (
+      {flightForm && creationRequest?.kind !== "waypoint" && (
         <FlightFormDialog
           airbases={theater.airbases}
-          initial={flightForm.flight}
+          flight={flightForm.flight}
+          isNew={flightForm.isNew}
+          onChange={(flight) => setFlightForm((prev) => (prev ? { ...prev, flight } : prev))}
           onSave={handleFlightSave}
-          onDelete={flightForm.flight ? () => handleFlightDelete(flightForm.flight!.id) : undefined}
+          onDelete={flightForm.isNew ? undefined : () => handleFlightDelete(flightForm.flight.id)}
           onCancel={() => setFlightForm(null)}
+          onAddWaypointOnMap={() => setCreationRequest({ kind: "waypoint" })}
         />
       )}
       {saveAsOpen && (

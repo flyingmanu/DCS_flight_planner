@@ -1,3 +1,5 @@
+import type { LatLon } from "./geo.js";
+
 export type TaskType = "CAP" | "STRIKE" | "SEAD" | "ESCORT" | "CAS" | "RECON" | "AEW" | "TANKER" | "TRANSPORT" | "OTHER";
 
 export const TASK_TYPE_LABEL: Record<TaskType, string> = {
@@ -15,15 +17,26 @@ export const TASK_TYPE_LABEL: Record<TaskType, string> = {
 
 export const DEFAULT_FLIGHT_COLOR = "#1d4ed8";
 
+export interface Waypoint {
+  id: string;
+  /** Optional custom label; defaults to "WP{n}" (1-based position in the route) when absent. */
+  name?: string;
+  position: LatLon;
+  altitudeFt?: number;
+  airspeedKt?: number;
+}
+
 /**
- * A flight/package, independent of the route it will eventually fly
- * (waypoints/TOTs are a separate, future piece). Attributes mirror what
- * Combat Flite tracks per flight in its flight editor.
+ * A flight/package. Attributes mirror what Combat Flite tracks per flight
+ * in its flight editor.
  */
 export interface Flight {
   id: string;
   /** Callsign and flight number, e.g. "Enfield 1-1". */
   name: string;
+  /** References Aircraft.id in the shared catalog, when picked from it. */
+  aircraftId?: string;
+  /** Display name of the aircraft type, kept in sync with aircraftId when set. */
   aircraftType: string;
   /** Number of aircraft in the flight. */
   size: number;
@@ -40,4 +53,5 @@ export interface Flight {
   iffMode3?: string;
   notes?: string;
   color?: string;
+  route?: Waypoint[];
 }

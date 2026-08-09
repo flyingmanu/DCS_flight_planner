@@ -1,8 +1,9 @@
-import type { LatLon, MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
-import { DEFAULT_POLYGON_COLOR } from "@dcs-flight-planner/core";
+import type { Flight, LatLon, MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
+import { DEFAULT_FLIGHT_COLOR, DEFAULT_POLYGON_COLOR, findAircraft } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { flightMarkerElement } from "./aircraftIcons";
 import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
 import { orbitArrow, polygonRing, translatePolygonShape } from "./objectGeometry";
@@ -21,6 +22,11 @@ const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
 const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
 const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
 const OBJECTS_ORBIT_ANCHOR_LAYER_ID = "mission-objects-orbit-anchors-layer";
+const EDITING_ROUTE_LINE_SOURCE_ID = "editing-route-line";
+const EDITING_ROUTE_LINE_LAYER_ID = "editing-route-line-layer";
+const EDITING_ROUTE_POINTS_SOURCE_ID = "editing-route-points";
+const EDITING_ROUTE_POINTS_LAYER_ID = "editing-route-points-layer";
+const EDITING_ROUTE_LABELS_LAYER_ID = "editing-route-labels-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -89,10 +95,14 @@ export interface HoverInfo {
 interface TheaterMapProps {
   theater: Theater;
   objects: MissionObject[];
+  flights: Flight[];
+  /** The flight currently open in the editor, if any - its route is drawn live on the map. */
+  editingFlight?: Flight | null;
   creationRequest: CreationRequest | null;
   onDraftComplete: (draft: ObjectDraft) => void;
   onCreationCancel: () => void;
   onSelectObject?: (id: string) => void;
+  onSelectFlight?: (id: string) => void;
   onMovePoint?: (id: string, position: LatLon) => void;
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
   onHover?: (info: HoverInfo | null) => void;
@@ -149,7 +159,20 @@ function orbitAnchorFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureCol
 }
 
 export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
-  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onSelectObject, onMovePoint, onMovePolygon, onHover },
+  {
+    theater,
+    objects,
+    flights,
+    editingFlight,
+    creationRequest,
+    onDraftComplete,
+    onCreationCancel,
+    onSelectObject,
+    onSelectFlight,
+    onMovePoint,
+    onMovePolygon,
+    onHover,
+  },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -162,6 +185,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onCreationCancelRef.current = onCreationCancel;
   const onSelectObjectRef = useRef(onSelectObject);
   onSelectObjectRef.current = onSelectObject;
+  const onSelectFlightRef = useRef(onSelectFlight);
+  onSelectFlightRef.current = onSelectFlight;
   const onMovePointRef = useRef(onMovePoint);
   onMovePointRef.current = onMovePoint;
   const onMovePolygonRef = useRef(onMovePolygon);
@@ -198,6 +223,28 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       ensureOrbitArrowImage(map);
       map.addControl(new ReliefControl(), "top-left");
       map.addControl(new MeasureControl(), "top-left");
+
+      map.addSource(EDITING_ROUTE_LINE_SOURCE_ID, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+      map.addLayer({
+        id: EDITING_ROUTE_LINE_LAYER_ID,
+        type: "line",
+        source: EDITING_ROUTE_LINE_SOURCE_ID,
+        paint: { "line-color": ["get", "color"], "line-width": 2, "line-dasharray": [3, 2] },
+      });
+      map.addSource(EDITING_ROUTE_POINTS_SOURCE_ID, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+      map.addLayer({
+        id: EDITING_ROUTE_POINTS_LAYER_ID,
+        type: "circle",
+        source: EDITING_ROUTE_POINTS_SOURCE_ID,
+        paint: { "circle-radius": 9, "circle-color": ["get", "color"], "circle-stroke-width": 2, "circle-stroke-color": "#ffffff" },
+      });
+      map.addLayer({
+        id: EDITING_ROUTE_LABELS_LAYER_ID,
+        type: "symbol",
+        source: EDITING_ROUTE_POINTS_SOURCE_ID,
+        layout: { "text-field": ["get", "label"], "text-size": 10, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true },
+        paint: { "text-color": "#ffffff" },
+      });
     });
 
     // Monotonically increasing id so a slow elevation lookup for a
@@ -400,6 +447,84 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       for (const marker of pointMarkers) marker.remove();
     };
   }, [objects]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const airbaseById = new Map(theater.airbases.map((ab) => [ab.id, ab]));
+    // Stack multiple flights departing from the same airbase in a small vertical fan.
+    const countByAirbase = new Map<string, number>();
+    const flightMarkers: maplibregl.Marker[] = [];
+
+    for (const flight of flights) {
+      const airbase = flight.departureAirbaseId ? airbaseById.get(flight.departureAirbaseId) : undefined;
+      if (!airbase) continue;
+
+      const index = countByAirbase.get(airbase.id) ?? 0;
+      countByAirbase.set(airbase.id, index + 1);
+
+      const category = findAircraft(flight.aircraftId)?.category ?? "fixed-wing";
+      const element = flightMarkerElement(category, flight.color ?? DEFAULT_FLIGHT_COLOR);
+      const marker = new maplibregl.Marker({ element, offset: [22, -14 - index * 22] })
+        .setLngLat([airbase.position.lon, airbase.position.lat])
+        .addTo(map);
+
+      element.title = flight.name;
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onSelectFlightRef.current?.(flight.id);
+      });
+
+      flightMarkers.push(marker);
+    }
+
+    return () => {
+      for (const marker of flightMarkers) marker.remove();
+    };
+  }, [flights, theater]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    function render() {
+      if (!map) return;
+      const route = editingFlight?.route ?? [];
+      const color = editingFlight?.color ?? DEFAULT_FLIGHT_COLOR;
+
+      const lineData: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features:
+          route.length >= 2
+            ? [
+                {
+                  type: "Feature",
+                  properties: { color },
+                  geometry: { type: "LineString", coordinates: route.map((wp) => [wp.position.lon, wp.position.lat]) },
+                },
+              ]
+            : [],
+      };
+      const pointsData: GeoJSON.FeatureCollection = {
+        type: "FeatureCollection",
+        features: route.map((wp, i) => ({
+          type: "Feature",
+          properties: { color, label: String(i + 1) },
+          geometry: { type: "Point", coordinates: [wp.position.lon, wp.position.lat] },
+        })),
+      };
+
+      (map.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(lineData);
+      (map.getSource(EDITING_ROUTE_POINTS_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(pointsData);
+    }
+
+    if (map.isStyleLoaded() && map.getSource(EDITING_ROUTE_LINE_SOURCE_ID)) {
+      render();
+    } else {
+      map.once("load", render);
+    }
+  }, [editingFlight]);
 
   useEffect(() => {
     const map = mapRef.current;

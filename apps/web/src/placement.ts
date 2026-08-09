@@ -20,11 +20,13 @@ export type CreationRequest =
   | { kind: "polygon"; polygonKind: "freeform" }
   | { kind: "polygon"; polygonKind: "rectangle" }
   | { kind: "polygon"; polygonKind: "circle" }
-  | { kind: "polygon"; polygonKind: "orbit"; hand: Hand; variant: OrbitVariant };
+  | { kind: "polygon"; polygonKind: "orbit"; hand: Hand; variant: OrbitVariant }
+  | { kind: "waypoint" };
 
 export type ObjectDraft =
   | { type: "point"; kind: PointKind; position: LatLon }
-  | { type: "polygon"; shape: PolygonShape };
+  | { type: "polygon"; shape: PolygonShape }
+  | { type: "waypoint"; position: LatLon };
 
 const DRAFT_SOURCE_ID = "draft-shape";
 
@@ -133,6 +135,13 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
   if (request.kind === "point") {
     on("click", (e: maplibregl.MapMouseEvent) => {
       finish({ type: "point", kind: request.pointKind, position: toLatLon(e.lngLat) });
+    });
+    return teardown;
+  }
+
+  if (request.kind === "waypoint") {
+    on("click", (e: maplibregl.MapMouseEvent) => {
+      finish({ type: "waypoint", position: toLatLon(e.lngLat) });
     });
     return teardown;
   }
