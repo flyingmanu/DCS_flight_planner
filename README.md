@@ -33,7 +33,7 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Sauvegarde/chargement de "missions" (nom + vue carte, stocké en local dans le navigateur) — base pour y accrocher des infos propres à une mission plus tard (waypoints, notes...)
 - [x] Bandeau de statut au survol de la carte : Lat/Long (DDM, style F-16), MGRS, altitude terrain (ft/m)
 - [x] Création d'objets de mission (menu Objet) : points (aéronautique, référence, push/exit, CP, IP, target/DMPI, LZ) et polygones (libre, rectangle orienté, cercle, orbite aéronautique hold/AAR main gauche-droite), sauvegardés avec la mission
-- [ ] Édition/suppression des objets existants (liste, déplacement, renommage)
+- [x] Édition des objets (clic sur l'objet → panneau à droite) : nom, couleur, coordonnées, altitude DMPI, orientation et taille selon le type ; suppression
 - [ ] Planification de route / waypoints
 - [ ] Export kneeboard
 - [ ] Application desktop (Tauri)

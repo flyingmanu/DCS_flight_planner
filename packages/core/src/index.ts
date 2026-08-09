@@ -6,7 +6,7 @@ export type { LatLon } from "./geo.js";
 export type { MapView, Mission } from "./mission.js";
 export { formatLatDdm, formatLatLonDdm, formatLonDdm, toMgrs } from "./coordinates.js";
 export { metersToFeet } from "./units.js";
-export { POINT_KIND_LABEL } from "./objects.js";
+export { DEFAULT_ORBIT_TURN_RADIUS_NM, DEFAULT_POINT_COLOR, DEFAULT_POLYGON_COLOR, POINT_KIND_LABEL } from "./objects.js";
 export type { Dmpi, Hand, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
 export { toLocalMeters, fromLocalMeters } from "./geo.js";
 export type { LocalMeters } from "./geo.js";

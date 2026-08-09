@@ -1,5 +1,5 @@
 import type { MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
-import { POINT_KIND_LABEL } from "@dcs-flight-planner/core";
+import { DEFAULT_POLYGON_COLOR } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
@@ -88,6 +88,7 @@ interface TheaterMapProps {
   creationRequest: CreationRequest | null;
   onDraftComplete: (draft: ObjectDraft) => void;
   onCreationCancel: () => void;
+  onSelectObject?: (id: string) => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -97,7 +98,7 @@ export interface TheaterMapHandle {
 }
 
 export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function TheaterMap(
-  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onHover },
+  { theater, objects, creationRequest, onDraftComplete, onCreationCancel, onSelectObject, onHover },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -108,6 +109,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onDraftCompleteRef.current = onDraftComplete;
   const onCreationCancelRef = useRef(onCreationCancel);
   onCreationCancelRef.current = onCreationCancel;
+  const onSelectObjectRef = useRef(onSelectObject);
+  onSelectObjectRef.current = onSelectObject;
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -195,7 +198,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         type: "FeatureCollection",
         features: polygons.map((p) => ({
           type: "Feature",
-          properties: { name: p.name },
+          properties: { id: p.id, name: p.name, color: p.color ?? DEFAULT_POLYGON_COLOR },
           geometry: { type: "Polygon", coordinates: [polygonRing(p)] },
         })),
       };
@@ -208,13 +211,23 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
           id: OBJECTS_POLYGON_FILL_ID,
           type: "fill",
           source: OBJECTS_POLYGON_SOURCE_ID,
-          paint: { "fill-color": "#0f766e", "fill-opacity": 0.12 },
+          paint: { "fill-color": ["get", "color"], "fill-opacity": 0.15 },
         });
         map.addLayer({
           id: OBJECTS_POLYGON_LINE_ID,
           type: "line",
           source: OBJECTS_POLYGON_SOURCE_ID,
-          paint: { "line-color": "#0f766e", "line-width": 2 },
+          paint: { "line-color": ["get", "color"], "line-width": 2 },
+        });
+        map.on("click", OBJECTS_POLYGON_FILL_ID, (e) => {
+          const id = e.features?.[0]?.properties?.id as string | undefined;
+          if (id) onSelectObjectRef.current?.(id);
+        });
+        map.on("mouseenter", OBJECTS_POLYGON_FILL_ID, () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+        map.on("mouseleave", OBJECTS_POLYGON_FILL_ID, () => {
+          map.getCanvas().style.cursor = "";
         });
       }
     }
@@ -228,12 +241,13 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const pointMarkers: maplibregl.Marker[] = [];
     for (const obj of objects) {
       if (obj.type !== "point") continue;
-      const popup = new maplibregl.Popup({ offset: 14 }).setHTML(
-        `<strong>${obj.name}</strong><br />${POINT_KIND_LABEL[obj.kind]}`,
-      );
-      const marker = new maplibregl.Marker({ element: pointMarkerElement(obj.kind) })
+      const element = pointMarkerElement(obj.kind, obj.color);
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onSelectObjectRef.current?.(obj.id);
+      });
+      const marker = new maplibregl.Marker({ element })
         .setLngLat([obj.position.lon, obj.position.lat])
-        .setPopup(popup)
         .addTo(map);
       pointMarkers.push(marker);
     }

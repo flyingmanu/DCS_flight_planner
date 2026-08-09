@@ -13,10 +13,24 @@ export const POINT_KIND_LABEL: Record<PointKind, string> = {
   lz: "LZ",
 };
 
+export const DEFAULT_POINT_COLOR: Record<PointKind, string> = {
+  airNav: "#6d28d9",
+  reference: "#374151",
+  push: "#15803d",
+  exit: "#c2410c",
+  cp: "#1d4ed8",
+  ip: "#0f766e",
+  target: "#c02020",
+  lz: "#15803d",
+};
+
+export const DEFAULT_POLYGON_COLOR = "#0f766e";
+
 export interface Dmpi {
   id: string;
   name: string;
   position: LatLon;
+  elevationFt?: number;
 }
 
 export interface PointObject {
@@ -27,6 +41,8 @@ export interface PointObject {
   position: LatLon;
   /** Only meaningful for kind "target": the target is itself a DMPI, and can carry more. */
   dmpis?: Dmpi[];
+  /** Overrides the kind's default marker color when set. */
+  color?: string;
 }
 
 export type Hand = "left" | "right";
@@ -43,13 +59,18 @@ export type PolygonShape =
       variant: OrbitVariant;
       courseDeg: number;
       legLengthNm: number;
+      turnRadiusNm?: number;
     };
+
+export const DEFAULT_ORBIT_TURN_RADIUS_NM = 1;
 
 export interface PolygonObject {
   id: string;
   type: "polygon";
   name: string;
   shape: PolygonShape;
+  /** Overrides the default fill/line color when set. */
+  color?: string;
 }
 
 export type MissionObject = PointObject | PolygonObject;

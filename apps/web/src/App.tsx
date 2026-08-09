@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
+import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectMenu } from "./ObjectMenu";
 import { PromptDialog } from "./PromptDialog";
 import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
@@ -45,6 +46,8 @@ function App() {
   const [objects, setObjects] = useState<MissionObject[]>([]);
   const [creationRequest, setCreationRequest] = useState<CreationRequest | null>(null);
   const [pendingDraft, setPendingDraft] = useState<ObjectDraft | null>(null);
+  const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+  const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
 
   useEffect(() => {
     setMissions(listMissions());
@@ -109,6 +112,16 @@ function App() {
     setPendingDraft(null);
   }
 
+  function handleObjectEdit(updated: MissionObject) {
+    setObjects((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
+  }
+
+  function handleObjectDelete() {
+    if (!selectedObjectId) return;
+    setObjects((prev) => prev.filter((o) => o.id !== selectedObjectId));
+    setSelectedObjectId(null);
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -146,10 +159,19 @@ function App() {
             setPendingDraft(draft);
           }}
           onCreationCancel={() => setCreationRequest(null)}
+          onSelectObject={setSelectedObjectId}
           onHover={setHover}
         />
       </div>
       <CoordinateStatusBar hover={hover} />
+      {selectedObject && (
+        <ObjectEditPanel
+          object={selectedObject}
+          onChange={handleObjectEdit}
+          onDelete={handleObjectDelete}
+          onClose={() => setSelectedObjectId(null)}
+        />
+      )}
       {saveAsOpen && (
         <PromptDialog
           title="Enregistrer sous"
