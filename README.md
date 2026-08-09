@@ -19,8 +19,8 @@ tools/
 ## État d'avancement
 
 - [x] Scaffolding du monorepo
-- [ ] Extraction des données de théâtre DCS (aérodromes, runways, fréquences) — en cours
-- [ ] Modèle de données partagé (`packages/core`)
+- [x] Extraction des données de théâtre DCS (aérodromes, runways) — Caucasus fait, fréquences pas encore disponibles via l'API DCS (à sourcer autrement)
+- [x] Modèle de données partagé (`packages/core`) — premier théâtre (Caucasus, 21 aérodromes) normalisé
 - [ ] Carte interactive
 - [ ] Planification de route / waypoints
 - [ ] Export kneeboard

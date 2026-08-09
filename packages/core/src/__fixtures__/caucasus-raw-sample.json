@@ -1,0 +1,75 @@
+{
+  "theater": "Caucasus",
+  "airbases": [
+    {
+      "lon": 37.359783477556,
+      "point": {
+        "y": 43.00004196167,
+        "x": -4447.7905273438,
+        "z": 244021.984375
+      },
+      "callsign": "Anapa-Vityazevo",
+      "runways": [
+        {
+          "course": 2.4174582958221,
+          "Name": 22,
+          "position": "[max depth]",
+          "length": 2628.5646972656,
+          "width": 60
+        }
+      ],
+      "lat": 45.013174733772,
+      "desc": {
+        "life": 3600,
+        "attributes": {
+          "Airfields": true
+        },
+        "_origin": "",
+        "category": 0,
+        "typeName": "Anapa-Vityazevo",
+        "displayName": "Anapa-Vityazevo"
+      },
+      "coalition": 0,
+      "name": "Anapa-Vityazevo",
+      "category": 0,
+      "radioSilentMode": false,
+      "typeName": "Anapa-Vityazevo",
+      "alt": 43.00004196167
+    },
+    {
+      "lon": 38.925202300775,
+      "point": {
+        "y": 30.01003074646,
+        "x": 11652.913085938,
+        "z": 366766.3125
+      },
+      "callsign": "Krasnodar-Centre",
+      "runways": [
+        {
+          "course": -1.5174421072006,
+          "Name": 9,
+          "position": "[max depth]",
+          "length": 2334.5407714844,
+          "width": 60
+        }
+      ],
+      "lat": 45.087429883845,
+      "desc": {
+        "life": 3600,
+        "attributes": {
+          "Airfields": true
+        },
+        "_origin": "",
+        "category": 0,
+        "typeName": "Krasnodar-Center",
+        "displayName": "Krasnodar-Centre"
+      },
+      "coalition": 0,
+      "name": "Krasnodar-Center",
+      "category": 0,
+      "radioSilentMode": false,
+      "typeName": "Krasnodar-Center",
+      "alt": 30.01003074646
+    }
+  ]
+}

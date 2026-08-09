@@ -1,0 +1,489 @@
+{
+  "id": "caucasus",
+  "name": "Caucasus",
+  "airbases": [
+    {
+      "id": "anapa-vityazevo",
+      "name": "Anapa-Vityazevo",
+      "callsign": "Anapa-Vityazevo",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 45.013174733772,
+        "lon": 37.359783477556,
+        "altM": 43.00004196167
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2628.5646972656,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "batumi",
+      "name": "Batumi",
+      "callsign": "Batumi",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 41.603279859649,
+        "lon": 41.60927548351,
+        "altM": 10.044037818909
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 2070.3959960938,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "beslan",
+      "name": "Beslan",
+      "callsign": "Beslan",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 43.208500987381,
+        "lon": 44.588922553543,
+        "altM": 524.00579833984
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2842.931640625,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "gelendzhik",
+      "name": "Gelendzhik",
+      "callsign": "Gelendzhik",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 44.567674586004,
+        "lon": 38.004146350528,
+        "altM": 22.009923934937
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 1661.8295898438,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "gudauta",
+      "name": "Gudauta",
+      "callsign": "Gudauta",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 43.124233340197,
+        "lon": 40.564175768401,
+        "altM": 21.01003074646
+      },
+      "runways": [
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2389.5874023438,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "kobuleti",
+      "name": "Kobuleti",
+      "callsign": "Kobuleti",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 41.932105353453,
+        "lon": 41.876483823101,
+        "altM": 18.01001739502
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2257.6027832031,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "krasnodar-center",
+      "name": "Krasnodar-Center",
+      "callsign": "Krasnodar-Centre",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 45.087429883845,
+        "lon": 38.925202300775,
+        "altM": 30.01003074646
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2334.5407714844,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "krasnodar-pashkovsky",
+      "name": "Krasnodar-Pashkovsky",
+      "callsign": "Krasnodar-Pashkovsky",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 45.046099641543,
+        "lon": 39.203066906325,
+        "altM": 34.010036468506
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 2968.3833007812,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "krymsk",
+      "name": "Krymsk",
+      "callsign": "Krymsk",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 44.961383022734,
+        "lon": 37.985886938697,
+        "altM": 20.010303497314
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2052.3518066406,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "kutaisi",
+      "name": "Kutaisi",
+      "callsign": "Kutaisi",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 42.17915393769,
+        "lon": 42.4956840774,
+        "altM": 45.010047912598
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2419.0322265625,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "maykop-khanskaya",
+      "name": "Maykop-Khanskaya",
+      "callsign": "Maykop-Khanskaya",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 44.671440257355,
+        "lon": 40.021427482236,
+        "altM": 180.01019287109
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 3107.6345214844,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "mineralnye-vody",
+      "name": "Mineralnye Vody",
+      "callsign": "Mineralnye Vody",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 44.218646823807,
+        "lon": 43.100679733081,
+        "altM": 320.01031494141
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 3754.0329589844,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "mozdok",
+      "name": "Mozdok",
+      "callsign": "Mozdok",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 43.791303250938,
+        "lon": 44.620327262102,
+        "altM": 154.61184692383
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 2357.453125,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "nalchik",
+      "name": "Nalchik",
+      "callsign": "Nalchick",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 43.51007143853,
+        "lon": 43.625108736098,
+        "altM": 430.01040649414
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 2048.4140625,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "novorossiysk",
+      "name": "Novorossiysk",
+      "callsign": "Novorossiysk",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 44.673329604127,
+        "lon": 37.78622606048,
+        "altM": 40.010040283203
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 1718.8388671875,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "senaki-kolkhi",
+      "name": "Senaki-Kolkhi",
+      "callsign": "Senaki-Kolkhi",
+      "category": "airdrome",
+      "initialCoalition": 2,
+      "position": {
+        "lat": 42.238728081573,
+        "lon": 42.061021312856,
+        "altM": 13.239942550659
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2211.6474609375,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "sochi-adler",
+      "name": "Sochi-Adler",
+      "callsign": "Sochi-Adler",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 43.439378434051,
+        "lon": 39.924231880466,
+        "altM": 30.010034561157
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 2952.4521484375,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "soganlug",
+      "name": "Soganlug",
+      "callsign": "Soganlug",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 41.641163266787,
+        "lon": 44.947183065317,
+        "altM": 449.41024780273
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2399.349609375,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "sukhumi-babushara",
+      "name": "Sukhumi-Babushara",
+      "callsign": "Sukhumi-Babushara",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 42.852741071635,
+        "lon": 41.142447588488,
+        "altM": 13.338506698608
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 3419.2446289062,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "tbilisi-lochini",
+      "name": "Tbilisi-Lochini",
+      "callsign": "Tbilisi-Lochini",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 41.674720064437,
+        "lon": 44.946875226153,
+        "altM": 479.69479370117
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 2344.5847167969,
+          "widthM": 60
+        }
+      ]
+    },
+    {
+      "id": "vaziani",
+      "name": "Vaziani",
+      "callsign": "Vaziani",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 41.637735936262,
+        "lon": 45.01909093846,
+        "altM": 464.50045776367
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 2390.5002441406,
+          "widthM": 60
+        }
+      ]
+    }
+  ]
+}
