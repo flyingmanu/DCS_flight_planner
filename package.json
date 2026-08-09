@@ -1,0 +1,10 @@
+{
+  "name": "dcs-flight-planner",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Open-source, evolving equivalent of Combat Flite for DCS World mission/flight planning.",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
