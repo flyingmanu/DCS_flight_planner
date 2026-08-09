@@ -23,6 +23,18 @@ export function distanceNm(a: LatLon, b: LatLon): number {
   return distanceKm(a, b) / KM_PER_NM;
 }
 
+/** Initial great-circle bearing from `a` to `b`, in degrees true (0-360). */
+export function bearingDeg(a: LatLon, b: LatLon): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const lat1 = toRad(a.lat);
+  const lat2 = toRad(b.lat);
+  const dLon = toRad(b.lon - a.lon);
+
+  const y = Math.sin(dLon) * Math.cos(lat2);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
+}
+
 export interface LocalMeters {
   /** East offset from the origin, in meters. */
   x: number;

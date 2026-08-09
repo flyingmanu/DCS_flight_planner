@@ -1,8 +1,12 @@
 import {
+  addMinutesToClock,
   AIRCRAFT_CATALOG,
+  computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
   findAircraft,
+  formatEte,
   TASK_TYPE_LABEL,
+  totalRouteDistanceNm,
   type Airbase,
   type Flight,
   type LatLon,
@@ -40,6 +44,23 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
   const sortedAirbases = [...airbases].sort((a, b) => a.name.localeCompare(b.name));
   const aircraft = findAircraft(flight.aircraftId);
   const route = flight.route ?? [];
+  const legs = computeRouteLegs(route);
+
+  // Cumulative ETA per waypoint index (undefined until we have a takeoff time and every
+  // preceding leg's ETE, i.e. every waypoint from #2 onward has an airspeed set).
+  const etas: (string | null)[] = [];
+  let cumMin = 0;
+  let cumValid = true;
+  for (let i = 0; i < route.length; i++) {
+    if (i === 0) {
+      etas.push(flight.takeoffTime ?? null);
+      continue;
+    }
+    const leg = legs[i - 1];
+    if (!leg || leg.eteMin === undefined) cumValid = false;
+    cumMin += leg?.eteMin ?? 0;
+    etas.push(cumValid && flight.takeoffTime ? addMinutesToClock(flight.takeoffTime, cumMin) : null);
+  }
 
   function set<K extends keyof Flight>(key: K, value: Flight[K]) {
     onChange({ ...flight, [key]: value });
@@ -259,33 +280,49 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
           <span>Route ({route.length})</span>
         </div>
         {route.length === 0 && <div style={{ fontSize: 12, color: "var(--dfp-text-muted)", margin: "4px 0 8px" }}>No waypoints yet.</div>}
-        {route.map((wp, i) => (
-          <div key={wp.id} style={{ border: "1px solid var(--dfp-border)", borderRadius: "var(--dfp-radius-sm)", padding: 8, marginBottom: 6 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: 12, fontWeight: 700 }}>WP{i + 1}</span>
-              <button type="button" title="Remove" className="dfp-list-row-delete" onClick={() => removeWaypoint(wp.id)}>
-                🗑
-              </button>
+        {route.map((wp, i) => {
+          const leg = i > 0 ? legs[i - 1] : undefined;
+          const eta = etas[i];
+          return (
+            <div key={wp.id} style={{ border: "1px solid var(--dfp-border)", borderRadius: "var(--dfp-radius-sm)", padding: 8, marginBottom: 6 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 700 }}>WP{i + 1}</span>
+                <button type="button" title="Remove" className="dfp-list-row-delete" onClick={() => removeWaypoint(wp.id)}>
+                  🗑
+                </button>
+              </div>
+              {leg && (
+                <div style={{ fontSize: 11, color: "var(--dfp-text-muted)", marginBottom: 4 }}>
+                  {leg.distanceNm.toFixed(1)} NM · TRK {Math.round(leg.trackDeg).toString().padStart(3, "0")}°
+                  {leg.eteMin !== undefined && <> · ETE {formatEte(leg.eteMin)}</>}
+                  {eta && <> · ETA {eta}</>}
+                </div>
+              )}
+              <CoordinateFields point={wp.position} onChange={(position: LatLon) => updateWaypoint(wp.id, { position })} />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <input
+                  type="number"
+                  className="dfp-input"
+                  placeholder="Alt (ft)"
+                  value={wp.altitudeFt ?? ""}
+                  onChange={(e) => updateWaypoint(wp.id, { altitudeFt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
+                />
+                <input
+                  type="number"
+                  className="dfp-input"
+                  placeholder="Speed (kt)"
+                  value={wp.airspeedKt ?? ""}
+                  onChange={(e) => updateWaypoint(wp.id, { airspeedKt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
+                />
+              </div>
             </div>
-            <CoordinateFields point={wp.position} onChange={(position: LatLon) => updateWaypoint(wp.id, { position })} />
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              <input
-                type="number"
-                className="dfp-input"
-                placeholder="Alt (ft)"
-                value={wp.altitudeFt ?? ""}
-                onChange={(e) => updateWaypoint(wp.id, { altitudeFt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
-              />
-              <input
-                type="number"
-                className="dfp-input"
-                placeholder="Speed (kt)"
-                value={wp.airspeedKt ?? ""}
-                onChange={(e) => updateWaypoint(wp.id, { airspeedKt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
-              />
-            </div>
+          );
+        })}
+        {legs.length > 0 && (
+          <div style={{ fontSize: 11.5, color: "var(--dfp-text-muted)", margin: "2px 0 8px" }}>
+            Total distance {totalRouteDistanceNm(route).toFixed(1)} NM
           </div>
-        ))}
+        )}
         <button type="button" className="dfp-btn" style={{ width: "100%", marginTop: 4 }} onClick={onAddWaypointOnMap}>
           + Add waypoint on map
         </button>

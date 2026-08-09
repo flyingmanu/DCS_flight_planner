@@ -1,8 +1,10 @@
 export type { Airbase, AirbaseCategory, GeoPosition, Runway, Theater } from "./types.js";
 export { normalizeTheaterExport } from "./normalize-export.js";
 export type { RawExport } from "./normalize-export.js";
-export { distanceKm, distanceNm } from "./geo.js";
+export { bearingDeg, distanceKm, distanceNm } from "./geo.js";
 export type { LatLon } from "./geo.js";
+export { addMinutesToClock, computeRouteLegs, formatEte, totalRouteDistanceNm } from "./route.js";
+export type { RouteLeg } from "./route.js";
 export type { MapView, Mission } from "./mission.js";
 export { DEFAULT_FLIGHT_COLOR, TASK_TYPE_LABEL } from "./flights.js";
 export type { Flight, TaskType, Waypoint } from "./flights.js";
