@@ -9,6 +9,7 @@ import { FileMenu } from "./FileMenu";
 import { FlightFormDialog } from "./FlightFormDialog";
 import { FlightMenu } from "./FlightMenu";
 import { Logo } from "./Logo";
+import { MissionOverviewDialog } from "./MissionOverviewDialog";
 import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
@@ -62,6 +63,7 @@ function App() {
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
   const [objectListOpen, setObjectListOpen] = useState(false);
+  const [overviewOpen, setOverviewOpen] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
   const [flightForm, setFlightForm] = useState<{ flight: Flight; isNew: boolean } | null>(null);
 
@@ -258,6 +260,9 @@ function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
+          <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setOverviewOpen(true)}>
+            Overview
+          </button>
           <button type="button" className="dfp-btn dfp-btn-accent" onClick={() => setObjectListOpen(true)}>
             Objects ({objects.length + flights.length})
           </button>
@@ -323,6 +328,16 @@ function App() {
           }}
           onDeleteFlight={handleFlightDelete}
           onClose={() => setObjectListOpen(false)}
+        />
+      )}
+      {overviewOpen && (
+        <MissionOverviewDialog
+          missionName={activeMissionName}
+          theaterName={theater.name}
+          airbases={theater.airbases}
+          flights={flights}
+          objects={objects}
+          onClose={() => setOverviewOpen(false)}
         />
       )}
       {flightForm && creationRequest?.kind !== "waypoint" && (
