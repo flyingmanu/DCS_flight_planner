@@ -500,6 +500,18 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const route = editingFlight?.route ?? [];
     const color = editingFlight?.color ?? DEFAULT_FLIGHT_COLOR;
 
+    const airbaseById = new Map(theater.airbases.map((ab) => [ab.id, ab]));
+    const departureAirbase = editingFlight?.departureAirbaseId ? airbaseById.get(editingFlight.departureAirbaseId) : undefined;
+    const arrivalAirbase = editingFlight?.arrivalAirbaseId ? airbaseById.get(editingFlight.arrivalAirbaseId) : undefined;
+
+    function withAirbaseEndpoints(positions: LatLon[]): LatLon[] {
+      return [
+        ...(departureAirbase ? [{ lat: departureAirbase.position.lat, lon: departureAirbase.position.lon }] : []),
+        ...positions,
+        ...(arrivalAirbase ? [{ lat: arrivalAirbase.position.lat, lon: arrivalAirbase.position.lon }] : []),
+      ];
+    }
+
     function lineFeatureCollection(positions: LatLon[]): GeoJSON.FeatureCollection {
       return {
         type: "FeatureCollection",
@@ -520,10 +532,12 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       (map?.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(lineFeatureCollection(positions));
     }
 
-    if (map.isStyleLoaded() && map.getSource(EDITING_ROUTE_LINE_SOURCE_ID)) {
-      renderLine(route.map((wp) => wp.position));
+    if (map.getSource(EDITING_ROUTE_LINE_SOURCE_ID)) {
+      renderLine(withAirbaseEndpoints(route.map((wp) => wp.position)));
     } else {
-      map.once("load", () => renderLine(route.map((wp) => wp.position)));
+      // The source is only created once, inside the map's initial "load" handler; if this
+      // effect runs before that fires (e.g. a flight is already open on mount), wait for it.
+      map.once("load", () => renderLine(withAirbaseEndpoints(route.map((wp) => wp.position))));
     }
 
     const waypointMarkers: maplibregl.Marker[] = [];
@@ -536,7 +550,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       marker.on("drag", () => {
         const lngLat = marker.getLngLat();
         const positions = route.map((w, i) => (i === index ? { lat: lngLat.lat, lon: lngLat.lng } : w.position));
-        renderLine(positions);
+        renderLine(withAirbaseEndpoints(positions));
       });
       marker.on("dragend", () => {
         const lngLat = marker.getLngLat();
@@ -549,7 +563,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     return () => {
       for (const marker of waypointMarkers) marker.remove();
     };
-  }, [editingFlight]);
+  }, [editingFlight, theater]);
 
   useEffect(() => {
     const map = mapRef.current;
