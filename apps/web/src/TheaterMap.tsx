@@ -19,7 +19,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { flightMarkerElement } from "./aircraftIcons";
 import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
-import { orbitArrow, polygonRing, translatePolygonShape } from "./objectGeometry";
+import { orbitArrow, polygonCentroid, polygonRing, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
 import { setupPlacement, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
 
@@ -31,7 +31,6 @@ const BASEMAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 const OBJECTS_POLYGON_SOURCE_ID = "mission-objects-polygons";
 const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
-const OBJECTS_POLYGON_LABEL_LAYER_ID = "mission-objects-polygons-label";
 const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
 const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
 const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
@@ -191,6 +190,22 @@ function labelMarkerElement(label: LabelObject): HTMLElement {
   el.style.whiteSpace = "nowrap";
   el.style.cursor = "grab";
   el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.25)";
+  return el;
+}
+
+// A zone/orbit's name, shown at its centroid. Plain text (no background chip,
+// unlike point/flight labels) since it sits inside the zone's own fill/border
+// rather than next to a small icon; pointer-events are disabled so a click
+// still reaches the polygon fill layer underneath for selection.
+function zoneLabelMarkerElement(name: string, color: string): HTMLElement {
+  const el = document.createElement("div");
+  el.textContent = name;
+  el.style.fontSize = "11px";
+  el.style.fontWeight = "600";
+  el.style.color = color;
+  el.style.textShadow = "0 0 3px #ffffff, 0 0 3px #ffffff, 0 0 3px #ffffff";
+  el.style.whiteSpace = "nowrap";
+  el.style.pointerEvents = "none";
   return el;
 }
 
@@ -496,21 +511,6 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         source: OBJECTS_POLYGON_SOURCE_ID,
         paint: { "line-color": ["case", ["get", "isOrbit"], "#000000", ["get", "color"]], "line-width": 2 },
       });
-      // Requires the basemap style to define a "glyphs" URL; guarded because a
-      // style without one makes maplibre throw on addLayer, which would abort
-      // this function before the drag/click listeners below are registered.
-      try {
-        map.addLayer({
-          id: OBJECTS_POLYGON_LABEL_LAYER_ID,
-          type: "symbol",
-          source: OBJECTS_POLYGON_SOURCE_ID,
-          layout: { "text-field": ["get", "name"], "text-size": 11 },
-          paint: { "text-color": ["get", "color"], "text-halo-color": "#ffffff", "text-halo-width": 1.2 },
-        });
-      } catch (err) {
-        console.warn("Could not add the zone-name label layer (basemap style may be missing glyphs)", err);
-      }
-
       ensureOrbitArrowImage(map);
       map.addSource(OBJECTS_ORBIT_ARROW_SOURCE_ID, { type: "geojson", data: arrowData });
       map.addLayer({
@@ -594,7 +594,14 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       });
     }
 
-    if (map.isStyleLoaded()) {
+    // Once the polygon source exists, updating it via setData() is always
+    // safe regardless of isStyleLoaded() - which can transiently report
+    // false long after the map's one-time "load" event already fired (e.g.
+    // while any other source is mid-update), so relying on it here for
+    // anything but the very first, source-creating call would silently
+    // drop later updates: "load" never fires again, so a once("load", ...)
+    // registered after that point would never run.
+    if (map.getSource(OBJECTS_POLYGON_SOURCE_ID) || map.isStyleLoaded()) {
       renderPolygons();
     } else {
       map.once("load", renderPolygons);
@@ -657,9 +664,21 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       labelMarkers.push(marker);
     }
 
+    const zoneLabelMarkers: maplibregl.Marker[] = [];
+    for (const polygon of polygons) {
+      if (!polygon.name.trim()) continue;
+      const color = polygon.color ?? DEFAULT_POLYGON_COLOR;
+      const center = polygonCentroid(polygon.shape);
+      const marker = new maplibregl.Marker({ element: zoneLabelMarkerElement(polygon.name, color), anchor: "center" })
+        .setLngLat([center.lon, center.lat])
+        .addTo(map);
+      zoneLabelMarkers.push(marker);
+    }
+
     return () => {
       for (const marker of pointMarkers) marker.remove();
       for (const marker of labelMarkers) marker.remove();
+      for (const marker of zoneLabelMarkers) marker.remove();
     };
   }, [objects]);
 

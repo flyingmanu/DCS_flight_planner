@@ -36,6 +36,17 @@ export function polygonRing(object: PolygonObject): [number, number][] {
   return shapeRing(object.shape);
 }
 
+/** A representative center point for a polygon shape, used to anchor its name label. */
+export function polygonCentroid(shape: PolygonShape): LatLon {
+  if (shape.kind === "circle" || shape.kind === "orbit") return shape.center;
+  if (shape.kind === "rectangle") {
+    return { lat: (shape.corner1.lat + shape.corner2.lat) / 2, lon: (shape.corner1.lon + shape.corner2.lon) / 2 };
+  }
+  const { vertices } = shape;
+  const sum = vertices.reduce((acc, v) => ({ lat: acc.lat + v.lat, lon: acc.lon + v.lon }), { lat: 0, lon: 0 });
+  return { lat: sum.lat / vertices.length, lon: sum.lon / vertices.length };
+}
+
 /** Direction-of-travel arrow for an orbit shape, or null for other shape kinds. */
 export function orbitArrow(shape: PolygonShape): OrbitDirectionArrow | null {
   return shape.kind === "orbit" ? orbitDirectionArrow(shape) : null;
