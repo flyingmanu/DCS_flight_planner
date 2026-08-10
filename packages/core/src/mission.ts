@@ -16,6 +16,27 @@ export interface MissionBriefing {
   neutral?: string;
 }
 
+/** In-mission calendar date, mirroring DCS's mission.date table. */
+export interface MissionDate {
+  day: number;
+  month: number;
+  year: number;
+}
+
+/** Mission-wide weather snapshot, mirroring the fields a DCS mission itself stores. */
+export interface MissionWeather {
+  temperatureC?: number;
+  qnhInHg?: number;
+  windSpeedKt?: number;
+  /** Direction the wind is blowing FROM, degrees true. */
+  windDirectionDeg?: number;
+  visibilityKm?: number;
+  cloudBaseFt?: number;
+  /** Sky coverage in oktas (0-8). */
+  cloudCoverageOktas?: number;
+  turbulence?: number;
+}
+
 /**
  * A named, saveable session tied to a theater: the map view and the
  * mission-specific objects placed on it (points, polygons...).
@@ -36,4 +57,6 @@ export interface Mission {
   packages?: Package[];
   /** Free-text situation/per-side briefings. */
   briefing?: MissionBriefing;
+  date?: MissionDate;
+  weather?: MissionWeather;
 }

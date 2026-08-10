@@ -5,14 +5,20 @@ import {
   DEFAULT_POLYGON_COLOR,
   POINT_KIND_LABEL,
   TASK_TYPE_LABEL,
+  type Bullseye,
   type Flight,
   type MissionObject,
   type Package,
 } from "@dcs-flight-planner/core";
+import { useState } from "react";
+import { exportObjectSet } from "./objectExport";
 
 interface ObjectListDialogProps {
+  theaterId: string;
+  missionName: string;
   objects: MissionObject[];
   flights: Flight[];
+  bullseyes: Bullseye[];
   packages: Package[];
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
@@ -51,6 +57,8 @@ function ListRow({
   round,
   visible,
   locked,
+  picked,
+  onTogglePicked,
   onSelect,
   onDelete,
   onToggleVisible,
@@ -62,6 +70,8 @@ function ListRow({
   round: boolean;
   visible: boolean;
   locked?: boolean;
+  picked: boolean;
+  onTogglePicked: () => void;
   onSelect: () => void;
   onDelete: () => void;
   onToggleVisible: () => void;
@@ -105,6 +115,14 @@ function ListRow({
           {locked ? "🔒" : "🔓"}
         </button>
       )}
+      <input
+        type="checkbox"
+        title="Include in export selection"
+        checked={picked}
+        onClick={(e) => e.stopPropagation()}
+        onChange={onTogglePicked}
+        style={{ flexShrink: 0 }}
+      />
       <button
         type="button"
         title="Delete"
@@ -121,8 +139,11 @@ function ListRow({
 }
 
 export function ObjectListDialog({
+  theaterId,
+  missionName,
   objects,
   flights,
+  bullseyes,
   packages,
   onSelect,
   onDelete,
@@ -138,6 +159,28 @@ export function ObjectListDialog({
   const labels = objects.filter((o) => o.type === "label");
   const total = objects.length + flights.length;
   const ungroupedFlights = flights.filter((f) => !f.packageId || !packages.some((p) => p.id === f.packageId));
+
+  const [pickedIds, setPickedIds] = useState<Set<string>>(new Set());
+  function togglePicked(id: string) {
+    setPickedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function handleExportAll() {
+    exportObjectSet(theaterId, missionName, { objects, flights, bullseyes, packages });
+  }
+
+  function handleExportSelected() {
+    const pickedObjects = objects.filter((o) => pickedIds.has(o.id));
+    const pickedFlights = flights.filter((f) => pickedIds.has(f.id));
+    const referencedPackageIds = new Set(pickedFlights.map((f) => f.packageId).filter((id): id is string => Boolean(id)));
+    const referencedPackages = packages.filter((p) => referencedPackageIds.has(p.id));
+    exportObjectSet(theaterId, missionName, { objects: pickedObjects, flights: pickedFlights, bullseyes: [], packages: referencedPackages });
+  }
 
   return (
     <div
@@ -206,6 +249,8 @@ export function ObjectListDialog({
                         color={flight.color ?? DEFAULT_FLIGHT_COLOR}
                         round={false}
                         visible={flight.visible !== false}
+                        picked={pickedIds.has(flight.id)}
+                        onTogglePicked={() => togglePicked(flight.id)}
                         onSelect={() => onSelectFlight(flight.id)}
                         onDelete={() => onDeleteFlight(flight.id)}
                         onToggleVisible={() => onToggleFlightVisible(flight.id)}
@@ -222,6 +267,8 @@ export function ObjectListDialog({
                   color={flight.color ?? DEFAULT_FLIGHT_COLOR}
                   round={false}
                   visible={flight.visible !== false}
+                  picked={pickedIds.has(flight.id)}
+                  onTogglePicked={() => togglePicked(flight.id)}
                   onSelect={() => onSelectFlight(flight.id)}
                   onDelete={() => onDeleteFlight(flight.id)}
                   onToggleVisible={() => onToggleFlightVisible(flight.id)}
@@ -244,6 +291,8 @@ export function ObjectListDialog({
                   round
                   visible={object.visible !== false}
                   locked={object.locked}
+                  picked={pickedIds.has(object.id)}
+                  onTogglePicked={() => togglePicked(object.id)}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
@@ -267,6 +316,8 @@ export function ObjectListDialog({
                   round={false}
                   visible={object.visible !== false}
                   locked={object.locked}
+                  picked={pickedIds.has(object.id)}
+                  onTogglePicked={() => togglePicked(object.id)}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
@@ -290,6 +341,8 @@ export function ObjectListDialog({
                   round={false}
                   visible={object.visible !== false}
                   locked={object.locked}
+                  picked={pickedIds.has(object.id)}
+                  onTogglePicked={() => togglePicked(object.id)}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
@@ -299,6 +352,32 @@ export function ObjectListDialog({
             </>
           )}
         </div>
+
+        {total > 0 && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 12px",
+              borderTop: "1px solid var(--dfp-border)",
+            }}
+          >
+            <span style={{ fontSize: 12, color: "var(--dfp-text-muted)", flex: 1 }}>{pickedIds.size} selected</span>
+            <button type="button" className="dfp-btn" onClick={handleExportAll} title="Download every object and flight as a JSON file">
+              Export all
+            </button>
+            <button
+              type="button"
+              className="dfp-btn dfp-btn-accent"
+              disabled={pickedIds.size === 0}
+              onClick={handleExportSelected}
+              title="Download only the checked objects/flights as a JSON file"
+            >
+              Export selection
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

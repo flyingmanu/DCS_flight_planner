@@ -1,4 +1,19 @@
-import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionBriefing, MissionObject, Package, Side, Theater } from "@dcs-flight-planner/core";
+import type {
+  Bullseye,
+  CustomAircraft,
+  Dmpi,
+  Flight,
+  LatLon,
+  LoadoutPreset,
+  Mission,
+  MissionBriefing,
+  MissionDate,
+  MissionObject,
+  MissionWeather,
+  Package,
+  Side,
+  Theater,
+} from "@dcs-flight-planner/core";
 import { DEFAULT_FLIGHT_COLOR, DEFAULT_PACKAGE_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +30,7 @@ import { FlightFormDialog } from "./FlightFormDialog";
 import { FlightMenu } from "./FlightMenu";
 import { Logo } from "./Logo";
 import { MissionOverviewDialog } from "./MissionOverviewDialog";
+import { MissionSettingsDialog } from "./MissionSettingsDialog";
 import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
@@ -100,6 +116,9 @@ function App() {
   const [briefing, setBriefing] = useState<MissionBriefing>({});
   const [briefingOpen, setBriefingOpen] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(false);
+  const [missionDate, setMissionDate] = useState<MissionDate | undefined>(undefined);
+  const [missionWeather, setMissionWeather] = useState<MissionWeather | undefined>(undefined);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -121,6 +140,8 @@ function App() {
       bullseyes,
       packages,
       briefing,
+      date: missionDate,
+      weather: missionWeather,
     };
     saveMission(mission);
     setMissions(listMissions());
@@ -137,6 +158,8 @@ function App() {
     setSelectedBullseyeSide(null);
     setPackages([]);
     setBriefing({});
+    setMissionDate(undefined);
+    setMissionWeather(undefined);
   }
 
   function handleOpen(id: string) {
@@ -150,6 +173,8 @@ function App() {
     setSelectedBullseyeSide(null);
     setPackages(mission.packages ?? []);
     setBriefing(mission.briefing ?? {});
+    setMissionDate(mission.date);
+    setMissionWeather(mission.weather);
     mapRef.current?.setView(mission.view);
   }
 
@@ -391,6 +416,9 @@ function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
+          <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setSettingsOpen(true)}>
+            Date &amp; weather
+          </button>
           <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setBriefingOpen(true)}>
             Briefing
           </button>
@@ -472,8 +500,11 @@ function App() {
       )}
       {objectListOpen && (
         <ObjectListDialog
+          theaterId={theater.id}
+          missionName={activeMissionName}
           objects={objects}
           flights={flights}
+          bullseyes={bullseyes}
           packages={packages}
           onSelect={(id) => {
             setSelectedObjectId(id);
@@ -493,6 +524,16 @@ function App() {
       )}
       {briefingOpen && (
         <BriefingDialog missionName={activeMissionName} briefing={briefing} onChange={setBriefing} onClose={() => setBriefingOpen(false)} />
+      )}
+      {settingsOpen && (
+        <MissionSettingsDialog
+          missionName={activeMissionName}
+          date={missionDate}
+          weather={missionWeather}
+          onChangeDate={setMissionDate}
+          onChangeWeather={setMissionWeather}
+          onClose={() => setSettingsOpen(false)}
+        />
       )}
       {overviewOpen && (
         <MissionOverviewDialog
