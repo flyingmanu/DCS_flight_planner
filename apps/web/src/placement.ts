@@ -89,6 +89,19 @@ export interface PlacementHandlers {
   onCancel: () => void;
 }
 
+/** "Glue" snapping: when enabled, a click landing within snapRadiusPx of an existing point snaps to its exact coordinates. */
+export interface SnapOptions {
+  enabled: boolean;
+  candidates: LatLon[];
+  snapRadiusPx?: number;
+}
+
+// Wider than a typical marker icon's own clickable footprint (~13px half-width),
+// so there's a real "click near, not on, an existing point" band to snap within -
+// a click that lands directly on an existing marker selects it instead (its own
+// click handler stops propagation before this placement listener ever runs).
+const DEFAULT_SNAP_RADIUS_PX = 22;
+
 /**
  * Drives the click-sequence for placing one object on the map, per
  * CreationRequest kind. Returns a cleanup function that cancels the
@@ -96,13 +109,38 @@ export interface PlacementHandlers {
  * firing onCancel - call it on unmount/request-change; call the returned
  * teardown implicitly happens inside onComplete/onCancel already.
  */
-export function setupPlacement(map: maplibregl.Map, request: CreationRequest, handlers: PlacementHandlers): () => void {
+export function setupPlacement(
+  map: maplibregl.Map,
+  request: CreationRequest,
+  handlers: PlacementHandlers,
+  snap?: SnapOptions,
+): () => void {
   ensureDraftLayer(map);
   map.getCanvas().style.cursor = "crosshair";
 
   const markers: maplibregl.Marker[] = [];
   const listeners: Array<() => void> = [];
   let torndown = false;
+
+  // Screen-pixel radius (not a fixed real-world distance), so "close to an
+  // existing point" naturally gets stricter as the user zooms in and looser
+  // when zoomed out, matching how precisely they can actually click.
+  function resolveLatLon(e: maplibregl.MapMouseEvent): LatLon {
+    const raw = toLatLon(e.lngLat);
+    if (!snap?.enabled || snap.candidates.length === 0) return raw;
+    const radiusPx = snap.snapRadiusPx ?? DEFAULT_SNAP_RADIUS_PX;
+    let best: LatLon | null = null;
+    let bestDist = radiusPx;
+    for (const candidate of snap.candidates) {
+      const p = map.project([candidate.lon, candidate.lat]);
+      const dist = Math.hypot(p.x - e.point.x, p.y - e.point.y);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = candidate;
+      }
+    }
+    return best ?? raw;
+  }
 
   function on<E extends maplibregl.MapMouseEvent | maplibregl.MapTouchEvent>(
     type: "click" | "dblclick" | "mousemove" | "contextmenu",
@@ -139,28 +177,28 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
 
   if (request.kind === "point") {
     on("click", (e: maplibregl.MapMouseEvent) => {
-      finish({ type: "point", kind: request.pointKind, position: toLatLon(e.lngLat) });
+      finish({ type: "point", kind: request.pointKind, position: resolveLatLon(e) });
     });
     return teardown;
   }
 
   if (request.kind === "waypoint") {
     on("click", (e: maplibregl.MapMouseEvent) => {
-      finish({ type: "waypoint", position: toLatLon(e.lngLat) });
+      finish({ type: "waypoint", position: resolveLatLon(e) });
     });
     return teardown;
   }
 
   if (request.kind === "bullseye") {
     on("click", (e: maplibregl.MapMouseEvent) => {
-      finish({ type: "bullseye", side: request.side, position: toLatLon(e.lngLat) });
+      finish({ type: "bullseye", side: request.side, position: resolveLatLon(e) });
     });
     return teardown;
   }
 
   if (request.kind === "label") {
     on("click", (e: maplibregl.MapMouseEvent) => {
-      finish({ type: "label", position: toLatLon(e.lngLat) });
+      finish({ type: "label", position: resolveLatLon(e) });
     });
     return teardown;
   }
@@ -168,8 +206,9 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
   if (request.polygonKind === "freeform") {
     const vertices: LatLon[] = [];
     on("click", (e: maplibregl.MapMouseEvent) => {
-      vertices.push(toLatLon(e.lngLat));
-      markers.push(tempMarker(map, e.lngLat));
+      const vertex = resolveLatLon(e);
+      vertices.push(vertex);
+      markers.push(tempMarker(map, toLngLat(vertex)));
       if (vertices.length >= 2) {
         setDraft(map, { type: "LineString", coordinates: vertices.map(toLngLat) });
       }
@@ -202,10 +241,10 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
     }
 
     on("click", (e: maplibregl.MapMouseEvent) => {
-      const point = toLatLon(e.lngLat);
+      const point = resolveLatLon(e);
       if (!corner1) {
         corner1 = point;
-        markers.push(tempMarker(map, e.lngLat));
+        markers.push(tempMarker(map, toLngLat(point)));
         return;
       }
       if (!corner2) {
@@ -231,10 +270,10 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
     let center: LatLon | null = null;
 
     on("click", (e: maplibregl.MapMouseEvent) => {
-      const point = toLatLon(e.lngLat);
+      const point = resolveLatLon(e);
       if (!center) {
         center = point;
-        markers.push(tempMarker(map, e.lngLat));
+        markers.push(tempMarker(map, toLngLat(point)));
         return;
       }
       finish({ type: "polygon", shape: { kind: "circle", center, radiusM: distanceKm(center, point) * 1000 } });
@@ -254,7 +293,7 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
   const defaultCourseDeg = 0;
 
   on("click", (e: maplibregl.MapMouseEvent) => {
-    const center = toLatLon(e.lngLat);
+    const center = resolveLatLon(e);
     finish({
       type: "polygon",
       shape: {

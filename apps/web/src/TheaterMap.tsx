@@ -21,7 +21,7 @@ import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
 import { orbitArrow, polygonRing, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
-import { setupPlacement, type CreationRequest, type ObjectDraft } from "./placement";
+import { setupPlacement, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
 // It's a real-world basemap, so it only approximates DCS terrain art; good
@@ -224,6 +224,31 @@ function withNameLabel(icon: HTMLElement, name: string, color: string): HTMLElem
   return wrap;
 }
 
+// "Glue" snap targets: every existing point-like position a new placement
+// click can lock onto (airbases, point/label objects and their DMPIs, flight
+// waypoints and their DMPIs, bullseyes). Zone vertices are intentionally
+// excluded to keep this a simple, predictable set.
+function collectSnapCandidates(theater: Theater, objects: MissionObject[], flights: Flight[], bullseyes: Bullseye[]): LatLon[] {
+  const candidates: LatLon[] = [];
+  for (const airbase of theater.airbases) candidates.push({ lat: airbase.position.lat, lon: airbase.position.lon });
+  for (const obj of objects) {
+    if (obj.type === "point") {
+      candidates.push(obj.position);
+      for (const dmpi of obj.dmpis ?? []) candidates.push(dmpi.position);
+    } else if (obj.type === "label") {
+      candidates.push(obj.position);
+    }
+  }
+  for (const flight of flights) {
+    for (const wp of flight.route ?? []) {
+      candidates.push(wp.position);
+      for (const dmpi of wp.dmpis ?? []) candidates.push(dmpi.position);
+    }
+  }
+  for (const bullseye of bullseyes) candidates.push(bullseye.position);
+  return candidates;
+}
+
 export interface HoverInfo {
   lat: number;
   lon: number;
@@ -238,6 +263,8 @@ interface TheaterMapProps {
   /** The flight currently open in the editor, if any - its route is drawn live on the map. */
   editingFlight?: Flight | null;
   creationRequest: CreationRequest | null;
+  /** "Glue": when true, a placement click near an existing point snaps to its exact coordinates. */
+  snapEnabled?: boolean;
   onDraftComplete: (draft: ObjectDraft) => void;
   onCreationCancel: () => void;
   onSelectObject?: (id: string) => void;
@@ -309,6 +336,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     bullseyes = [],
     editingFlight,
     creationRequest,
+    snapEnabled = false,
     onDraftComplete,
     onCreationCancel,
     onSelectObject,
@@ -806,11 +834,21 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const map = mapRef.current;
     if (!map || !creationRequest) return;
 
-    return setupPlacement(map, creationRequest, {
-      onComplete: (draft) => onDraftCompleteRef.current(draft),
-      onCancel: () => onCreationCancelRef.current(),
-    });
-  }, [creationRequest]);
+    const snap: SnapOptions = { enabled: snapEnabled, candidates: collectSnapCandidates(theater, objects, flights, bullseyes) };
+    return setupPlacement(
+      map,
+      creationRequest,
+      {
+        onComplete: (draft) => onDraftCompleteRef.current(draft),
+        onCancel: () => onCreationCancelRef.current(),
+      },
+      snap,
+    );
+    // Candidates are gathered fresh from theater/objects/flights/bullseyes at the
+    // moment placement starts (creationRequest becomes non-null); intentionally
+    // not re-collected mid-placement if those change while a placement is in progress.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creationRequest, snapEnabled]);
 
   return <div ref={containerRef} data-testid="theater-map" style={{ width: "100%", height: "100%" }} />;
 });

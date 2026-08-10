@@ -99,6 +99,7 @@ function App() {
   const [packages, setPackages] = useState<Package[]>([]);
   const [briefing, setBriefing] = useState<MissionBriefing>({});
   const [briefingOpen, setBriefingOpen] = useState(false);
+  const [snapEnabled, setSnapEnabled] = useState(false);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -377,6 +378,16 @@ function App() {
           <ObjectMenu onRequestCreation={setCreationRequest} />
           <FlightMenu flights={flights} onNewFlight={handleNewFlight} onEditFlight={handleEditFlight} />
           <CustomAircraftMenu customAircraft={customAircraft} onNew={handleNewCustomAircraft} onEdit={handleEditCustomAircraft} />
+          <button
+            type="button"
+            className="dfp-btn dfp-btn-onnavy"
+            data-open={snapEnabled}
+            onClick={() => setSnapEnabled((v) => !v)}
+            title="Glue: snap new points/waypoints/zones to nearby existing points"
+            aria-pressed={snapEnabled}
+          >
+            🧴 Glue
+          </button>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
@@ -400,6 +411,7 @@ function App() {
           bullseyes={bullseyes}
           editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
+          snapEnabled={snapEnabled}
           onDraftComplete={(draft) => {
             setCreationRequest(null);
             if (draft.type === "waypoint") {
