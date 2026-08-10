@@ -1,4 +1,8 @@
 import {
+  DEFAULT_LABEL_BORDER_COLOR,
+  DEFAULT_LABEL_COLOR,
+  DEFAULT_LABEL_FILL_COLOR,
+  DEFAULT_LABEL_FONT_SIZE_PX,
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
@@ -45,7 +49,7 @@ function NumberField({ label, value, onCommit, step = 0.0001 }: { label: string;
 
 export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDmpiElevation }: ObjectEditPanelProps) {
   const defaultColor =
-    object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : DEFAULT_POLYGON_COLOR;
+    object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : object.type === "label" ? DEFAULT_LABEL_COLOR : DEFAULT_POLYGON_COLOR;
 
   return (
     <div
@@ -70,7 +74,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
       </div>
 
       <div style={{ padding: 16, overflowY: "auto", flex: 1 }}>
-        <Field label="Name">
+        <Field label={object.type === "label" ? "Text" : "Name"}>
           <input
             type="text"
             defaultValue={object.name}
@@ -83,7 +87,7 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
           />
         </Field>
 
-        <Field label="Color">
+        <Field label={object.type === "label" ? "Text color" : "Color"}>
           <ColorField value={object.color ?? defaultColor} onChange={(color) => onChange({ ...object, color })} />
         </Field>
 
@@ -249,6 +253,32 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
 
             return null;
           })()}
+
+        {object.type === "label" && (
+          <>
+            <CoordinateFields point={object.position} onChange={(position) => onChange({ ...object, position })} />
+
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, marginBottom: 10 }}>
+              <input type="checkbox" checked={object.bold ?? false} onChange={(e) => onChange({ ...object, bold: e.target.checked })} />
+              Bold
+            </label>
+
+            <Field label="Fill color">
+              <ColorField value={object.fillColor ?? DEFAULT_LABEL_FILL_COLOR} onChange={(fillColor) => onChange({ ...object, fillColor })} />
+            </Field>
+
+            <Field label="Border color">
+              <ColorField value={object.borderColor ?? DEFAULT_LABEL_BORDER_COLOR} onChange={(borderColor) => onChange({ ...object, borderColor })} />
+            </Field>
+
+            <NumberField
+              label="Font size (px)"
+              step={1}
+              value={object.fontSizePx ?? DEFAULT_LABEL_FONT_SIZE_PX}
+              onCommit={(fontSizePx) => onChange({ ...object, fontSizePx: Math.max(6, Math.round(fontSizePx)) })}
+            />
+          </>
+        )}
       </div>
 
       <div style={{ padding: 16, borderTop: "1px solid var(--dfp-border)" }}>

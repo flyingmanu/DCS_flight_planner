@@ -83,4 +83,31 @@ export interface PolygonObject {
   notes?: string;
 }
 
-export type MissionObject = PointObject | PolygonObject;
+export const DEFAULT_LABEL_COLOR = "#111827";
+export const DEFAULT_LABEL_FILL_COLOR = "#ffffff";
+export const DEFAULT_LABEL_BORDER_COLOR = "#111827";
+export const DEFAULT_LABEL_FONT_SIZE_PX = 13;
+
+/** A free-positioned text label on the map, equivalent to Combat Flite's ITB. */
+export interface LabelObject {
+  id: string;
+  type: "label";
+  /** The label's displayed text. */
+  name: string;
+  position: LatLon;
+  /** Text color. Defaults to DEFAULT_LABEL_COLOR when absent. */
+  color?: string;
+  bold?: boolean;
+  /** Background fill color. Defaults to DEFAULT_LABEL_FILL_COLOR when absent. */
+  fillColor?: string;
+  /** Border color. Defaults to DEFAULT_LABEL_BORDER_COLOR when absent. */
+  borderColor?: string;
+  /** Font size in pixels. Defaults to DEFAULT_LABEL_FONT_SIZE_PX when absent. */
+  fontSizePx?: number;
+  /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
+  visible?: boolean;
+  /** Free-text notes/comment for briefing purposes. */
+  notes?: string;
+}
+
+export type MissionObject = PointObject | PolygonObject | LabelObject;

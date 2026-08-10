@@ -1,10 +1,14 @@
-import type { Bullseye, Flight, LatLon, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
+import type { Bullseye, Flight, LabelObject, LatLon, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
 import {
   bullseyeRingRadiiNm,
   bullseyeSpokeEndpoints,
   circlePoints,
   DEFAULT_BULLSEYE_COLOR,
   DEFAULT_FLIGHT_COLOR,
+  DEFAULT_LABEL_BORDER_COLOR,
+  DEFAULT_LABEL_COLOR,
+  DEFAULT_LABEL_FILL_COLOR,
+  DEFAULT_LABEL_FONT_SIZE_PX,
   DEFAULT_POLYGON_COLOR,
   findAircraft,
 } from "@dcs-flight-planner/core";
@@ -169,6 +173,23 @@ function bullseyeLinesFeatureCollection(list: Bullseye[]): GeoJSON.FeatureCollec
   };
 }
 
+function labelMarkerElement(label: LabelObject): HTMLElement {
+  const el = document.createElement("div");
+  el.textContent = label.name;
+  el.style.color = label.color ?? DEFAULT_LABEL_COLOR;
+  el.style.background = label.fillColor ?? DEFAULT_LABEL_FILL_COLOR;
+  el.style.border = `1.5px solid ${label.borderColor ?? DEFAULT_LABEL_BORDER_COLOR}`;
+  el.style.fontSize = `${label.fontSizePx ?? DEFAULT_LABEL_FONT_SIZE_PX}px`;
+  el.style.fontWeight = label.bold ? "700" : "400";
+  el.style.fontFamily = "system-ui, sans-serif";
+  el.style.padding = "2px 6px";
+  el.style.borderRadius = "3px";
+  el.style.whiteSpace = "nowrap";
+  el.style.cursor = "grab";
+  el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.25)";
+  return el;
+}
+
 export interface HoverInfo {
   lat: number;
   lon: number;
@@ -192,6 +213,7 @@ interface TheaterMapProps {
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
   onMoveWaypoint?: (waypointId: string, position: LatLon) => void;
   onMoveBullseye?: (side: Side, position: LatLon) => void;
+  onMoveLabel?: (id: string, position: LatLon) => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -262,6 +284,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     onMovePolygon,
     onMoveWaypoint,
     onMoveBullseye,
+    onMoveLabel,
     onHover,
   },
   ref,
@@ -288,6 +311,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onMoveWaypointRef.current = onMoveWaypoint;
   const onMoveBullseyeRef = useRef(onMoveBullseye);
   onMoveBullseyeRef.current = onMoveBullseye;
+  const onMoveLabelRef = useRef(onMoveLabel);
+  onMoveLabelRef.current = onMoveLabel;
   const polygonsRef = useRef<PolygonObject[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -526,8 +551,37 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       pointMarkers.push(marker);
     }
 
+    const labelMarkers: maplibregl.Marker[] = [];
+    for (const obj of objects) {
+      if (obj.type !== "label") continue;
+      const element = labelMarkerElement(obj);
+      const marker = new maplibregl.Marker({ element, draggable: true, anchor: "left" })
+        .setLngLat([obj.position.lon, obj.position.lat])
+        .addTo(map);
+
+      let didDrag = false;
+      marker.on("dragstart", () => {
+        didDrag = true;
+      });
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        onMoveLabelRef.current?.(obj.id, { lat: lngLat.lat, lon: lngLat.lng });
+      });
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (didDrag) {
+          didDrag = false;
+          return;
+        }
+        onSelectObjectRef.current?.(obj.id);
+      });
+
+      labelMarkers.push(marker);
+    }
+
     return () => {
       for (const marker of pointMarkers) marker.remove();
+      for (const marker of labelMarkers) marker.remove();
     };
   }, [objects]);
 

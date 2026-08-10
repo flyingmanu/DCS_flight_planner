@@ -175,6 +175,10 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                 </div>
               )}
             </div>
+
+            <button type="button" className={menuItemClassName} onClick={() => request({ kind: "label" })}>
+              Text label
+            </button>
           </div>
         </>
       )}

@@ -1,5 +1,6 @@
 import {
   DEFAULT_FLIGHT_COLOR,
+  DEFAULT_LABEL_COLOR,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
   POINT_KIND_LABEL,
@@ -28,12 +29,16 @@ const POLYGON_KIND_LABEL: Record<string, string> = {
 };
 
 function objectLabel(object: MissionObject): string {
-  return object.type === "point" ? POINT_KIND_LABEL[object.kind] : (POLYGON_KIND_LABEL[object.shape.kind] ?? "Zone");
+  if (object.type === "point") return POINT_KIND_LABEL[object.kind];
+  if (object.type === "label") return "Text label";
+  return POLYGON_KIND_LABEL[object.shape.kind] ?? "Zone";
 }
 
 function objectColor(object: MissionObject): string {
   if (object.color) return object.color;
-  return object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : DEFAULT_POLYGON_COLOR;
+  if (object.type === "point") return DEFAULT_POINT_COLOR[object.kind];
+  if (object.type === "label") return DEFAULT_LABEL_COLOR;
+  return DEFAULT_POLYGON_COLOR;
 }
 
 function ListRow({
@@ -108,6 +113,7 @@ export function ObjectListDialog({
 }: ObjectListDialogProps) {
   const points = objects.filter((o) => o.type === "point");
   const polygons = objects.filter((o) => o.type === "polygon");
+  const labels = objects.filter((o) => o.type === "label");
   const total = objects.length + flights.length;
 
   return (
@@ -193,6 +199,27 @@ export function ObjectListDialog({
                 Zones
               </div>
               {polygons.map((object) => (
+                <ListRow
+                  key={object.id}
+                  name={object.name}
+                  label={objectLabel(object)}
+                  color={objectColor(object)}
+                  round={false}
+                  visible={object.visible !== false}
+                  onSelect={() => onSelect(object.id)}
+                  onDelete={() => onDelete(object.id)}
+                  onToggleVisible={() => onToggleVisible(object.id)}
+                />
+              ))}
+            </>
+          )}
+
+          {labels.length > 0 && (
+            <>
+              <div className="dfp-label" style={{ margin: "8px 4px 2px" }}>
+                Labels
+              </div>
+              {labels.map((object) => (
                 <ListRow
                   key={object.id}
                   name={object.name}

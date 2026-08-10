@@ -37,6 +37,7 @@ const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
 
 function defaultObjectName(draft: PlaceableObjectDraft): string {
   if (draft.type === "point") return POINT_KIND_LABEL[draft.kind];
+  if (draft.type === "label") return "Label";
   return POLYGON_KIND_DEFAULT_NAME[draft.shape.kind] ?? "Object";
 }
 
@@ -46,6 +47,9 @@ function draftToObject(draft: PlaceableObjectDraft, name: string): MissionObject
     const dmpis: Dmpi[] | undefined =
       draft.kind === "target" ? [{ id: crypto.randomUUID(), name, position: draft.position }] : undefined;
     return { id, type: "point", name, kind: draft.kind, position: draft.position, dmpis };
+  }
+  if (draft.type === "label") {
+    return { id, type: "label", name, position: draft.position };
   }
   return { id, type: "polygon", name, shape: draft.shape };
 }
@@ -214,6 +218,10 @@ function App() {
     setObjects((prev) =>
       prev.map((o) => (o.id === id && o.type === "polygon" ? { ...o, shape: translatePolygonShape(o.shape, dLat, dLon) } : o)),
     );
+  }
+
+  function handleMoveLabel(id: string, position: LatLon) {
+    setObjects((prev) => prev.map((o) => (o.id === id && o.type === "label" ? { ...o, position } : o)));
   }
 
   function handleResetDmpiElevation(id: string) {
@@ -404,6 +412,7 @@ function App() {
           onMovePolygon={handleMovePolygon}
           onMoveWaypoint={handleMoveWaypoint}
           onMoveBullseye={handleMoveBullseye}
+          onMoveLabel={handleMoveLabel}
           onHover={setHover}
         />
       </div>

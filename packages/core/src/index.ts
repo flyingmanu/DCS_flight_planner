@@ -23,8 +23,17 @@ export {
 export type { CustomAircraft, CustomAircraftPerformance, CustomPylon, CustomWeapon, Launcher, LoadClass, LoadoutPreset, PylonSelection } from "./customAircraft.js";
 export { formatLatDdm, formatLatLonDdm, formatLonDdm, formatMgrs, parseLatDdm, parseLonDdm, toMgrs } from "./coordinates.js";
 export { metersToFeet, metersToNm, nmToMeters } from "./units.js";
-export { DEFAULT_ORBIT_TURN_RADIUS_NM, DEFAULT_POINT_COLOR, DEFAULT_POLYGON_COLOR, POINT_KIND_LABEL } from "./objects.js";
-export type { Dmpi, Hand, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
+export {
+  DEFAULT_LABEL_BORDER_COLOR,
+  DEFAULT_LABEL_COLOR,
+  DEFAULT_LABEL_FILL_COLOR,
+  DEFAULT_LABEL_FONT_SIZE_PX,
+  DEFAULT_ORBIT_TURN_RADIUS_NM,
+  DEFAULT_POINT_COLOR,
+  DEFAULT_POLYGON_COLOR,
+  POINT_KIND_LABEL,
+} from "./objects.js";
+export type { Dmpi, Hand, LabelObject, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
 export { toLocalMeters, fromLocalMeters } from "./geo.js";
 export type { LocalMeters } from "./geo.js";
 export { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
