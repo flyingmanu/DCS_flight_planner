@@ -946,88 +946,104 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const map = mapRef.current;
     if (!map) return;
 
-    const route = editingFlight?.route ?? [];
-    const color = editingFlight?.color ?? DEFAULT_FLIGHT_COLOR;
-
     const airbaseById = new Map(theater.airbases.map((ab) => [ab.id, ab]));
-    const departureAirbase = editingFlight?.departureAirbaseId ? airbaseById.get(editingFlight.departureAirbaseId) : undefined;
-    const arrivalAirbase = editingFlight?.arrivalAirbaseId ? airbaseById.get(editingFlight.arrivalAirbaseId) : undefined;
-    const alternateAirbase = editingFlight?.alternateAirbaseId ? airbaseById.get(editingFlight.alternateAirbaseId) : undefined;
 
-    function withAirbaseEndpoints(positions: LatLon[]): LatLon[] {
-      return [
-        ...(departureAirbase ? [{ lat: departureAirbase.position.lat, lon: departureAirbase.position.lon }] : []),
-        ...positions,
-        ...(arrivalAirbase ? [{ lat: arrivalAirbase.position.lat, lon: arrivalAirbase.position.lon }] : []),
-      ];
-    }
+    // Show the route of every visible flight, not just the one open in the
+    // editor - substituting the editor's live (unsaved) draft in place of
+    // its stale saved version, same as the flight-marker effect above.
+    const displayFlights = editingFlight ? [...flights.filter((f) => f.id !== editingFlight.id), editingFlight] : flights;
 
-    function lineFeatureCollection(positions: LatLon[]): GeoJSON.FeatureCollection {
+    function airbaseEndpoints(flight: Flight): { departure?: LatLon; arrival?: LatLon } {
       return {
-        type: "FeatureCollection",
-        features:
-          positions.length >= 2
-            ? [
-                {
-                  type: "Feature",
-                  properties: { color },
-                  geometry: { type: "LineString", coordinates: positions.map((p) => [p.lon, p.lat]) },
-                },
-              ]
-            : [],
+        departure: flight.departureAirbaseId ? airbaseById.get(flight.departureAirbaseId)?.position : undefined,
+        arrival: flight.arrivalAirbaseId ? airbaseById.get(flight.arrivalAirbaseId)?.position : undefined,
       };
     }
 
-    function renderLine(positions: LatLon[]) {
-      (map?.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(lineFeatureCollection(positions));
+    function withAirbaseEndpoints(flight: Flight, positions: LatLon[]): LatLon[] {
+      const { departure, arrival } = airbaseEndpoints(flight);
+      return [...(departure ? [departure] : []), ...positions, ...(arrival ? [arrival] : [])];
+    }
+
+    function routeLineFeatureCollection(overrideFlightId?: string, overridePositions?: LatLon[]): GeoJSON.FeatureCollection {
+      return {
+        type: "FeatureCollection",
+        features: displayFlights.flatMap((flight) => {
+          const positions = withAirbaseEndpoints(
+            flight,
+            flight.id === overrideFlightId && overridePositions ? overridePositions : (flight.route ?? []).map((wp) => wp.position),
+          );
+          if (positions.length < 2) return [];
+          return [
+            {
+              type: "Feature" as const,
+              properties: { color: flight.color ?? DEFAULT_FLIGHT_COLOR },
+              geometry: { type: "LineString" as const, coordinates: positions.map((p) => [p.lon, p.lat]) },
+            },
+          ];
+        }),
+      };
+    }
+
+    function renderRouteLines(overrideFlightId?: string, overridePositions?: LatLon[]) {
+      (map?.getSource(EDITING_ROUTE_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(
+        routeLineFeatureCollection(overrideFlightId, overridePositions),
+      );
     }
 
     if (map.getSource(EDITING_ROUTE_LINE_SOURCE_ID)) {
-      renderLine(withAirbaseEndpoints(route.map((wp) => wp.position)));
+      renderRouteLines();
     } else {
       // The source is only created once, inside the map's initial "load" handler; if this
       // effect runs before that fires (e.g. a flight is already open on mount), wait for it.
-      map.once("load", () => renderLine(withAirbaseEndpoints(route.map((wp) => wp.position))));
+      map.once("load", () => renderRouteLines());
     }
 
     const waypointMarkers: maplibregl.Marker[] = [];
-    route.forEach((wp, index) => {
-      const element = waypointMarkerElement(index + 1, color);
-      const marker = new maplibregl.Marker({ element, draggable: true })
-        .setLngLat([wp.position.lon, wp.position.lat])
-        .addTo(map);
-
-      marker.on("drag", () => {
-        const lngLat = marker.getLngLat();
-        const positions = route.map((w, i) => (i === index ? { lat: lngLat.lat, lon: lngLat.lng } : w.position));
-        renderLine(withAirbaseEndpoints(positions));
-      });
-      marker.on("dragend", () => {
-        const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
-        const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, wp.position);
-        onMoveWaypointRef.current?.(wp.id, position);
-      });
-
-      waypointMarkers.push(marker);
-    });
-
     const alternateMarkers: maplibregl.Marker[] = [];
-    if (alternateAirbase) {
-      const marker = new maplibregl.Marker({ element: alternateAirbaseMarkerElement(color) })
-        .setLngLat([alternateAirbase.position.lon, alternateAirbase.position.lat])
-        .addTo(map);
-      alternateMarkers.push(marker);
+    for (const flight of displayFlights) {
+      const route = flight.route ?? [];
+      const color = flight.color ?? DEFAULT_FLIGHT_COLOR;
+      const isEditing = flight.id === editingFlight?.id;
+
+      route.forEach((wp, index) => {
+        const element = waypointMarkerElement(index + 1, color);
+        const marker = new maplibregl.Marker({ element, draggable: isEditing }).setLngLat([wp.position.lon, wp.position.lat]).addTo(map);
+
+        if (isEditing) {
+          marker.on("drag", () => {
+            const lngLat = marker.getLngLat();
+            const positions = route.map((w, i) => (i === index ? { lat: lngLat.lat, lon: lngLat.lng } : w.position));
+            renderRouteLines(flight.id, positions);
+          });
+          marker.on("dragend", () => {
+            const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
+            const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, wp.position);
+            onMoveWaypointRef.current?.(wp.id, position);
+          });
+        }
+
+        waypointMarkers.push(marker);
+      });
+
+      const alternateAirbase = flight.alternateAirbaseId ? airbaseById.get(flight.alternateAirbaseId) : undefined;
+      if (alternateAirbase) {
+        const marker = new maplibregl.Marker({ element: alternateAirbaseMarkerElement(color) })
+          .setLngLat([alternateAirbase.position.lon, alternateAirbase.position.lat])
+          .addTo(map);
+        alternateMarkers.push(marker);
+      }
     }
 
     return () => {
       for (const marker of waypointMarkers) marker.remove();
       for (const marker of alternateMarkers) marker.remove();
     };
-    // objects/flights/bullseyes are only read inside dragend (glue snap
-    // candidates); see the point/label marker effect above for why this
-    // effect intentionally doesn't re-run for those.
+    // objects/bullseyes are only read inside dragend (glue snap candidates);
+    // see the point/label marker effect above for why this effect
+    // intentionally doesn't re-run for those.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editingFlight, theater]);
+  }, [flights, editingFlight, theater]);
 
   useEffect(() => {
     const map = mapRef.current;
