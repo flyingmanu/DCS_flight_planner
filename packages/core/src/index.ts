@@ -28,12 +28,13 @@ export {
   DEFAULT_LABEL_COLOR,
   DEFAULT_LABEL_FILL_COLOR,
   DEFAULT_LABEL_FONT_SIZE_PX,
+  DEFAULT_LINE_COLOR,
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
   POINT_KIND_LABEL,
 } from "./objects.js";
-export type { Dmpi, Hand, LabelObject, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
+export type { Dmpi, Hand, LabelObject, LineObject, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
 export { toLocalMeters, fromLocalMeters } from "./geo.js";
 export type { LocalMeters } from "./geo.js";
 export { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";

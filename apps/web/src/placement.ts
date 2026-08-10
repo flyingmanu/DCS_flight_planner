@@ -24,14 +24,16 @@ export type CreationRequest =
   | { kind: "polygon"; polygonKind: "orbit"; hand: Hand; variant: OrbitVariant }
   | { kind: "waypoint" }
   | { kind: "bullseye"; side: Side }
-  | { kind: "label" };
+  | { kind: "label" }
+  | { kind: "line" };
 
 export type ObjectDraft =
   | { type: "point"; kind: PointKind; position: LatLon }
   | { type: "polygon"; shape: PolygonShape }
   | { type: "waypoint"; position: LatLon }
   | { type: "bullseye"; side: Side; position: LatLon }
-  | { type: "label"; position: LatLon };
+  | { type: "label"; position: LatLon }
+  | { type: "line"; vertices: LatLon[] };
 
 const DRAFT_SOURCE_ID = "draft-shape";
 
@@ -214,6 +216,33 @@ export function setupPlacement(
   if (request.kind === "label") {
     on("click", (e: maplibregl.MapMouseEvent) => {
       finish({ type: "label", position: resolveLatLon(e) });
+    });
+    return teardown;
+  }
+
+  if (request.kind === "line") {
+    const vertices: LatLon[] = [];
+    on("click", (e: maplibregl.MapMouseEvent) => {
+      const vertex = resolveLatLon(e);
+      vertices.push(vertex);
+      markers.push(tempMarker(map, toLngLat(vertex)));
+      if (vertices.length >= 2) {
+        setDraft(map, { type: "LineString", coordinates: vertices.map(toLngLat) });
+      }
+    });
+    on("dblclick", (e: maplibregl.MapMouseEvent) => {
+      e.preventDefault();
+      if (vertices.length < 2) return;
+      finish({ type: "line", vertices });
+    });
+    on("contextmenu", (e: maplibregl.MapMouseEvent) => {
+      e.preventDefault();
+      if (vertices.length < 2) return;
+      finish({ type: "line", vertices });
+    });
+    on("mousemove", (e: maplibregl.MapMouseEvent) => {
+      if (vertices.length === 0) return;
+      setDraft(map, { type: "LineString", coordinates: [...vertices, toLatLon(e.lngLat)].map(toLngLat) });
     });
     return teardown;
   }

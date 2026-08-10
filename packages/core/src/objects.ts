@@ -93,6 +93,24 @@ export interface PolygonObject {
   locked?: boolean;
 }
 
+export const DEFAULT_LINE_COLOR = "#7c3aed";
+
+/** An open polyline (not a closed zone) - e.g. a border, a low-level route, a coordination line. */
+export interface LineObject {
+  id: string;
+  type: "line";
+  name: string;
+  vertices: LatLon[];
+  /** Overrides the default line color when set. */
+  color?: string;
+  /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
+  visible?: boolean;
+  /** Free-text notes/comment for briefing purposes. */
+  notes?: string;
+  /** When true, this object can't be dragged on the map. */
+  locked?: boolean;
+}
+
 export const DEFAULT_LABEL_COLOR = "#111827";
 export const DEFAULT_LABEL_FILL_COLOR = "#ffffff";
 export const DEFAULT_LABEL_BORDER_COLOR = "#111827";
@@ -122,4 +140,4 @@ export interface LabelObject {
   locked?: boolean;
 }
 
-export type MissionObject = PointObject | PolygonObject | LabelObject;
+export type MissionObject = PointObject | PolygonObject | LabelObject | LineObject;

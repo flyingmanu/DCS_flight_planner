@@ -3,6 +3,7 @@ import {
   DEFAULT_LABEL_COLOR,
   DEFAULT_LABEL_FILL_COLOR,
   DEFAULT_LABEL_FONT_SIZE_PX,
+  DEFAULT_LINE_COLOR,
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
@@ -49,7 +50,13 @@ function NumberField({ label, value, onCommit, step = 0.0001 }: { label: string;
 
 export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDmpiElevation }: ObjectEditPanelProps) {
   const defaultColor =
-    object.type === "point" ? DEFAULT_POINT_COLOR[object.kind] : object.type === "label" ? DEFAULT_LABEL_COLOR : DEFAULT_POLYGON_COLOR;
+    object.type === "point"
+      ? DEFAULT_POINT_COLOR[object.kind]
+      : object.type === "label"
+        ? DEFAULT_LABEL_COLOR
+        : object.type === "line"
+          ? DEFAULT_LINE_COLOR
+          : DEFAULT_POLYGON_COLOR;
 
   return (
     <div

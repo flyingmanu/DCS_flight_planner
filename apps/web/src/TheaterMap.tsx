@@ -1,4 +1,4 @@
-import type { Bullseye, Flight, LabelObject, LatLon, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
+import type { Bullseye, Flight, LabelObject, LatLon, LineObject, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
 import {
   bullseyeRingRadiiNm,
   bullseyeSpokeEndpoints,
@@ -9,6 +9,7 @@ import {
   DEFAULT_LABEL_COLOR,
   DEFAULT_LABEL_FILL_COLOR,
   DEFAULT_LABEL_FONT_SIZE_PX,
+  DEFAULT_LINE_COLOR,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
   findAircraft,
@@ -19,7 +20,7 @@ import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { flightMarkerElement } from "./aircraftIcons";
 import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
-import { orbitArrow, polygonCentroid, polygonRing, translatePolygonShape } from "./objectGeometry";
+import { lineMidpoint, orbitArrow, polygonCentroid, polygonRing, translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
 import { setupPlacement, snapToNearestCandidate, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
 
@@ -31,6 +32,8 @@ const BASEMAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 const OBJECTS_POLYGON_SOURCE_ID = "mission-objects-polygons";
 const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
+const OBJECTS_LINE_SOURCE_ID = "mission-objects-lines";
+const OBJECTS_LINE_LAYER_ID = "mission-objects-lines-layer";
 const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
 const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
 const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
@@ -324,6 +327,7 @@ interface TheaterMapProps {
   onSelectBullseye?: (side: Side) => void;
   onMovePoint?: (id: string, position: LatLon) => void;
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
+  onMoveLine?: (id: string, dLat: number, dLon: number) => void;
   onMoveWaypoint?: (waypointId: string, position: LatLon) => void;
   onMoveBullseye?: (side: Side, position: LatLon) => void;
   onMoveLabel?: (id: string, position: LatLon) => void;
@@ -342,6 +346,17 @@ function polygonsToFeatureCollection(list: PolygonObject[]): GeoJSON.FeatureColl
       type: "Feature",
       properties: { id: p.id, name: p.name, color: p.color ?? DEFAULT_POLYGON_COLOR, isOrbit: p.shape.kind === "orbit" },
       geometry: { type: "Polygon", coordinates: [polygonRing(p)] },
+    })),
+  };
+}
+
+function linesToFeatureCollection(list: LineObject[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.map((l) => ({
+      type: "Feature",
+      properties: { id: l.id, name: l.name, color: l.color ?? DEFAULT_LINE_COLOR },
+      geometry: { type: "LineString", coordinates: l.vertices.map((v) => [v.lon, v.lat]) },
     })),
   };
 }
@@ -396,6 +411,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     onSelectBullseye,
     onMovePoint,
     onMovePolygon,
+    onMoveLine,
     onMoveWaypoint,
     onMoveBullseye,
     onMoveLabel,
@@ -421,6 +437,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onMovePointRef.current = onMovePoint;
   const onMovePolygonRef = useRef(onMovePolygon);
   onMovePolygonRef.current = onMovePolygon;
+  const onMoveLineRef = useRef(onMoveLine);
+  onMoveLineRef.current = onMoveLine;
   const onMoveWaypointRef = useRef(onMoveWaypoint);
   onMoveWaypointRef.current = onMoveWaypoint;
   const onMoveBullseyeRef = useRef(onMoveBullseye);
@@ -428,6 +446,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   const onMoveLabelRef = useRef(onMoveLabel);
   onMoveLabelRef.current = onMoveLabel;
   const polygonsRef = useRef<PolygonObject[]>([]);
+  const linesRef = useRef<LineObject[]>([]);
   const airbaseMarkerElementsRef = useRef<HTMLElement[]>([]);
   const snapEnabledRef = useRef(snapEnabled);
   snapEnabledRef.current = snapEnabled;
@@ -521,6 +540,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
 
     const polygons = objects.filter((o): o is PolygonObject => o.type === "polygon");
     polygonsRef.current = polygons;
+    const lines = objects.filter((o): o is LineObject => o.type === "line");
+    linesRef.current = lines;
 
     function renderPolygons() {
       if (!map) return;
@@ -646,6 +667,82 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       map.once("load", renderPolygons);
     }
 
+    function renderObjectLines() {
+      if (!map) return;
+      const data = linesToFeatureCollection(linesRef.current);
+      const source = map.getSource(OBJECTS_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+
+      if (source) {
+        source.setData(data);
+        return;
+      }
+
+      map.addSource(OBJECTS_LINE_SOURCE_ID, { type: "geojson", data });
+      map.addLayer({
+        id: OBJECTS_LINE_LAYER_ID,
+        type: "line",
+        source: OBJECTS_LINE_SOURCE_ID,
+        paint: { "line-color": ["get", "color"], "line-width": 3 },
+      });
+
+      let dragging: { id: string; startLng: number; startLat: number; vertices: LatLon[] } | null = null;
+      let dragMoved = false;
+
+      map.on("click", OBJECTS_LINE_LAYER_ID, (e) => {
+        if (dragMoved) {
+          dragMoved = false;
+          return;
+        }
+        const id = e.features?.[0]?.properties?.id as string | undefined;
+        if (id) onSelectObjectRef.current?.(id);
+      });
+      map.on("mouseenter", OBJECTS_LINE_LAYER_ID, () => {
+        if (!dragging) map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", OBJECTS_LINE_LAYER_ID, () => {
+        if (!dragging) map.getCanvas().style.cursor = "";
+      });
+
+      map.on("mousedown", OBJECTS_LINE_LAYER_ID, (e) => {
+        const id = e.features?.[0]?.properties?.id as string | undefined;
+        const line = linesRef.current.find((l) => l.id === id);
+        if (!id || !line || line.locked) return;
+        e.preventDefault();
+        dragging = { id, startLng: e.lngLat.lng, startLat: e.lngLat.lat, vertices: line.vertices };
+        dragMoved = false;
+        map.getCanvas().style.cursor = "grabbing";
+        map.dragPan.disable();
+      });
+
+      map.on("mousemove", (e) => {
+        if (!dragging) return;
+        dragMoved = true;
+        const dLat = e.lngLat.lat - dragging.startLat;
+        const dLon = e.lngLat.lng - dragging.startLng;
+        const preview = linesRef.current.map((l) =>
+          l.id === dragging!.id ? { ...l, vertices: translateLineVertices(dragging!.vertices, dLat, dLon) } : l,
+        );
+        (map.getSource(OBJECTS_LINE_SOURCE_ID) as maplibregl.GeoJSONSource | undefined)?.setData(linesToFeatureCollection(preview));
+      });
+
+      map.on("mouseup", (e) => {
+        if (!dragging) return;
+        const dLat = e.lngLat.lat - dragging.startLat;
+        const dLon = e.lngLat.lng - dragging.startLng;
+        const id = dragging.id;
+        dragging = null;
+        map.getCanvas().style.cursor = "";
+        map.dragPan.enable();
+        if (dragMoved) onMoveLineRef.current?.(id, dLat, dLon);
+      });
+    }
+
+    if (map.getSource(OBJECTS_LINE_SOURCE_ID) || map.isStyleLoaded()) {
+      renderObjectLines();
+    } else {
+      map.once("load", renderObjectLines);
+    }
+
     const pointMarkers: maplibregl.Marker[] = [];
     for (const obj of objects) {
       if (obj.type !== "point") continue;
@@ -712,6 +809,16 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       const center = polygonCentroid(polygon.shape);
       const marker = new maplibregl.Marker({ element: zoneLabelMarkerElement(polygon.name, color), anchor: "center" })
         .setLngLat([center.lon, center.lat])
+        .addTo(map);
+      zoneLabelMarkers.push(marker);
+    }
+
+    for (const line of lines) {
+      if (!line.name.trim()) continue;
+      const color = line.color ?? DEFAULT_LINE_COLOR;
+      const anchor = lineMidpoint(line.vertices);
+      const marker = new maplibregl.Marker({ element: zoneLabelMarkerElement(line.name, color), anchor: "center" })
+        .setLngLat([anchor.lon, anchor.lat])
         .addTo(map);
       zoneLabelMarkers.push(marker);
     }

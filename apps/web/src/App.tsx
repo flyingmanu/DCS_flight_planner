@@ -36,7 +36,7 @@ import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
 import { PromptDialog } from "./PromptDialog";
 import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
-import { translatePolygonShape } from "./objectGeometry";
+import { translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import type { CreationRequest, ObjectDraft } from "./placement";
 
 const theater = caucasus as Theater;
@@ -55,6 +55,7 @@ const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
 function defaultObjectName(draft: PlaceableObjectDraft): string {
   if (draft.type === "point") return POINT_KIND_LABEL[draft.kind];
   if (draft.type === "label") return "Label";
+  if (draft.type === "line") return "Line";
   return POLYGON_KIND_DEFAULT_NAME[draft.shape.kind] ?? "Object";
 }
 
@@ -67,6 +68,9 @@ function draftToObject(draft: PlaceableObjectDraft, name: string): MissionObject
   }
   if (draft.type === "label") {
     return { id, type: "label", name, position: draft.position };
+  }
+  if (draft.type === "line") {
+    return { id, type: "line", name, vertices: draft.vertices };
   }
   return { id, type: "polygon", name, shape: draft.shape };
 }
@@ -257,6 +261,12 @@ function App() {
   function handleMovePolygon(id: string, dLat: number, dLon: number) {
     setObjects((prev) =>
       prev.map((o) => (o.id === id && o.type === "polygon" ? { ...o, shape: translatePolygonShape(o.shape, dLat, dLon) } : o)),
+    );
+  }
+
+  function handleMoveLine(id: string, dLat: number, dLon: number) {
+    setObjects((prev) =>
+      prev.map((o) => (o.id === id && o.type === "line" ? { ...o, vertices: translateLineVertices(o.vertices, dLat, dLon) } : o)),
     );
   }
 
@@ -474,6 +484,7 @@ function App() {
           }}
           onMovePoint={handleMovePoint}
           onMovePolygon={handleMovePolygon}
+          onMoveLine={handleMoveLine}
           onMoveWaypoint={handleMoveWaypoint}
           onMoveBullseye={handleMoveBullseye}
           onMoveLabel={handleMoveLabel}

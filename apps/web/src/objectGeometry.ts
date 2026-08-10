@@ -67,3 +67,14 @@ export function translatePolygonShape(shape: PolygonShape, dLat: number, dLon: n
   // circle and orbit both move by translating their center
   return { ...shape, center: translatePoint(shape.center, dLat, dLon) };
 }
+
+/** Rigidly translates a line's vertices by a lat/lon offset (used for drag-to-move). */
+export function translateLineVertices(vertices: LatLon[], dLat: number, dLon: number): LatLon[] {
+  return vertices.map((v) => translatePoint(v, dLat, dLon));
+}
+
+/** A representative anchor point for a line, used to place its name label - the vertex closest to the midpoint of its span. */
+export function lineMidpoint(vertices: LatLon[]): LatLon {
+  const sum = vertices.reduce((acc, v) => ({ lat: acc.lat + v.lat, lon: acc.lon + v.lon }), { lat: 0, lon: 0 });
+  return { lat: sum.lat / vertices.length, lon: sum.lon / vertices.length };
+}
