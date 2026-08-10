@@ -4,12 +4,12 @@ import {
   computeLoadoutWeightLb,
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
-  findAircraft,
   formatEte,
   formatLatLonDdm,
   TASK_TYPE_LABEL,
   totalRouteDistanceNm,
   type Airbase,
+  type CustomAircraft,
   type Flight,
 } from "@dcs-flight-planner/core";
 import { loadoutSummary } from "./armamentSummary";
@@ -26,7 +26,7 @@ function airbaseName(airbases: Airbase[], id: string | undefined): string {
 }
 
 /** Draws a single flight's kneeboard page onto a fresh off-screen canvas. */
-export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], missionName: string): HTMLCanvasElement {
+export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], customAircraft: CustomAircraft[], missionName: string): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
@@ -34,7 +34,7 @@ export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], mission
   if (!ctx) return canvas;
 
   const color = flight.color ?? DEFAULT_FLIGHT_COLOR;
-  const aircraft = findAircraft(flight.aircraftId);
+  const aircraft = customAircraft.find((a) => a.id === flight.customAircraftId);
   const route = flight.route ?? [];
   const legs = computeRouteLegs(route);
 
@@ -113,14 +113,14 @@ export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], mission
   labelValue("Radio", flight.radioFrequencyMhz ? `${flight.radioFrequencyMhz} MHz` : "—", left + colWidth * 2, y);
   y += 50;
   labelValue("IFF 1 / 3", `${flight.iffMode1 ?? "—"} / ${flight.iffMode3 ?? "—"}`, left, y);
-  if (aircraft?.performance?.maxSpeedKt) {
-    labelValue("Combat radius", `${aircraft.performance.combatRadiusNm ?? "—"} NM`, left + colWidth, y);
+  if (aircraft?.performance.maxSpeedKt) {
+    labelValue("Max speed", `${aircraft.performance.maxSpeedKt} kt`, left + colWidth, y);
   }
   y += 40;
 
-  const armament = loadoutSummary(flight);
-  if (armament) {
-    const gross = aircraft ? computeGrossWeightLb(aircraft, flight.pylonLoadout) : undefined;
+  const armament = loadoutSummary(flight, aircraft);
+  if (armament && aircraft) {
+    const gross = computeGrossWeightLb(aircraft, flight.pylonLoadout);
     ctx.font = "11px system-ui, sans-serif";
     ctx.fillStyle = "#8a93a0";
     ctx.fillText("ARMAMENT", left, y);
@@ -130,7 +130,8 @@ export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], mission
     ctx.font = "12px system-ui, sans-serif";
     ctx.fillStyle = "#6b7684";
     const weightLine =
-      `Ordnance ${computeLoadoutWeightLb(flight.pylonLoadout).toLocaleString()} lb` + (gross !== undefined ? `  ·  Est. gross weight ${gross.toLocaleString()} lb` : "");
+      `Ordnance ${computeLoadoutWeightLb(aircraft, flight.pylonLoadout).toLocaleString()} lb` +
+      (gross !== undefined ? `  ·  Est. gross weight ${gross.toLocaleString()} lb` : "");
     ctx.fillText(weightLine, left, y + 40);
     y += 60;
   }
@@ -247,10 +248,10 @@ function slug(text: string): string {
 }
 
 /** Generates and downloads one kneeboard PNG per flight, staggered so browsers don't block multi-file downloads. */
-export async function exportKneeboards(flights: Flight[], airbases: Airbase[], missionName: string): Promise<void> {
+export async function exportKneeboards(flights: Flight[], airbases: Airbase[], customAircraft: CustomAircraft[], missionName: string): Promise<void> {
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i]!;
-    const canvas = drawFlightKneeboard(flight, airbases, missionName);
+    const canvas = drawFlightKneeboard(flight, airbases, customAircraft, missionName);
     const blob = await canvasToPngBlob(canvas);
     if (blob) downloadBlob(blob, `${slug(missionName)}-${slug(flight.name)}-kneeboard.png`);
     if (i < flights.length - 1) await new Promise((resolve) => setTimeout(resolve, 200));

@@ -1,8 +1,11 @@
-import type { Dmpi, Flight, LatLon, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
+import type { CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
 import { DEFAULT_FLIGHT_COLOR, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
+import { CustomAircraftEditor } from "./CustomAircraftEditor";
+import { CustomAircraftMenu } from "./CustomAircraftMenu";
+import { deleteCustomAircraft, listCustomAircraft, saveCustomAircraft } from "./customAircraftStore";
 import { getElevationAt } from "./elevation";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
@@ -50,6 +53,20 @@ function makeBlankFlight(): Flight {
   return { id: crypto.randomUUID(), name: "", aircraftType: "", size: 2, taskType: "CAP", color: DEFAULT_FLIGHT_COLOR, route: [] };
 }
 
+function makeBlankCustomAircraft(): CustomAircraft {
+  return {
+    id: crypto.randomUUID(),
+    name: "",
+    category: "fixed-wing",
+    standardTasks: [],
+    performance: {},
+    launchers: [],
+    weapons: [],
+    pylons: [],
+    presets: [],
+  };
+}
+
 function App() {
   const mapRef = useRef<TheaterMapHandle | null>(null);
   const [missions, setMissions] = useState<Mission[]>([]);
@@ -66,9 +83,12 @@ function App() {
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
   const [flightForm, setFlightForm] = useState<{ flight: Flight; isNew: boolean } | null>(null);
+  const [customAircraft, setCustomAircraft] = useState<CustomAircraft[]>([]);
+  const [customAircraftForm, setCustomAircraftForm] = useState<{ aircraft: CustomAircraft; isNew: boolean } | null>(null);
 
   useEffect(() => {
     setMissions(listMissions());
+    setCustomAircraft(listCustomAircraft());
   }, []);
 
   function persist(id: string, name: string) {
@@ -222,6 +242,38 @@ function App() {
     );
   }
 
+  function handleNewCustomAircraft() {
+    setCustomAircraftForm({ aircraft: makeBlankCustomAircraft(), isNew: true });
+  }
+
+  function handleEditCustomAircraft(id: string) {
+    const aircraft = customAircraft.find((a) => a.id === id);
+    if (aircraft) setCustomAircraftForm({ aircraft: { ...aircraft }, isNew: false });
+  }
+
+  function handleCustomAircraftSave() {
+    if (!customAircraftForm) return;
+    const aircraft = customAircraftForm.aircraft;
+    saveCustomAircraft(aircraft);
+    setCustomAircraft(listCustomAircraft());
+    setCustomAircraftForm(null);
+  }
+
+  function handleCustomAircraftDelete(id: string) {
+    deleteCustomAircraft(id);
+    setCustomAircraft(listCustomAircraft());
+    if (customAircraftForm?.aircraft.id === id) setCustomAircraftForm(null);
+  }
+
+  /** Appends a preset to a custom aircraft's saved list and persists it immediately (called from the flight form). */
+  function handleSavePreset(customAircraftId: string, preset: LoadoutPreset) {
+    const aircraft = customAircraft.find((a) => a.id === customAircraftId);
+    if (!aircraft) return;
+    const updated = { ...aircraft, presets: [...aircraft.presets, preset] };
+    saveCustomAircraft(updated);
+    setCustomAircraft(listCustomAircraft());
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -257,6 +309,7 @@ function App() {
           />
           <ObjectMenu onRequestCreation={setCreationRequest} />
           <FlightMenu flights={flights} onNewFlight={handleNewFlight} onEditFlight={handleEditFlight} />
+          <CustomAircraftMenu customAircraft={customAircraft} onNew={handleNewCustomAircraft} onEdit={handleEditCustomAircraft} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
@@ -336,6 +389,7 @@ function App() {
           theaterName={theater.name}
           airbases={theater.airbases}
           flights={flights}
+          customAircraft={customAircraft}
           objects={objects}
           onClose={() => setOverviewOpen(false)}
         />
@@ -344,12 +398,24 @@ function App() {
         <FlightFormDialog
           airbases={theater.airbases}
           flight={flightForm.flight}
+          customAircraft={customAircraft}
           isNew={flightForm.isNew}
           onChange={(flight) => setFlightForm((prev) => (prev ? { ...prev, flight } : prev))}
           onSave={handleFlightSave}
           onDelete={flightForm.isNew ? undefined : () => handleFlightDelete(flightForm.flight.id)}
           onCancel={() => setFlightForm(null)}
           onAddWaypointOnMap={() => setCreationRequest({ kind: "waypoint" })}
+          onSavePreset={handleSavePreset}
+        />
+      )}
+      {customAircraftForm && (
+        <CustomAircraftEditor
+          aircraft={customAircraftForm.aircraft}
+          isNew={customAircraftForm.isNew}
+          onChange={(aircraft) => setCustomAircraftForm((prev) => (prev ? { ...prev, aircraft } : prev))}
+          onSave={handleCustomAircraftSave}
+          onDelete={customAircraftForm.isNew ? undefined : () => handleCustomAircraftDelete(customAircraftForm.aircraft.id)}
+          onCancel={() => setCustomAircraftForm(null)}
         />
       )}
       {saveAsOpen && (

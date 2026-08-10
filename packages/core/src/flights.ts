@@ -1,4 +1,7 @@
+import type { PylonSelection } from "./customAircraft.js";
 import type { LatLon } from "./geo.js";
+
+export type { PylonSelection } from "./customAircraft.js";
 
 export type TaskType = "CAP" | "STRIKE" | "SEAD" | "ESCORT" | "CAS" | "RECON" | "AEW" | "TANKER" | "TRANSPORT" | "OTHER";
 
@@ -17,13 +20,6 @@ export const TASK_TYPE_LABEL: Record<TaskType, string> = {
 
 export const DEFAULT_FLIGHT_COLOR = "#1d4ed8";
 
-export interface PylonSelection {
-  /** Matches the aircraft's Pylon.station. */
-  station: number;
-  /** References Weapon.id in the shared weapon catalog; null/absent means the pylon is empty. */
-  weaponId: string | null;
-}
-
 export interface Waypoint {
   id: string;
   /** Optional custom label; defaults to "WP{n}" (1-based position in the route) when absent. */
@@ -41,9 +37,11 @@ export interface Flight {
   id: string;
   /** Callsign and flight number, e.g. "Enfield 1-1". */
   name: string;
-  /** References Aircraft.id in the shared catalog, when picked from it. */
+  /** References Aircraft.id in the built-in catalog. Mutually exclusive with customAircraftId. */
   aircraftId?: string;
-  /** Display name of the aircraft type, kept in sync with aircraftId when set. */
+  /** References CustomAircraft.id in the user's saved custom aircraft. Mutually exclusive with aircraftId. */
+  customAircraftId?: string;
+  /** Display name of the aircraft type, kept in sync with aircraftId/customAircraftId when set. */
   aircraftType: string;
   /** Number of aircraft in the flight. */
   size: number;
@@ -63,6 +61,6 @@ export interface Flight {
   route?: Waypoint[];
   /** Free-text ordnance/loadout notes, e.g. call-outs not captured by pylonLoadout. */
   loadout?: string;
-  /** Per-pylon weapon selection, keyed by station; only meaningful when the aircraft defines pylons. */
+  /** Per-pylon weapon selection; only meaningful when customAircraftId references an aircraft with pylons. */
   pylonLoadout?: PylonSelection[];
 }

@@ -4,13 +4,13 @@ import {
   computeLoadoutWeightLb,
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
-  findAircraft,
   formatEte,
   formatLatLonDdm,
   POINT_KIND_LABEL,
   TASK_TYPE_LABEL,
   totalRouteDistanceNm,
   type Airbase,
+  type CustomAircraft,
   type Flight,
   type MissionObject,
   type PolygonShape,
@@ -24,6 +24,7 @@ interface MissionOverviewDialogProps {
   theaterName: string;
   airbases: Airbase[];
   flights: Flight[];
+  customAircraft: CustomAircraft[];
   objects: MissionObject[];
   onClose: () => void;
 }
@@ -72,7 +73,7 @@ function Td({ children, mono }: { children: React.ReactNode; mono?: boolean }) {
   );
 }
 
-export function MissionOverviewDialog({ missionName, theaterName, airbases, flights, objects, onClose }: MissionOverviewDialogProps) {
+export function MissionOverviewDialog({ missionName, theaterName, airbases, flights, customAircraft, objects, onClose }: MissionOverviewDialogProps) {
   const airbaseName = (id: string | undefined) => (id ? (airbases.find((a) => a.id === id)?.name ?? id) : "—");
   const points = objects.filter((o) => o.type === "point");
   const polygons = objects.filter((o) => o.type === "polygon");
@@ -81,7 +82,7 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
   async function handleExportKneeboards() {
     setExporting(true);
     try {
-      await exportKneeboards(flights, airbases, missionName);
+      await exportKneeboards(flights, airbases, customAircraft, missionName);
     } finally {
       setExporting(false);
     }
@@ -180,11 +181,11 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                   <div>TACAN: {flight.tacanChannel ?? "—"}</div>
                   <div>Radio: {flight.radioFrequencyMhz ? `${flight.radioFrequencyMhz} MHz` : "—"}</div>
                   {(() => {
-                    const summary = loadoutSummary(flight);
-                    if (!summary) return null;
-                    const aircraft = findAircraft(flight.aircraftId);
-                    const ordnanceLb = computeLoadoutWeightLb(flight.pylonLoadout);
-                    const gross = aircraft ? computeGrossWeightLb(aircraft, flight.pylonLoadout) : undefined;
+                    const aircraft = customAircraft.find((a) => a.id === flight.customAircraftId);
+                    const summary = loadoutSummary(flight, aircraft);
+                    if (!summary || !aircraft) return null;
+                    const ordnanceLb = computeLoadoutWeightLb(aircraft, flight.pylonLoadout);
+                    const gross = computeGrossWeightLb(aircraft, flight.pylonLoadout);
                     return (
                       <div style={{ gridColumn: "1 / -1", color: "var(--dfp-text-muted)" }}>
                         Armament: {summary} — {ordnanceLb.toLocaleString()} lb

@@ -1,23 +1,30 @@
 import {
   addMinutesToClock,
   AIRCRAFT_CATALOG,
+  classifyLoad,
   computeGrossWeightLb,
   computeLoadoutWeightLb,
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
+  estimateEnduranceMin,
+  estimateRangeNm,
+  estimateTakeoffDistanceFt,
   findAircraft,
-  findWeapon,
+  findCustomWeapon,
+  findLauncher,
   formatEte,
   TASK_TYPE_LABEL,
   totalRouteDistanceNm,
   type Airbase,
+  type CustomAircraft,
   type Flight,
   type LatLon,
+  type LoadoutPreset,
   type PylonSelection,
   type TaskType,
   type Waypoint,
 } from "@dcs-flight-planner/core";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ColorField } from "./ColorField";
 import { CoordinateFields } from "./CoordinateFields";
 import { Field } from "./FormField";
@@ -25,11 +32,13 @@ import { Field } from "./FormField";
 interface FlightFormDialogProps {
   airbases: Airbase[];
   flight: Flight;
+  customAircraft: CustomAircraft[];
   onChange: (updated: Flight) => void;
   onSave: () => void;
   onDelete?: () => void;
   onCancel: () => void;
   onAddWaypointOnMap: () => void;
+  onSavePreset: (customAircraftId: string, preset: LoadoutPreset) => void;
   isNew: boolean;
 }
 
@@ -44,11 +53,26 @@ function Row({ children }: { children: ReactNode }) {
   return <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>{children}</div>;
 }
 
-export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete, onCancel, onAddWaypointOnMap, isNew }: FlightFormDialogProps) {
+const LOAD_CLASS_LABEL: Record<string, string> = { light: "Light", medium: "Medium", heavy: "Heavy" };
+
+export function FlightFormDialog({
+  airbases,
+  flight,
+  customAircraft,
+  onChange,
+  onSave,
+  onDelete,
+  onCancel,
+  onAddWaypointOnMap,
+  onSavePreset,
+  isNew,
+}: FlightFormDialogProps) {
   const sortedAirbases = [...airbases].sort((a, b) => a.name.localeCompare(b.name));
-  const aircraft = findAircraft(flight.aircraftId);
+  const catalogAircraft = findAircraft(flight.aircraftId);
+  const custom = customAircraft.find((a) => a.id === flight.customAircraftId);
   const route = flight.route ?? [];
   const legs = computeRouteLegs(route);
+  const [presetName, setPresetName] = useState("");
 
   // Cumulative ETA per waypoint index (undefined until we have a takeoff time and every
   // preceding leg's ETE, i.e. every waypoint from #2 onward has an airspeed set).
@@ -83,9 +107,9 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
     );
   }
 
-  function aircraftOption(a: (typeof AIRCRAFT_CATALOG)[number]) {
+  function catalogOption(a: (typeof AIRCRAFT_CATALOG)[number]) {
     return (
-      <option key={a.id} value={a.id}>
+      <option key={a.id} value={`catalog:${a.id}`}>
         {a.name}
       </option>
     );
@@ -105,13 +129,43 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
     );
   }
 
-  function setPylon(station: number, weaponId: string | null) {
+  function setPylon(station: string, weaponId: string | null) {
+    if (!custom) return;
+    const weapon = findCustomWeapon(custom, weaponId);
+    const compatibleLauncherIds = weapon?.compatibleLauncherIds ?? [];
+    const launcherId = compatibleLauncherIds.length === 1 ? compatibleLauncherIds[0]! : null;
     const pylonLoadout = flight.pylonLoadout ?? [];
     const next: PylonSelection[] = pylonLoadout.some((s) => s.station === station)
-      ? pylonLoadout.map((s) => (s.station === station ? { ...s, weaponId } : s))
-      : [...pylonLoadout, { station, weaponId }];
+      ? pylonLoadout.map((s) => (s.station === station ? { ...s, weaponId, launcherId } : s))
+      : [...pylonLoadout, { station, weaponId, launcherId }];
     set("pylonLoadout", next);
   }
+
+  function setPylonLauncher(station: string, launcherId: string | null) {
+    const pylonLoadout = flight.pylonLoadout ?? [];
+    set(
+      "pylonLoadout",
+      pylonLoadout.map((s) => (s.station === station ? { ...s, launcherId } : s)),
+    );
+  }
+
+  function applyPreset(presetId: string) {
+    const preset = custom?.presets.find((p) => p.id === presetId);
+    if (preset) set("pylonLoadout", preset.selections);
+  }
+
+  function saveCurrentAsPreset() {
+    if (!custom || !presetName.trim()) return;
+    onSavePreset(custom.id, { id: crypto.randomUUID(), name: presetName.trim(), selections: flight.pylonLoadout ?? [] });
+    setPresetName("");
+  }
+
+  const grossWeightLb = custom ? computeGrossWeightLb(custom, flight.pylonLoadout) : undefined;
+  const loadClass = custom && grossWeightLb !== undefined ? classifyLoad(custom, grossWeightLb) : undefined;
+  const takeoffDistanceFt = custom && grossWeightLb !== undefined ? estimateTakeoffDistanceFt(custom, grossWeightLb) : undefined;
+  const fuelForEstimate = custom?.performance.internalFuelLb;
+  const enduranceMin = custom && fuelForEstimate !== undefined ? estimateEnduranceMin(custom, fuelForEstimate) : undefined;
+  const rangeNm = custom && fuelForEstimate !== undefined ? estimateRangeNm(custom, fuelForEstimate) : undefined;
 
   return (
     <div
@@ -153,17 +207,34 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
               <select
                 className="dfp-select"
                 style={{ width: "100%" }}
-                value={flight.aircraftId ?? ""}
+                value={flight.customAircraftId ? `custom:${flight.customAircraftId}` : flight.aircraftId ? `catalog:${flight.aircraftId}` : ""}
                 onChange={(e) => {
-                  const selected = findAircraft(e.target.value);
-                  onChange({ ...flight, aircraftId: selected?.id, aircraftType: selected?.name ?? flight.aircraftType, pylonLoadout: [] });
+                  const [kind, id] = e.target.value.split(":", 2);
+                  if (kind === "custom") {
+                    const selected = customAircraft.find((a) => a.id === id);
+                    onChange({ ...flight, aircraftId: undefined, customAircraftId: selected?.id, aircraftType: selected?.name ?? flight.aircraftType, pylonLoadout: [] });
+                  } else if (kind === "catalog") {
+                    const selected = findAircraft(id);
+                    onChange({ ...flight, aircraftId: selected?.id, customAircraftId: undefined, aircraftType: selected?.name ?? flight.aircraftType, pylonLoadout: [] });
+                  } else {
+                    onChange({ ...flight, aircraftId: undefined, customAircraftId: undefined, pylonLoadout: [] });
+                  }
                 }}
               >
                 <option value="">—</option>
-                {PLAYABLE_FIXED_WING.length > 0 && <optgroup label="Fixed-wing — playable">{PLAYABLE_FIXED_WING.map(aircraftOption)}</optgroup>}
-                {PLAYABLE_HELICOPTERS.length > 0 && <optgroup label="Helicopter — playable">{PLAYABLE_HELICOPTERS.map(aircraftOption)}</optgroup>}
-                {AI_FIXED_WING.length > 0 && <optgroup label="Fixed-wing — AI">{AI_FIXED_WING.map(aircraftOption)}</optgroup>}
-                {AI_HELICOPTERS.length > 0 && <optgroup label="Helicopter — AI">{AI_HELICOPTERS.map(aircraftOption)}</optgroup>}
+                {customAircraft.length > 0 && (
+                  <optgroup label="Custom">
+                    {customAircraft.map((a) => (
+                      <option key={a.id} value={`custom:${a.id}`}>
+                        {a.name}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                {PLAYABLE_FIXED_WING.length > 0 && <optgroup label="Fixed-wing — playable">{PLAYABLE_FIXED_WING.map(catalogOption)}</optgroup>}
+                {PLAYABLE_HELICOPTERS.length > 0 && <optgroup label="Helicopter — playable">{PLAYABLE_HELICOPTERS.map(catalogOption)}</optgroup>}
+                {AI_FIXED_WING.length > 0 && <optgroup label="Fixed-wing — AI">{AI_FIXED_WING.map(catalogOption)}</optgroup>}
+                {AI_HELICOPTERS.length > 0 && <optgroup label="Helicopter — AI">{AI_HELICOPTERS.map(catalogOption)}</optgroup>}
               </select>
             </Field>
           </div>
@@ -179,7 +250,7 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
           </Field>
         </Row>
 
-        {aircraft?.performance && (
+        {custom && (
           <div
             style={{
               fontSize: 11.5,
@@ -192,10 +263,23 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
               lineHeight: 1.6,
             }}
           >
-            Max speed {aircraft.performance.maxSpeedKt} kt · Ceiling {aircraft.performance.serviceCeilingFt?.toLocaleString()} ft
-            <br />
-            Combat radius {aircraft.performance.combatRadiusNm} NM · Fuel {aircraft.performance.internalFuelLb?.toLocaleString()} lb
+            {(custom.performance.maxSpeedKt || custom.performance.serviceCeilingFt) && (
+              <>
+                Max speed {custom.performance.maxSpeedKt ?? "—"} kt · Ceiling {custom.performance.serviceCeilingFt?.toLocaleString() ?? "—"} ft
+                <br />
+              </>
+            )}
+            {rangeNm !== undefined && (
+              <>
+                Est. range {Math.round(rangeNm).toLocaleString()} NM · Endurance {enduranceMin !== undefined ? formatEte(enduranceMin) : "—"}
+                <br />
+              </>
+            )}
           </div>
+        )}
+
+        {catalogAircraft === undefined && !custom && flight.aircraftType && (
+          <div style={{ fontSize: 11, color: "var(--dfp-text-muted)", marginTop: -10, marginBottom: 14 }}>{flight.aircraftType}</div>
         )}
 
         <Field label="Task">
@@ -274,29 +358,55 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
           />
         </Field>
 
-        {aircraft?.pylons && aircraft.pylons.length > 0 && (
+        {custom && custom.pylons.length > 0 && (
           <>
-            <div className="dfp-label" style={{ marginTop: 4 }}>
-              Armament ({aircraft.pylons.length} pylons)
+            <div className="dfp-label" style={{ marginTop: 4, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span>Armament ({custom.pylons.length} pylons)</span>
             </div>
-            {aircraft.pylons.map((pylon) => {
-              const selected = flight.pylonLoadout?.find((s) => s.station === pylon.station)?.weaponId ?? "";
+            {custom.presets.length > 0 && (
+              <select className="dfp-select" style={{ width: "100%", marginBottom: 8 }} value="" onChange={(e) => applyPreset(e.target.value)}>
+                <option value="">Apply saved preset...</option>
+                {custom.presets.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            )}
+            {custom.pylons.map((pylon) => {
+              const selection = flight.pylonLoadout?.find((s) => s.station === pylon.station);
+              const selectedWeapon = findCustomWeapon(custom, selection?.weaponId);
+              const launcherOptions = selectedWeapon?.compatibleLauncherIds ?? [];
               return (
                 <div key={pylon.station} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, color: "var(--dfp-text-muted)", width: 54, flexShrink: 0 }}>Sta {pylon.station}</span>
+                  <span style={{ fontSize: 11, color: "var(--dfp-text-muted)", width: 42, flexShrink: 0 }}>Sta {pylon.station}</span>
                   <select
                     className="dfp-select"
                     style={{ width: "100%" }}
-                    value={selected}
+                    value={selection?.weaponId ?? ""}
                     onChange={(e) => setPylon(pylon.station, e.target.value || null)}
                   >
                     <option value="">— Empty —</option>
                     {pylon.compatibleWeaponIds.map((weaponId) => (
                       <option key={weaponId} value={weaponId}>
-                        {findWeapon(weaponId)?.name ?? weaponId}
+                        {findCustomWeapon(custom, weaponId)?.name ?? weaponId}
                       </option>
                     ))}
                   </select>
+                  {launcherOptions.length > 1 && (
+                    <select
+                      className="dfp-select"
+                      style={{ width: 120, flexShrink: 0 }}
+                      value={selection?.launcherId ?? ""}
+                      onChange={(e) => setPylonLauncher(pylon.station, e.target.value || null)}
+                    >
+                      {launcherOptions.map((launcherId) => (
+                        <option key={launcherId} value={launcherId}>
+                          {findLauncher(custom, launcherId)?.name ?? launcherId}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               );
             })}
@@ -308,23 +418,37 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
                 border: "1px solid var(--dfp-border)",
                 borderRadius: "var(--dfp-radius-sm)",
                 padding: "6px 8px",
-                marginBottom: 14,
+                marginBottom: 8,
                 lineHeight: 1.6,
               }}
             >
-              Ordnance {computeLoadoutWeightLb(flight.pylonLoadout).toLocaleString()} lb
-              {(() => {
-                const gross = computeGrossWeightLb(aircraft, flight.pylonLoadout);
-                if (gross === undefined) return null;
-                return (
-                  <>
-                    {" "}
-                    · Empty {aircraft.performance?.emptyWeightLb?.toLocaleString()} lb · Fuel {aircraft.performance?.internalFuelLb?.toLocaleString()} lb
-                    <br />
-                    Estimated gross weight <strong>{gross.toLocaleString()} lb</strong>
-                  </>
-                );
-              })()}
+              Ordnance {computeLoadoutWeightLb(custom, flight.pylonLoadout).toLocaleString()} lb
+              {grossWeightLb !== undefined && (
+                <>
+                  {" "}
+                  · Gross weight <strong>{grossWeightLb.toLocaleString()} lb</strong>
+                  {loadClass && <> ({LOAD_CLASS_LABEL[loadClass]})</>}
+                </>
+              )}
+              {takeoffDistanceFt !== undefined && (
+                <>
+                  <br />
+                  Est. takeoff distance {Math.round(takeoffDistanceFt).toLocaleString()} ft
+                </>
+              )}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+              <input
+                type="text"
+                className="dfp-input"
+                style={{ flex: 1 }}
+                placeholder="Preset name"
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+              />
+              <button type="button" className="dfp-btn" disabled={!presetName.trim()} onClick={saveCurrentAsPreset}>
+                Save as preset
+              </button>
             </div>
           </>
         )}
@@ -339,9 +463,6 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
             onChange={(e) => set("loadout", e.target.value)}
           />
         </Field>
-        {aircraft?.weapons && (
-          <div style={{ fontSize: 11, color: "var(--dfp-text-muted)", marginTop: -8, marginBottom: 14 }}>Typical: {aircraft.weapons.join(", ")}</div>
-        )}
 
         <div className="dfp-label" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span>Route ({route.length})</span>
