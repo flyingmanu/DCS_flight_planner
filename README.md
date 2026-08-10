@@ -42,9 +42,44 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Mission overview ("Overview" button): read-only summary of every flight (airbases, comms, loadout, full leg table) and every mission point/zone on one screen — a first step toward kneeboard export
 - [x] Custom aircraft ("Aircraft" menu): build fully custom aircraft with detailed, user-entered performance (weights, speeds, ceiling, cruise fuel flow, a takeoff-distance reference point) and a detailed armament page — pylon count, per-pylon compatible weapons, per-weapon compatible launchers, and launcher weights — plus named loadout presets you can save from a flight and reapply. The flight form shows a live weight readout (gross weight + light/medium/heavy classification), estimated takeoff distance, and estimated endurance/range, also surfaced in Mission Overview — another edge over Combat Flite. F-16C is the first test case, built from real reference data in a JTFF Drive spreadsheet
 - [x] Kneeboard export, first pass: "Export kneeboards (PNG)" in Mission Overview downloads one portrait card per flight (header, airbases/comms, armament + weight, full leg table) — page size is a legible guess, not yet checked against a real DCS kneeboard display
-- [ ] TOT (time-on-target) planning/back-timing across a package
+- [x] Bullseye per side (Object menu → Bullseye → Blue/Red/Neutral): position, color, ring count/spacing, spoke count, name/range-label toggles; rendered as concentric range rings + bearing spokes, draggable, saved with the mission
+- [x] Free-text notes field on any point or zone, editable in the object's edit panel
+- [x] Free-text map labels (Object menu → Text label): positionable text with bold/fill/border/font-size, listed alongside points/zones in the Objects popup
+- [x] Altitude band (min/max ft) + radio frequency on any zone/orbit object
+- [x] DMPIs attachable to any waypoint (not just "target" points) — add/rename/set-elevation/remove directly in the flight form's route section
+- [x] TOT (time-on-target) lock per waypoint: a locked waypoint's own TOT overrides the cascaded ETA and becomes the new time anchor for every later waypoint; plus per-waypoint speed type (IAS/TAS/GS) and altitude reference (AGL/MSL) tags. The waypoint-ETA cascade (previously duplicated three times) is now a single shared `computeWaypointEtas` in `packages/core`
+- [x] Packages/COMAO: group flights under a named package (with quick inline creation from the flight form); grouped in both the Objects list and Mission Overview
+- [x] Object locking: lock any point/zone/label to prevent it from being dragged on the map, toggled from the object's edit panel or the Objects list
+- [x] Mission-level text briefings ("Briefing" button): Situation + per-side Blue/Red/Neutral free text, saved with the mission
 - [ ] Desktop application (Tauri)
 - [ ] Monetization (license, accounts)
+
+## Audit notes (Combat Flite `.cf` delta round, for review)
+
+A real Combat Flite mission file (`.cf`, a zip archive: a DCS-`.miz`-compatible
+core plus a proprietary `mission.xml` with all the planning-specific data) was
+provided and parsed to find gaps against this tool. Nine gaps were identified
+and closed in this round, each in its own commit (see `git log`): Bullseye,
+object notes, text labels, zone altitude band/frequency, per-waypoint DMPIs,
+lockable TOT + speed type/AGL-MSL tags, packages/COMAO, object locking, and
+mission-level text briefings. As before, this was a scripted-Playwright-only
+pass (plus `tsc`/`oxlint`/core unit tests) — no human click-through since the
+last review. Two things worth a human's attention:
+
+- **Drag-and-drop verification gap**: this session discovered that simulated
+  mouse drag-and-drop (`page.mouse.down()` → `move()` → `up()`) does not
+  reliably move maplibregl markers under Playwright in this sandbox — verified
+  on both the pre- and post-change builds, so it's a test-environment
+  limitation, not a regression, but it means marker dragging (including the
+  new object-lock feature) has not had a real drag-and-drop check since this
+  limitation was found. Worth a manual click-and-drag pass, especially for
+  object locking (Point 8): confirm a locked point/zone/label truly resists
+  dragging, and an unlocked one still drags normally.
+- **TOT-lock semantics** are a simple forward cascade that resets its anchor
+  at each locked waypoint (see `computeWaypointEtas` in `packages/core/src/route.ts`);
+  it doesn't back-solve an earlier takeoff time from a downstream locked TOT,
+  which real mission planners sometimes want. Flagging in case Combat Flite's
+  actual TOT tool does more.
 
 ## Audit notes (overnight session, for review)
 
