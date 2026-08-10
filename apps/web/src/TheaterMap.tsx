@@ -9,6 +9,7 @@ import {
   DEFAULT_LABEL_COLOR,
   DEFAULT_LABEL_FILL_COLOR,
   DEFAULT_LABEL_FONT_SIZE_PX,
+  DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
   findAircraft,
 } from "@dcs-flight-planner/core";
@@ -30,6 +31,7 @@ const BASEMAP_STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
 const OBJECTS_POLYGON_SOURCE_ID = "mission-objects-polygons";
 const OBJECTS_POLYGON_FILL_ID = "mission-objects-polygons-fill";
 const OBJECTS_POLYGON_LINE_ID = "mission-objects-polygons-line";
+const OBJECTS_POLYGON_LABEL_LAYER_ID = "mission-objects-polygons-label";
 const OBJECTS_ORBIT_ARROW_SOURCE_ID = "mission-objects-orbit-arrows";
 const OBJECTS_ORBIT_ARROW_LAYER_ID = "mission-objects-orbit-arrows-layer";
 const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
@@ -188,6 +190,37 @@ function labelMarkerElement(label: LabelObject): HTMLElement {
   el.style.cursor = "grab";
   el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.25)";
   return el;
+}
+
+// Wraps a marker icon with its object's name shown alongside it, without
+// changing the icon's own footprint - the label is absolutely positioned
+// (out of flow) so the wrapper's size still matches the icon's, keeping the
+// marker's map anchor exactly on the icon rather than drifting toward the label.
+function withNameLabel(icon: HTMLElement, name: string, color: string): HTMLElement {
+  if (!name.trim()) return icon;
+  const wrap = document.createElement("div");
+  wrap.style.position = "relative";
+  wrap.style.width = icon.style.width || `${icon.offsetWidth}px`;
+  wrap.style.height = icon.style.height || `${icon.offsetHeight}px`;
+  wrap.appendChild(icon);
+
+  const label = document.createElement("span");
+  label.textContent = name;
+  label.style.position = "absolute";
+  label.style.left = "100%";
+  label.style.top = "50%";
+  label.style.transform = "translateY(-50%)";
+  label.style.marginLeft = "4px";
+  label.style.fontSize = "11px";
+  label.style.fontWeight = "600";
+  label.style.color = color;
+  label.style.background = "rgba(255,255,255,0.85)";
+  label.style.padding = "0 4px";
+  label.style.borderRadius = "2px";
+  label.style.whiteSpace = "nowrap";
+  label.style.pointerEvents = "none";
+  wrap.appendChild(label);
+  return wrap;
 }
 
 export interface HoverInfo {
@@ -433,6 +466,20 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         source: OBJECTS_POLYGON_SOURCE_ID,
         paint: { "line-color": ["case", ["get", "isOrbit"], "#000000", ["get", "color"]], "line-width": 2 },
       });
+      // Requires the basemap style to define a "glyphs" URL; guarded because a
+      // style without one makes maplibre throw on addLayer, which would abort
+      // this function before the drag/click listeners below are registered.
+      try {
+        map.addLayer({
+          id: OBJECTS_POLYGON_LABEL_LAYER_ID,
+          type: "symbol",
+          source: OBJECTS_POLYGON_SOURCE_ID,
+          layout: { "text-field": ["get", "name"], "text-size": 11 },
+          paint: { "text-color": ["get", "color"], "text-halo-color": "#ffffff", "text-halo-width": 1.2 },
+        });
+      } catch (err) {
+        console.warn("Could not add the zone-name label layer (basemap style may be missing glyphs)", err);
+      }
 
       ensureOrbitArrowImage(map);
       map.addSource(OBJECTS_ORBIT_ARROW_SOURCE_ID, { type: "geojson", data: arrowData });
@@ -526,7 +573,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const pointMarkers: maplibregl.Marker[] = [];
     for (const obj of objects) {
       if (obj.type !== "point") continue;
-      const element = pointMarkerElement(obj.kind, obj.color);
+      const color = obj.color ?? DEFAULT_POINT_COLOR[obj.kind];
+      const element = withNameLabel(pointMarkerElement(obj.kind, obj.color), obj.name, color);
       const marker = new maplibregl.Marker({ element, draggable: !obj.locked })
         .setLngLat([obj.position.lon, obj.position.lat])
         .addTo(map);
@@ -602,7 +650,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       countByAirbase.set(airbase.id, index + 1);
 
       const category = findAircraft(flight.aircraftId)?.category ?? "fixed-wing";
-      const element = flightMarkerElement(category, flight.color ?? DEFAULT_FLIGHT_COLOR);
+      const flightColor = flight.color ?? DEFAULT_FLIGHT_COLOR;
+      const element = withNameLabel(flightMarkerElement(category, flightColor), flight.name, flightColor);
       const marker = new maplibregl.Marker({ element, offset: [22, -14 - index * 22] })
         .setLngLat([airbase.position.lon, airbase.position.lat])
         .addTo(map);
