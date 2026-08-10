@@ -17,6 +17,7 @@ import {
   totalRouteDistanceNm,
   type Airbase,
   type CustomAircraft,
+  type Dmpi,
   type Flight,
   type LatLon,
   type LoadoutPreset,
@@ -127,6 +128,25 @@ export function FlightFormDialog({
       "route",
       route.map((wp) => (wp.id === id ? { ...wp, ...patch } : wp)),
     );
+  }
+
+  function addDmpi(waypointId: string) {
+    const wp = route.find((w) => w.id === waypointId);
+    if (!wp) return;
+    const dmpi: Dmpi = { id: crypto.randomUUID(), name: `DMPI ${(wp.dmpis?.length ?? 0) + 1}`, position: wp.position };
+    updateWaypoint(waypointId, { dmpis: [...(wp.dmpis ?? []), dmpi] });
+  }
+
+  function updateDmpi(waypointId: string, dmpiId: string, patch: Partial<Dmpi>) {
+    const wp = route.find((w) => w.id === waypointId);
+    if (!wp) return;
+    updateWaypoint(waypointId, { dmpis: (wp.dmpis ?? []).map((d) => (d.id === dmpiId ? { ...d, ...patch } : d)) });
+  }
+
+  function removeDmpi(waypointId: string, dmpiId: string) {
+    const wp = route.find((w) => w.id === waypointId);
+    if (!wp) return;
+    updateWaypoint(waypointId, { dmpis: (wp.dmpis ?? []).filter((d) => d.id !== dmpiId) });
   }
 
   function setPylon(station: string, weaponId: string | null) {
@@ -503,6 +523,40 @@ export function FlightFormDialog({
                   onChange={(e) => updateWaypoint(wp.id, { airspeedKt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
                 />
               </div>
+
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 6 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "var(--dfp-text-muted)" }}>DMPIs ({wp.dmpis?.length ?? 0})</span>
+                <button type="button" className="dfp-btn" style={{ padding: "1px 8px", fontSize: 11 }} onClick={() => addDmpi(wp.id)}>
+                  + Add DMPI
+                </button>
+              </div>
+              {(wp.dmpis ?? []).map((dmpi) => (
+                <div key={dmpi.id} style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
+                  <input
+                    type="text"
+                    className="dfp-input"
+                    style={{ flex: 1 }}
+                    value={dmpi.name}
+                    onChange={(e) => updateDmpi(wp.id, dmpi.id, { name: e.target.value })}
+                  />
+                  <input
+                    type="number"
+                    className="dfp-input"
+                    style={{ width: 90 }}
+                    placeholder="Elev (ft)"
+                    value={dmpi.elevationFt ?? ""}
+                    onChange={(e) =>
+                      updateDmpi(wp.id, dmpi.id, {
+                        elevationFt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined,
+                        elevationManual: true,
+                      })
+                    }
+                  />
+                  <button type="button" title="Remove" className="dfp-list-row-delete" onClick={() => removeDmpi(wp.id, dmpi.id)}>
+                    🗑
+                  </button>
+                </div>
+              ))}
             </div>
           );
         })}

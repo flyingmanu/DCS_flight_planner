@@ -1,5 +1,6 @@
 import type { PylonSelection } from "./customAircraft.js";
 import type { LatLon } from "./geo.js";
+import type { Dmpi } from "./objects.js";
 
 export type { PylonSelection } from "./customAircraft.js";
 
@@ -27,6 +28,8 @@ export interface Waypoint {
   position: LatLon;
   altitudeFt?: number;
   airspeedKt?: number;
+  /** Target aim-points attached to this waypoint, e.g. for a strike run-in point. */
+  dmpis?: Dmpi[];
 }
 
 /**
