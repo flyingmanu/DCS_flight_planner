@@ -254,6 +254,29 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
             return null;
           })()}
 
+        {object.type === "polygon" && (
+          <>
+            <NumberField
+              label="Min altitude (ft)"
+              step={100}
+              value={object.minAltFt ?? 0}
+              onCommit={(minAltFt) => onChange({ ...object, minAltFt })}
+            />
+            <NumberField
+              label="Max altitude (ft)"
+              step={100}
+              value={object.maxAltFt ?? 0}
+              onCommit={(maxAltFt) => onChange({ ...object, maxAltFt })}
+            />
+            <NumberField
+              label="Frequency (MHz)"
+              step={0.025}
+              value={object.frequencyMhz ?? 0}
+              onCommit={(frequencyMhz) => onChange({ ...object, frequencyMhz })}
+            />
+          </>
+        )}
+
         {object.type === "label" && (
           <>
             <CoordinateFields point={object.position} onChange={(position) => onChange({ ...object, position })} />

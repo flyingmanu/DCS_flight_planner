@@ -81,6 +81,12 @@ export interface PolygonObject {
   visible?: boolean;
   /** Free-text notes/comment for briefing purposes. */
   notes?: string;
+  /** Lower bound of the zone/orbit's altitude band, in feet. */
+  minAltFt?: number;
+  /** Upper bound of the zone/orbit's altitude band, in feet. */
+  maxAltFt?: number;
+  /** Associated radio frequency, in MHz. */
+  frequencyMhz?: number;
 }
 
 export const DEFAULT_LABEL_COLOR = "#111827";
