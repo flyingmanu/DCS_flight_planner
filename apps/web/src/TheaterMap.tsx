@@ -392,6 +392,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   const onMoveLabelRef = useRef(onMoveLabel);
   onMoveLabelRef.current = onMoveLabel;
   const polygonsRef = useRef<PolygonObject[]>([]);
+  const airbaseMarkerElementsRef = useRef<HTMLElement[]>([]);
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -450,17 +451,17 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
 
     const bounds = new maplibregl.LngLatBounds();
     const markers: maplibregl.Marker[] = [];
+    airbaseMarkerElementsRef.current = [];
 
     for (const airbase of theater.airbases) {
       const lngLat: [number, number] = [airbase.position.lon, airbase.position.lat];
       bounds.extend(lngLat);
 
+      const element = airportMarkerElement(airbase);
       const popup = new maplibregl.Popup({ offset: 14 }).setHTML(popupHtml(airbase));
-      const marker = new maplibregl.Marker({ element: airportMarkerElement(airbase) })
-        .setLngLat(lngLat)
-        .setPopup(popup)
-        .addTo(map);
+      const marker = new maplibregl.Marker({ element }).setLngLat(lngLat).setPopup(popup).addTo(map);
 
+      airbaseMarkerElementsRef.current.push(element);
       markers.push(marker);
     }
 
@@ -868,6 +869,19 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     // moment placement starts (creationRequest becomes non-null); intentionally
     // not re-collected mid-placement if those change while a placement is in progress.
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [creationRequest, snapEnabled]);
+
+  // Airbase icons otherwise physically intercept clicks that land on them
+  // (they sit above the map canvas), so a "glued" placement click aimed at
+  // an airbase would never reach the map's own click handler to be
+  // snapped. Only suspended while glue is on, so a plain (non-glue)
+  // placement click still opens the airbase's popup as before, matching
+  // how every other marker keeps intercepting clicks it sits on.
+  useEffect(() => {
+    const active = creationRequest != null && snapEnabled;
+    for (const element of airbaseMarkerElementsRef.current) {
+      element.style.pointerEvents = active ? "none" : "";
+    }
   }, [creationRequest, snapEnabled]);
 
   return <div ref={containerRef} data-testid="theater-map" style={{ width: "100%", height: "100%" }} />;
