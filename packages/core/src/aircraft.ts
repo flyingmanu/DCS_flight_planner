@@ -164,7 +164,10 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
     category: "fixed-wing",
     playable: true,
     standardTasks: ["CAP", "STRIKE", "SEAD", "CAS"],
-    performance: { maxSpeedKt: 1147, serviceCeilingFt: 50000, combatRadiusNm: 340, internalFuelLb: 6972, emptyWeightLb: 20300 },
+    // emptyWeightLb/internalFuelLb cross-checked against a published F-16C mission-planning
+    // data card (basic aircraft weight 19,899 lb; full internal fuel 7,163 lb) — more precise
+    // than the earlier rough estimate, still an approximation of a real-world Block 50/52 jet.
+    performance: { maxSpeedKt: 1147, serviceCeilingFt: 50000, combatRadiusNm: 340, internalFuelLb: 7163, emptyWeightLb: 19899 },
     weapons: ["M61 Vulcan 20mm", "AIM-120 AMRAAM", "AIM-9", "AGM-65 Maverick", "AGM-88 HARM", "GBU-12/31/38", "CBU-97"],
     pylons: pylons(9, ["aim-120", "aim-9", "agm-65", "agm-88", "gbu-12", "gbu-31", "gbu-38", "cbu-97", "fuel-tank"]),
   },
