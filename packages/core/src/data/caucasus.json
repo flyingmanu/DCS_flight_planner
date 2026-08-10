@@ -21,9 +21,12 @@
             22
           ],
           "lengthM": 2628.5646972656,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "251.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "batumi",
@@ -44,9 +47,12 @@
             31
           ],
           "lengthM": 2070.3959960938,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "251.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "beslan",
@@ -67,9 +73,12 @@
             28
           ],
           "lengthM": 2842.931640625,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "252.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "gelendzhik",
@@ -90,9 +99,12 @@
             19
           ],
           "lengthM": 1661.8295898438,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "252.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "gudauta",
@@ -113,9 +125,12 @@
             33
           ],
           "lengthM": 2389.5874023438,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "253.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "kobuleti",
@@ -136,9 +151,12 @@
             25
           ],
           "lengthM": 2257.6027832031,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "253.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "krasnodar-center",
@@ -159,9 +177,12 @@
             27
           ],
           "lengthM": 2334.5407714844,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "254.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "krasnodar-pashkovsky",
@@ -182,9 +203,12 @@
             23
           ],
           "lengthM": 2968.3833007812,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "254.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "krymsk",
@@ -205,9 +229,12 @@
             22
           ],
           "lengthM": 2052.3518066406,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "255.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "kutaisi",
@@ -228,9 +255,12 @@
             25
           ],
           "lengthM": 2419.0322265625,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "255.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "maykop-khanskaya",
@@ -251,9 +281,12 @@
             22
           ],
           "lengthM": 3107.6345214844,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "256.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "mineralnye-vody",
@@ -274,9 +307,12 @@
             30
           ],
           "lengthM": 3754.0329589844,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "256.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "mozdok",
@@ -297,9 +333,12 @@
             26
           ],
           "lengthM": 2357.453125,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "257.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "nalchik",
@@ -320,9 +359,12 @@
             24
           ],
           "lengthM": 2048.4140625,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "257.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "novorossiysk",
@@ -343,9 +385,12 @@
             22
           ],
           "lengthM": 1718.8388671875,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "258.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "senaki-kolkhi",
@@ -366,9 +411,12 @@
             27
           ],
           "lengthM": 2211.6474609375,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "258.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "sochi-adler",
@@ -389,9 +437,12 @@
             24
           ],
           "lengthM": 2952.4521484375,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "259.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "soganlug",
@@ -412,9 +463,12 @@
             32
           ],
           "lengthM": 2399.349609375,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "259.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "sukhumi-babushara",
@@ -435,9 +489,12 @@
             30
           ],
           "lengthM": 3419.2446289062,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "260.000",
+      "tacanChannel": "N/A"
     },
     {
       "id": "tbilisi-lochini",
@@ -458,9 +515,12 @@
             31
           ],
           "lengthM": 2344.5847167969,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "260.500",
+      "tacanChannel": "N/A"
     },
     {
       "id": "vaziani",
@@ -481,9 +541,12 @@
             31
           ],
           "lengthM": 2390.5002441406,
-          "widthM": 60
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
         }
-      ]
+      ],
+      "radioFrequencyMhz": "261.000",
+      "tacanChannel": "N/A"
     }
   ]
 }

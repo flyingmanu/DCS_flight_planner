@@ -63,6 +63,8 @@ function normalizeRunway(raw: RawRunway): Runway | null {
     designators: [lo, hi],
     lengthM: raw.length,
     widthM: raw.width,
+    // The DCS export doesn't expose ILS data; left as "N/A" until a real source is found.
+    ilsFrequencyMhz: "N/A",
   };
 }
 
@@ -87,6 +89,10 @@ function normalizeAirbase(raw: RawAirbase): Airbase | null {
     initialCoalition: raw.coalition ?? -1,
     position,
     runways,
+    // The DCS export doesn't expose tower/TACAN data; both are assigned
+    // separately for the curated theater data files (see data/caucasus.json).
+    radioFrequencyMhz: "N/A",
+    tacanChannel: "N/A",
   };
 }
 

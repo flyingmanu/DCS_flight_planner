@@ -89,12 +89,13 @@ function airportMarkerElement(airbase: Theater["airbases"][number]): HTMLElement
 
 function popupHtml(airbase: Theater["airbases"][number]): string {
   const runways = airbase.runways
-    .map((rw) => `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m`)
+    .map((rw) => `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m — ILS ${rw.ilsFrequencyMhz}`)
     .join("<br />");
 
   return `
     <strong>${airbase.name}</strong><br />
     ${CATEGORY_LABEL[airbase.category]}<br />
+    Tower ${airbase.radioFrequencyMhz} MHz · TACAN ${airbase.tacanChannel}<br />
     ${runways || "Runway unknown"}
   `;
 }

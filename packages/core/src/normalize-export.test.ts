@@ -41,6 +41,7 @@ describe("normalizeTheaterExport", () => {
         designators: [4, 22],
         lengthM: 2628.5646972656,
         widthM: 60,
+        ilsFrequencyMhz: "N/A",
       },
     ]);
   });
@@ -53,6 +54,7 @@ describe("normalizeTheaterExport", () => {
         designators: [9, 27],
         lengthM: 2334.5407714844,
         widthM: 60,
+        ilsFrequencyMhz: "N/A",
       },
     ]);
   });

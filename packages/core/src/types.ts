@@ -13,6 +13,8 @@ export interface Runway {
   designators: [number, number];
   lengthM: number;
   widthM: number;
+  /** ILS frequency in MHz, e.g. "110.30", or "N/A" when the runway has none. */
+  ilsFrequencyMhz: string;
 }
 
 export interface Airbase {
@@ -28,6 +30,10 @@ export interface Airbase {
   initialCoalition: number;
   position: GeoPosition;
   runways: Runway[];
+  /** Tower/ATC radio frequency in MHz, e.g. "251.000". */
+  radioFrequencyMhz: string;
+  /** TACAN channel + band, e.g. "10X", or "N/A" when the airbase has none. */
+  tacanChannel: string;
 }
 
 export interface Theater {
