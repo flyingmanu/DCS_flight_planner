@@ -187,6 +187,10 @@ function App() {
     setObjects((prev) => prev.map((o) => (o.id === id ? { ...o, visible: o.visible === false } : o)));
   }
 
+  function handleToggleObjectLocked(id: string) {
+    setObjects((prev) => prev.map((o) => (o.id === id ? { ...o, locked: !o.locked } : o)));
+  }
+
   /** Refreshes a target's DMPI altitude to the ground elevation, unless the user set it manually. */
   function applyGroundElevation(objectId: string, position: LatLon) {
     getElevationAt(position.lon, position.lat).then((elevationM) => {
@@ -456,6 +460,7 @@ function App() {
           }}
           onDelete={handleObjectDelete}
           onToggleVisible={handleToggleObjectVisible}
+          onToggleLocked={handleToggleObjectLocked}
           onSelectFlight={(id) => {
             handleEditFlight(id);
             setObjectListOpen(false);

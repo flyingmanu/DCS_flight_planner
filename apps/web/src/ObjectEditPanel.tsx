@@ -102,6 +102,11 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
           />
         </Field>
 
+        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, marginBottom: 14 }}>
+          <input type="checkbox" checked={object.locked ?? false} onChange={(e) => onChange({ ...object, locked: e.target.checked })} />
+          Locked (prevents dragging on the map)
+        </label>
+
         {object.type === "point" && (
           <>
             {(() => {

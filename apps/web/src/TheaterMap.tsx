@@ -484,7 +484,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       map.on("mousedown", OBJECTS_POLYGON_FILL_ID, (e) => {
         const id = e.features?.[0]?.properties?.id as string | undefined;
         const polygon = polygonsRef.current.find((p) => p.id === id);
-        if (!id || !polygon) return;
+        if (!id || !polygon || polygon.locked) return;
         e.preventDefault();
         dragging = { id, startLng: e.lngLat.lng, startLat: e.lngLat.lat, shape: polygon.shape };
         dragMoved = false;
@@ -527,7 +527,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     for (const obj of objects) {
       if (obj.type !== "point") continue;
       const element = pointMarkerElement(obj.kind, obj.color);
-      const marker = new maplibregl.Marker({ element, draggable: true })
+      const marker = new maplibregl.Marker({ element, draggable: !obj.locked })
         .setLngLat([obj.position.lon, obj.position.lat])
         .addTo(map);
 
@@ -555,7 +555,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     for (const obj of objects) {
       if (obj.type !== "label") continue;
       const element = labelMarkerElement(obj);
-      const marker = new maplibregl.Marker({ element, draggable: true, anchor: "left" })
+      const marker = new maplibregl.Marker({ element, draggable: !obj.locked, anchor: "left" })
         .setLngLat([obj.position.lon, obj.position.lat])
         .addTo(map);
 

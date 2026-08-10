@@ -49,6 +49,8 @@ export interface PointObject {
   visible?: boolean;
   /** Free-text notes/comment for briefing purposes. */
   notes?: string;
+  /** When true, this object's marker can't be dragged on the map. */
+  locked?: boolean;
 }
 
 export type Hand = "left" | "right";
@@ -87,6 +89,8 @@ export interface PolygonObject {
   maxAltFt?: number;
   /** Associated radio frequency, in MHz. */
   frequencyMhz?: number;
+  /** When true, this object can't be dragged on the map. */
+  locked?: boolean;
 }
 
 export const DEFAULT_LABEL_COLOR = "#111827";
@@ -114,6 +118,8 @@ export interface LabelObject {
   visible?: boolean;
   /** Free-text notes/comment for briefing purposes. */
   notes?: string;
+  /** When true, this label can't be dragged on the map. */
+  locked?: boolean;
 }
 
 export type MissionObject = PointObject | PolygonObject | LabelObject;

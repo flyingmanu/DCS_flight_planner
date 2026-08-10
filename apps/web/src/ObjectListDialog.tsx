@@ -17,6 +17,7 @@ interface ObjectListDialogProps {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onToggleVisible: (id: string) => void;
+  onToggleLocked: (id: string) => void;
   onSelectFlight: (id: string) => void;
   onDeleteFlight: (id: string) => void;
   onToggleFlightVisible: (id: string) => void;
@@ -49,18 +50,22 @@ function ListRow({
   color,
   round,
   visible,
+  locked,
   onSelect,
   onDelete,
   onToggleVisible,
+  onToggleLocked,
 }: {
   name: string;
   label: string;
   color: string;
   round: boolean;
   visible: boolean;
+  locked?: boolean;
   onSelect: () => void;
   onDelete: () => void;
   onToggleVisible: () => void;
+  onToggleLocked?: () => void;
 }) {
   return (
     <div className="dfp-list-row" onClick={onSelect}>
@@ -87,6 +92,19 @@ function ListRow({
         {name}
         <span style={{ color: "var(--dfp-text-muted)", marginLeft: 6, fontSize: 12 }}>{label}</span>
       </span>
+      {onToggleLocked && (
+        <button
+          type="button"
+          title={locked ? "Unlock (allow dragging)" : "Lock (prevent dragging)"}
+          className="dfp-list-row-delete"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLocked();
+          }}
+        >
+          {locked ? "🔒" : "🔓"}
+        </button>
+      )}
       <button
         type="button"
         title="Delete"
@@ -109,6 +127,7 @@ export function ObjectListDialog({
   onSelect,
   onDelete,
   onToggleVisible,
+  onToggleLocked,
   onSelectFlight,
   onDeleteFlight,
   onToggleFlightVisible,
@@ -224,9 +243,11 @@ export function ObjectListDialog({
                   color={objectColor(object)}
                   round
                   visible={object.visible !== false}
+                  locked={object.locked}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
+                  onToggleLocked={() => onToggleLocked(object.id)}
                 />
               ))}
             </>
@@ -245,9 +266,11 @@ export function ObjectListDialog({
                   color={objectColor(object)}
                   round={false}
                   visible={object.visible !== false}
+                  locked={object.locked}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
+                  onToggleLocked={() => onToggleLocked(object.id)}
                 />
               ))}
             </>
@@ -266,9 +289,11 @@ export function ObjectListDialog({
                   color={objectColor(object)}
                   round={false}
                   visible={object.visible !== false}
+                  locked={object.locked}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
                   onToggleVisible={() => onToggleVisible(object.id)}
+                  onToggleLocked={() => onToggleLocked(object.id)}
                 />
               ))}
             </>
