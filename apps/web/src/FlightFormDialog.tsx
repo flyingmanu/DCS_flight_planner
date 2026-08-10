@@ -1,15 +1,19 @@
 import {
   addMinutesToClock,
   AIRCRAFT_CATALOG,
+  computeGrossWeightLb,
+  computeLoadoutWeightLb,
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
   findAircraft,
+  findWeapon,
   formatEte,
   TASK_TYPE_LABEL,
   totalRouteDistanceNm,
   type Airbase,
   type Flight,
   type LatLon,
+  type PylonSelection,
   type TaskType,
   type Waypoint,
 } from "@dcs-flight-planner/core";
@@ -101,6 +105,14 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
     );
   }
 
+  function setPylon(station: number, weaponId: string | null) {
+    const pylonLoadout = flight.pylonLoadout ?? [];
+    const next: PylonSelection[] = pylonLoadout.some((s) => s.station === station)
+      ? pylonLoadout.map((s) => (s.station === station ? { ...s, weaponId } : s))
+      : [...pylonLoadout, { station, weaponId }];
+    set("pylonLoadout", next);
+  }
+
   return (
     <div
       className="dfp-panel"
@@ -144,7 +156,7 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
                 value={flight.aircraftId ?? ""}
                 onChange={(e) => {
                   const selected = findAircraft(e.target.value);
-                  onChange({ ...flight, aircraftId: selected?.id, aircraftType: selected?.name ?? flight.aircraftType });
+                  onChange({ ...flight, aircraftId: selected?.id, aircraftType: selected?.name ?? flight.aircraftType, pylonLoadout: [] });
                 }}
               >
                 <option value="">—</option>
@@ -262,11 +274,66 @@ export function FlightFormDialog({ airbases, flight, onChange, onSave, onDelete,
           />
         </Field>
 
-        <Field label="Loadout">
+        {aircraft?.pylons && aircraft.pylons.length > 0 && (
+          <>
+            <div className="dfp-label" style={{ marginTop: 4 }}>
+              Armament ({aircraft.pylons.length} pylons)
+            </div>
+            {aircraft.pylons.map((pylon) => {
+              const selected = flight.pylonLoadout?.find((s) => s.station === pylon.station)?.weaponId ?? "";
+              return (
+                <div key={pylon.station} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 11, color: "var(--dfp-text-muted)", width: 54, flexShrink: 0 }}>Sta {pylon.station}</span>
+                  <select
+                    className="dfp-select"
+                    style={{ width: "100%" }}
+                    value={selected}
+                    onChange={(e) => setPylon(pylon.station, e.target.value || null)}
+                  >
+                    <option value="">— Empty —</option>
+                    {pylon.compatibleWeaponIds.map((weaponId) => (
+                      <option key={weaponId} value={weaponId}>
+                        {findWeapon(weaponId)?.name ?? weaponId}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
+            <div
+              style={{
+                fontSize: 11.5,
+                color: "var(--dfp-text-muted)",
+                background: "var(--dfp-bg)",
+                border: "1px solid var(--dfp-border)",
+                borderRadius: "var(--dfp-radius-sm)",
+                padding: "6px 8px",
+                marginBottom: 14,
+                lineHeight: 1.6,
+              }}
+            >
+              Ordnance {computeLoadoutWeightLb(flight.pylonLoadout).toLocaleString()} lb
+              {(() => {
+                const gross = computeGrossWeightLb(aircraft, flight.pylonLoadout);
+                if (gross === undefined) return null;
+                return (
+                  <>
+                    {" "}
+                    · Empty {aircraft.performance?.emptyWeightLb?.toLocaleString()} lb · Fuel {aircraft.performance?.internalFuelLb?.toLocaleString()} lb
+                    <br />
+                    Estimated gross weight <strong>{gross.toLocaleString()} lb</strong>
+                  </>
+                );
+              })()}
+            </div>
+          </>
+        )}
+
+        <Field label="Loadout notes">
           <textarea
             className="dfp-input"
             rows={2}
-            placeholder="e.g. 4x AIM-120C, 2x AIM-9X, 2x GBU-12"
+            placeholder="e.g. free-text call-outs not captured by the pylon list above"
             style={{ resize: "vertical", fontFamily: "var(--dfp-font-sans)" }}
             value={flight.loadout ?? ""}
             onChange={(e) => set("loadout", e.target.value)}

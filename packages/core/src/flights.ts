@@ -17,6 +17,13 @@ export const TASK_TYPE_LABEL: Record<TaskType, string> = {
 
 export const DEFAULT_FLIGHT_COLOR = "#1d4ed8";
 
+export interface PylonSelection {
+  /** Matches the aircraft's Pylon.station. */
+  station: number;
+  /** References Weapon.id in the shared weapon catalog; null/absent means the pylon is empty. */
+  weaponId: string | null;
+}
+
 export interface Waypoint {
   id: string;
   /** Optional custom label; defaults to "WP{n}" (1-based position in the route) when absent. */
@@ -54,6 +61,8 @@ export interface Flight {
   notes?: string;
   color?: string;
   route?: Waypoint[];
-  /** Free-text ordnance/loadout description for this flight, e.g. "4x AIM-120C, 2x AIM-9X, 2x GBU-12". */
+  /** Free-text ordnance/loadout notes, e.g. call-outs not captured by pylonLoadout. */
   loadout?: string;
+  /** Per-pylon weapon selection, keyed by station; only meaningful when the aircraft defines pylons. */
+  pylonLoadout?: PylonSelection[];
 }

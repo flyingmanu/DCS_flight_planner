@@ -1,7 +1,11 @@
 import {
   addMinutesToClock,
+  computeGrossWeightLb,
+  computeLoadoutWeightLb,
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
+  findAircraft,
+  findWeapon,
   formatEte,
   formatLatLonDdm,
   POINT_KIND_LABEL,
@@ -28,6 +32,14 @@ const POLYGON_KIND_LABEL: Record<PolygonShape["kind"], string> = {
   circle: "Circular zone",
   orbit: "Aeronautical orbit",
 };
+
+function loadoutSummary(flight: Flight): string | null {
+  const selections = (flight.pylonLoadout ?? []).filter((s) => s.weaponId);
+  if (selections.length === 0) return null;
+  const counts = new Map<string, number>();
+  for (const s of selections) counts.set(s.weaponId!, (counts.get(s.weaponId!) ?? 0) + 1);
+  return [...counts.entries()].map(([weaponId, count]) => `${count}x ${findWeapon(weaponId)?.name ?? weaponId}`).join(", ");
+}
 
 function polygonSummary(shape: PolygonShape): string {
   switch (shape.kind) {
@@ -152,8 +164,21 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                   <div>Takeoff: {flight.takeoffTime ?? "—"}</div>
                   <div>TACAN: {flight.tacanChannel ?? "—"}</div>
                   <div>Radio: {flight.radioFrequencyMhz ? `${flight.radioFrequencyMhz} MHz` : "—"}</div>
+                  {(() => {
+                    const summary = loadoutSummary(flight);
+                    if (!summary) return null;
+                    const aircraft = findAircraft(flight.aircraftId);
+                    const ordnanceLb = computeLoadoutWeightLb(flight.pylonLoadout);
+                    const gross = aircraft ? computeGrossWeightLb(aircraft, flight.pylonLoadout) : undefined;
+                    return (
+                      <div style={{ gridColumn: "1 / -1", color: "var(--dfp-text-muted)" }}>
+                        Armament: {summary} — {ordnanceLb.toLocaleString()} lb
+                        {gross !== undefined && <> · Est. gross weight {gross.toLocaleString()} lb</>}
+                      </div>
+                    );
+                  })()}
                   {flight.loadout && (
-                    <div style={{ gridColumn: "1 / -1", color: "var(--dfp-text-muted)" }}>Loadout: {flight.loadout}</div>
+                    <div style={{ gridColumn: "1 / -1", color: "var(--dfp-text-muted)" }}>Loadout notes: {flight.loadout}</div>
                   )}
                   {flight.notes && <div style={{ gridColumn: "1 / -1", color: "var(--dfp-text-muted)" }}>Notes: {flight.notes}</div>}
                 </div>

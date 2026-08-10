@@ -7,9 +7,12 @@ export { addMinutesToClock, computeRouteLegs, formatEte, totalRouteDistanceNm } 
 export type { RouteLeg } from "./route.js";
 export type { MapView, Mission } from "./mission.js";
 export { DEFAULT_FLIGHT_COLOR, TASK_TYPE_LABEL } from "./flights.js";
-export type { Flight, TaskType, Waypoint } from "./flights.js";
+export type { Flight, PylonSelection, TaskType, Waypoint } from "./flights.js";
 export { AIRCRAFT_CATALOG, findAircraft } from "./aircraft.js";
-export type { Aircraft, AircraftCategory, AircraftPerformance } from "./aircraft.js";
+export type { Aircraft, AircraftCategory, AircraftPerformance, Pylon } from "./aircraft.js";
+export { findWeapon, WEAPON_CATALOG } from "./weapons.js";
+export type { Weapon, WeaponCategory } from "./weapons.js";
+export { computeGrossWeightLb, computeLoadoutWeightLb } from "./loadout.js";
 export { formatLatDdm, formatLatLonDdm, formatLonDdm, formatMgrs, parseLatDdm, parseLonDdm, toMgrs } from "./coordinates.js";
 export { metersToFeet, metersToNm, nmToMeters } from "./units.js";
 export { DEFAULT_ORBIT_TURN_RADIUS_NM, DEFAULT_POINT_COLOR, DEFAULT_POLYGON_COLOR, POINT_KIND_LABEL } from "./objects.js";
