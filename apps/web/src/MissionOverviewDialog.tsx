@@ -5,7 +5,6 @@ import {
   computeRouteLegs,
   DEFAULT_FLIGHT_COLOR,
   findAircraft,
-  findWeapon,
   formatEte,
   formatLatLonDdm,
   POINT_KIND_LABEL,
@@ -16,6 +15,9 @@ import {
   type MissionObject,
   type PolygonShape,
 } from "@dcs-flight-planner/core";
+import { useState } from "react";
+import { loadoutSummary } from "./armamentSummary";
+import { exportKneeboards } from "./kneeboard";
 
 interface MissionOverviewDialogProps {
   missionName: string;
@@ -32,14 +34,6 @@ const POLYGON_KIND_LABEL: Record<PolygonShape["kind"], string> = {
   circle: "Circular zone",
   orbit: "Aeronautical orbit",
 };
-
-function loadoutSummary(flight: Flight): string | null {
-  const selections = (flight.pylonLoadout ?? []).filter((s) => s.weaponId);
-  if (selections.length === 0) return null;
-  const counts = new Map<string, number>();
-  for (const s of selections) counts.set(s.weaponId!, (counts.get(s.weaponId!) ?? 0) + 1);
-  return [...counts.entries()].map(([weaponId, count]) => `${count}x ${findWeapon(weaponId)?.name ?? weaponId}`).join(", ");
-}
 
 function polygonSummary(shape: PolygonShape): string {
   switch (shape.kind) {
@@ -82,6 +76,16 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
   const airbaseName = (id: string | undefined) => (id ? (airbases.find((a) => a.id === id)?.name ?? id) : "—");
   const points = objects.filter((o) => o.type === "point");
   const polygons = objects.filter((o) => o.type === "polygon");
+  const [exporting, setExporting] = useState(false);
+
+  async function handleExportKneeboards() {
+    setExporting(true);
+    try {
+      await exportKneeboards(flights, airbases, missionName);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <div
@@ -103,9 +107,20 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
       >
         <div className="dfp-panel-header">
           <span>Mission overview — {missionName}</span>
-          <button type="button" className="dfp-panel-header-close" onClick={onClose}>
-            ×
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              type="button"
+              className="dfp-btn"
+              disabled={flights.length === 0 || exporting}
+              onClick={handleExportKneeboards}
+              title={flights.length === 0 ? "Add a flight first" : "Download one kneeboard PNG per flight"}
+            >
+              {exporting ? "Exporting…" : "Export kneeboards (PNG)"}
+            </button>
+            <button type="button" className="dfp-panel-header-close" onClick={onClose}>
+              ×
+            </button>
+          </div>
         </div>
 
         <div style={{ padding: "14px 18px", overflowY: "auto", flex: 1 }}>
