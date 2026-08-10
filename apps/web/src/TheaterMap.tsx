@@ -21,7 +21,7 @@ import { getElevationAt } from "./elevation";
 import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
 import { orbitArrow, polygonCentroid, polygonRing, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
-import { setupPlacement, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
+import { setupPlacement, snapToNearestCandidate, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
 
 // Free, no-API-key vector basemap (openfreemap.org) - usable commercially.
 // It's a real-world basemap, so it only approximates DCS terrain art; good
@@ -240,6 +240,28 @@ function withNameLabel(icon: HTMLElement, name: string, color: string): HTMLElem
   return wrap;
 }
 
+// Dragging an object that's itself already a snap candidate must not snap
+// back onto its own pre-drag position; approximate "is this candidate the
+// object being dragged" by exact coordinate match rather than plumbing ids
+// through every candidate source.
+function samePosition(a: LatLon, b: LatLon): boolean {
+  return a.lat === b.lat && a.lon === b.lon;
+}
+
+/** Applies "glue" snapping to a marker's post-drag position, if enabled. */
+function snapDragPosition(
+  map: maplibregl.Map,
+  snapEnabled: boolean,
+  lngLat: maplibregl.LngLat,
+  candidates: LatLon[],
+  excludePosition: LatLon,
+): LatLon {
+  const raw: LatLon = { lat: lngLat.lat, lon: lngLat.lng };
+  if (!snapEnabled) return raw;
+  const filtered = candidates.filter((c) => !samePosition(c, excludePosition));
+  return snapToNearestCandidate(map, map.project(lngLat), raw, filtered);
+}
+
 // "Glue" snap targets: every existing point-like position a new placement
 // click can lock onto (airbases, point/label objects and their DMPIs, flight
 // waypoints and their DMPIs, bullseyes). Zone vertices are intentionally
@@ -393,6 +415,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onMoveLabelRef.current = onMoveLabel;
   const polygonsRef = useRef<PolygonObject[]>([]);
   const airbaseMarkerElementsRef = useRef<HTMLElement[]>([]);
+  const snapEnabledRef = useRef(snapEnabled);
+  snapEnabledRef.current = snapEnabled;
 
   useImperativeHandle(ref, () => ({
     getView: () => {
@@ -622,8 +646,9 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         didDrag = true;
       });
       marker.on("dragend", () => {
-        const lngLat = marker.getLngLat();
-        onMovePointRef.current?.(obj.id, { lat: lngLat.lat, lon: lngLat.lng });
+        const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
+        const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, obj.position);
+        onMovePointRef.current?.(obj.id, position);
       });
       element.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -650,8 +675,9 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         didDrag = true;
       });
       marker.on("dragend", () => {
-        const lngLat = marker.getLngLat();
-        onMoveLabelRef.current?.(obj.id, { lat: lngLat.lat, lon: lngLat.lng });
+        const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
+        const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, obj.position);
+        onMoveLabelRef.current?.(obj.id, position);
       });
       element.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -681,6 +707,12 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       for (const marker of labelMarkers) marker.remove();
       for (const marker of zoneLabelMarkers) marker.remove();
     };
+    // theater/flights/bullseyes are only read inside dragend handlers (for
+    // glue snap candidates), fresh at drag time via closure; re-running this
+    // whole effect - and recreating every point/label marker - whenever a
+    // flight or bullseye changes elsewhere would be wasteful and unrelated
+    // to what this effect actually renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects]);
 
   useEffect(() => {
@@ -759,8 +791,9 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         didDrag = true;
       });
       marker.on("dragend", () => {
-        const lngLat = marker.getLngLat();
-        onMoveBullseyeRef.current?.(bullseye.side, { lat: lngLat.lat, lon: lngLat.lng });
+        const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
+        const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, bullseye.position);
+        onMoveBullseyeRef.current?.(bullseye.side, position);
       });
       element.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -777,6 +810,10 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     return () => {
       for (const marker of bullseyeMarkers) marker.remove();
     };
+    // theater/objects/flights are only read inside dragend (glue snap
+    // candidates); see the point/label marker effect above for why this
+    // effect intentionally doesn't re-run for those.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bullseyes]);
 
   useEffect(() => {
@@ -839,8 +876,9 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         renderLine(withAirbaseEndpoints(positions));
       });
       marker.on("dragend", () => {
-        const lngLat = marker.getLngLat();
-        onMoveWaypointRef.current?.(wp.id, { lat: lngLat.lat, lon: lngLat.lng });
+        const candidates = collectSnapCandidates(theater, objects, flights, bullseyes);
+        const position = snapDragPosition(map, snapEnabledRef.current, marker.getLngLat(), candidates, wp.position);
+        onMoveWaypointRef.current?.(wp.id, position);
       });
 
       waypointMarkers.push(marker);
@@ -849,6 +887,10 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     return () => {
       for (const marker of waypointMarkers) marker.remove();
     };
+    // objects/flights/bullseyes are only read inside dragend (glue snap
+    // candidates); see the point/label marker effect above for why this
+    // effect intentionally doesn't re-run for those.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingFlight, theater]);
 
   useEffect(() => {

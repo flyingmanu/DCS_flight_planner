@@ -100,7 +100,33 @@ export interface SnapOptions {
 // so there's a real "click near, not on, an existing point" band to snap within -
 // a click that lands directly on an existing marker selects it instead (its own
 // click handler stops propagation before this placement listener ever runs).
-const DEFAULT_SNAP_RADIUS_PX = 22;
+export const DEFAULT_SNAP_RADIUS_PX = 22;
+
+/**
+ * Shared "glue" snap math: returns the candidate nearest to `screenPoint`
+ * (in screen pixels, so the effective catch radius naturally scales with
+ * zoom) if one is within `radiusPx`, else `raw` unchanged. Used both for
+ * new-object placement clicks and for dragging an existing object.
+ */
+export function snapToNearestCandidate(
+  map: maplibregl.Map,
+  screenPoint: { x: number; y: number },
+  raw: LatLon,
+  candidates: LatLon[],
+  radiusPx: number = DEFAULT_SNAP_RADIUS_PX,
+): LatLon {
+  let best: LatLon | null = null;
+  let bestDist = radiusPx;
+  for (const candidate of candidates) {
+    const p = map.project([candidate.lon, candidate.lat]);
+    const dist = Math.hypot(p.x - screenPoint.x, p.y - screenPoint.y);
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = candidate;
+    }
+  }
+  return best ?? raw;
+}
 
 /**
  * Drives the click-sequence for placing one object on the map, per
@@ -128,18 +154,7 @@ export function setupPlacement(
   function resolveLatLon(e: maplibregl.MapMouseEvent): LatLon {
     const raw = toLatLon(e.lngLat);
     if (!snap?.enabled || snap.candidates.length === 0) return raw;
-    const radiusPx = snap.snapRadiusPx ?? DEFAULT_SNAP_RADIUS_PX;
-    let best: LatLon | null = null;
-    let bestDist = radiusPx;
-    for (const candidate of snap.candidates) {
-      const p = map.project([candidate.lon, candidate.lat]);
-      const dist = Math.hypot(p.x - e.point.x, p.y - e.point.y);
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = candidate;
-      }
-    }
-    return best ?? raw;
+    return snapToNearestCandidate(map, e.point, raw, snap.candidates, snap.snapRadiusPx);
   }
 
   function on<E extends maplibregl.MapMouseEvent | maplibregl.MapTouchEvent>(
