@@ -724,7 +724,12 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const countByAirbase = new Map<string, number>();
     const flightMarkers: maplibregl.Marker[] = [];
 
-    for (const flight of flights) {
+    // Show the flight currently open in the editor too - as soon as it has a
+    // departure airbase, even before it's saved - using its live (unsaved)
+    // draft in place of the stale saved version if it's an existing flight.
+    const displayFlights = editingFlight ? [...flights.filter((f) => f.id !== editingFlight.id), editingFlight] : flights;
+
+    for (const flight of displayFlights) {
       const airbase = flight.departureAirbaseId ? airbaseById.get(flight.departureAirbaseId) : undefined;
       if (!airbase) continue;
 
@@ -750,7 +755,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     return () => {
       for (const marker of flightMarkers) marker.remove();
     };
-  }, [flights, theater]);
+  }, [flights, theater, editingFlight]);
 
   useEffect(() => {
     const map = mapRef.current;
