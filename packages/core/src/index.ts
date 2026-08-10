@@ -5,7 +5,7 @@ export { bearingDeg, distanceKm, distanceNm } from "./geo.js";
 export type { LatLon } from "./geo.js";
 export { addMinutesToClock, computeRouteLegs, computeWaypointEtas, formatEte, totalRouteDistanceNm } from "./route.js";
 export type { RouteLeg } from "./route.js";
-export type { MapView, Mission } from "./mission.js";
+export type { MapView, Mission, MissionBriefing } from "./mission.js";
 export { ALTITUDE_REFERENCE_LABEL, DEFAULT_FLIGHT_COLOR, SPEED_TYPE_LABEL, TASK_TYPE_LABEL } from "./flights.js";
 export type { AltitudeReference, Flight, SpeedType, TaskType, Waypoint } from "./flights.js";
 export { AIRCRAFT_CATALOG, findAircraft } from "./aircraft.js";

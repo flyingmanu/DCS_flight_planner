@@ -1,7 +1,8 @@
-import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Package, Side, Theater } from "@dcs-flight-planner/core";
+import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionBriefing, MissionObject, Package, Side, Theater } from "@dcs-flight-planner/core";
 import { DEFAULT_FLIGHT_COLOR, DEFAULT_PACKAGE_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
+import { BriefingDialog } from "./BriefingDialog";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { CustomAircraftEditor } from "./CustomAircraftEditor";
@@ -96,6 +97,8 @@ function App() {
   const [selectedBullseyeSide, setSelectedBullseyeSide] = useState<Side | null>(null);
   const selectedBullseye = bullseyes.find((b) => b.side === selectedBullseyeSide) ?? null;
   const [packages, setPackages] = useState<Package[]>([]);
+  const [briefing, setBriefing] = useState<MissionBriefing>({});
+  const [briefingOpen, setBriefingOpen] = useState(false);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -116,6 +119,7 @@ function App() {
       flights,
       bullseyes,
       packages,
+      briefing,
     };
     saveMission(mission);
     setMissions(listMissions());
@@ -131,6 +135,7 @@ function App() {
     setBullseyes([]);
     setSelectedBullseyeSide(null);
     setPackages([]);
+    setBriefing({});
   }
 
   function handleOpen(id: string) {
@@ -143,6 +148,7 @@ function App() {
     setBullseyes(mission.bullseyes ?? []);
     setSelectedBullseyeSide(null);
     setPackages(mission.packages ?? []);
+    setBriefing(mission.briefing ?? {});
     mapRef.current?.setView(mission.view);
   }
 
@@ -374,6 +380,9 @@ function App() {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
+          <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setBriefingOpen(true)}>
+            Briefing
+          </button>
           <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setOverviewOpen(true)}>
             Overview
           </button>
@@ -469,6 +478,9 @@ function App() {
           onToggleFlightVisible={handleToggleFlightVisible}
           onClose={() => setObjectListOpen(false)}
         />
+      )}
+      {briefingOpen && (
+        <BriefingDialog missionName={activeMissionName} briefing={briefing} onChange={setBriefing} onClose={() => setBriefingOpen(false)} />
       )}
       {overviewOpen && (
         <MissionOverviewDialog

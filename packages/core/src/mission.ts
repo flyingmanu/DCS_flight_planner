@@ -8,6 +8,14 @@ export interface MapView {
   zoom: number;
 }
 
+/** Free-text mission briefing sections, mirroring Combat Flite's per-side text briefings. */
+export interface MissionBriefing {
+  situation?: string;
+  blue?: string;
+  red?: string;
+  neutral?: string;
+}
+
 /**
  * A named, saveable session tied to a theater: the map view and the
  * mission-specific objects placed on it (points, polygons...).
@@ -26,4 +34,6 @@ export interface Mission {
   bullseyes?: Bullseye[];
   /** COMAO/package groupings; flights reference these via Flight.packageId. */
   packages?: Package[];
+  /** Free-text situation/per-side briefings. */
+  briefing?: MissionBriefing;
 }
