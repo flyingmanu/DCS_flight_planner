@@ -13,8 +13,10 @@ interface ObjectListDialogProps {
   flights: Flight[];
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onToggleVisible: (id: string) => void;
   onSelectFlight: (id: string) => void;
   onDeleteFlight: (id: string) => void;
+  onToggleFlightVisible: (id: string) => void;
   onClose: () => void;
 }
 
@@ -39,18 +41,30 @@ function ListRow({
   label,
   color,
   round,
+  visible,
   onSelect,
   onDelete,
+  onToggleVisible,
 }: {
   name: string;
   label: string;
   color: string;
   round: boolean;
+  visible: boolean;
   onSelect: () => void;
   onDelete: () => void;
+  onToggleVisible: () => void;
 }) {
   return (
     <div className="dfp-list-row" onClick={onSelect}>
+      <input
+        type="checkbox"
+        title="Visible on map"
+        checked={visible}
+        onClick={(e) => e.stopPropagation()}
+        onChange={onToggleVisible}
+        style={{ flexShrink: 0 }}
+      />
       <span
         style={{
           width: 12,
@@ -59,9 +73,10 @@ function ListRow({
           background: color,
           border: "1px solid rgba(0,0,0,0.15)",
           flexShrink: 0,
+          opacity: visible ? 1 : 0.4,
         }}
       />
-      <span style={{ flex: 1, fontSize: 13 }}>
+      <span style={{ flex: 1, fontSize: 13, opacity: visible ? 1 : 0.55 }}>
         {name}
         <span style={{ color: "var(--dfp-text-muted)", marginLeft: 6, fontSize: 12 }}>{label}</span>
       </span>
@@ -80,7 +95,17 @@ function ListRow({
   );
 }
 
-export function ObjectListDialog({ objects, flights, onSelect, onDelete, onSelectFlight, onDeleteFlight, onClose }: ObjectListDialogProps) {
+export function ObjectListDialog({
+  objects,
+  flights,
+  onSelect,
+  onDelete,
+  onToggleVisible,
+  onSelectFlight,
+  onDeleteFlight,
+  onToggleFlightVisible,
+  onClose,
+}: ObjectListDialogProps) {
   const points = objects.filter((o) => o.type === "point");
   const polygons = objects.filter((o) => o.type === "polygon");
   const total = objects.length + flights.length;
@@ -132,8 +157,10 @@ export function ObjectListDialog({ objects, flights, onSelect, onDelete, onSelec
                   label={[flight.aircraftType, TASK_TYPE_LABEL[flight.taskType]].filter(Boolean).join(" · ")}
                   color={flight.color ?? DEFAULT_FLIGHT_COLOR}
                   round={false}
+                  visible={flight.visible !== false}
                   onSelect={() => onSelectFlight(flight.id)}
                   onDelete={() => onDeleteFlight(flight.id)}
+                  onToggleVisible={() => onToggleFlightVisible(flight.id)}
                 />
               ))}
             </>
@@ -151,8 +178,10 @@ export function ObjectListDialog({ objects, flights, onSelect, onDelete, onSelec
                   label={objectLabel(object)}
                   color={objectColor(object)}
                   round
+                  visible={object.visible !== false}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
+                  onToggleVisible={() => onToggleVisible(object.id)}
                 />
               ))}
             </>
@@ -170,8 +199,10 @@ export function ObjectListDialog({ objects, flights, onSelect, onDelete, onSelec
                   label={objectLabel(object)}
                   color={objectColor(object)}
                   round={false}
+                  visible={object.visible !== false}
                   onSelect={() => onSelect(object.id)}
                   onDelete={() => onDelete(object.id)}
+                  onToggleVisible={() => onToggleVisible(object.id)}
                 />
               ))}
             </>

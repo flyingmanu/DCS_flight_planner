@@ -63,4 +63,6 @@ export interface Flight {
   loadout?: string;
   /** Per-pylon weapon selection; only meaningful when customAircraftId references an aircraft with pylons. */
   pylonLoadout?: PylonSelection[];
+  /** Whether this flight's marker/route is rendered on the map. Defaults to true (visible) when absent. */
+  visible?: boolean;
 }

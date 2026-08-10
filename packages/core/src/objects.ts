@@ -45,6 +45,8 @@ export interface PointObject {
   dmpis?: Dmpi[];
   /** Overrides the kind's default marker color when set. */
   color?: string;
+  /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
+  visible?: boolean;
 }
 
 export type Hand = "left" | "right";
@@ -73,6 +75,8 @@ export interface PolygonObject {
   shape: PolygonShape;
   /** Overrides the default fill/line color when set. */
   color?: string;
+  /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
+  visible?: boolean;
 }
 
 export type MissionObject = PointObject | PolygonObject;

@@ -79,9 +79,11 @@ function App() {
   const [pendingDraft, setPendingDraft] = useState<PlaceableObjectDraft | null>(null);
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const selectedObject = objects.find((o) => o.id === selectedObjectId) ?? null;
+  const visibleObjects = objects.filter((o) => o.visible !== false);
   const [objectListOpen, setObjectListOpen] = useState(false);
   const [overviewOpen, setOverviewOpen] = useState(false);
   const [flights, setFlights] = useState<Flight[]>([]);
+  const visibleFlights = flights.filter((f) => f.visible !== false);
   const [flightForm, setFlightForm] = useState<{ flight: Flight; isNew: boolean } | null>(null);
   const [customAircraft, setCustomAircraft] = useState<CustomAircraft[]>([]);
   const [customAircraftForm, setCustomAircraftForm] = useState<{ aircraft: CustomAircraft; isNew: boolean } | null>(null);
@@ -164,6 +166,10 @@ function App() {
     if (selectedObjectId === id) setSelectedObjectId(null);
   }
 
+  function handleToggleObjectVisible(id: string) {
+    setObjects((prev) => prev.map((o) => (o.id === id ? { ...o, visible: o.visible === false } : o)));
+  }
+
   /** Refreshes a target's DMPI altitude to the ground elevation, unless the user set it manually. */
   function applyGroundElevation(objectId: string, position: LatLon) {
     getElevationAt(position.lon, position.lat).then((elevationM) => {
@@ -223,6 +229,10 @@ function App() {
   function handleFlightDelete(id: string) {
     setFlights((prev) => prev.filter((f) => f.id !== id));
     if (flightForm?.flight.id === id) setFlightForm(null);
+  }
+
+  function handleToggleFlightVisible(id: string) {
+    setFlights((prev) => prev.map((f) => (f.id === id ? { ...f, visible: f.visible === false } : f)));
   }
 
   function handleNewFlight() {
@@ -325,8 +335,8 @@ function App() {
         <TheaterMap
           ref={mapRef}
           theater={theater}
-          objects={objects}
-          flights={flights}
+          objects={visibleObjects}
+          flights={visibleFlights}
           editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
           onDraftComplete={(draft) => {
@@ -375,11 +385,13 @@ function App() {
             setObjectListOpen(false);
           }}
           onDelete={handleObjectDelete}
+          onToggleVisible={handleToggleObjectVisible}
           onSelectFlight={(id) => {
             handleEditFlight(id);
             setObjectListOpen(false);
           }}
           onDeleteFlight={handleFlightDelete}
+          onToggleFlightVisible={handleToggleFlightVisible}
           onClose={() => setObjectListOpen(false)}
         />
       )}
