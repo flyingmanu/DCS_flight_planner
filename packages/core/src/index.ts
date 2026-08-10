@@ -42,3 +42,5 @@ export { DEFAULT_BULLSEYE_COLOR, makeDefaultBullseye, SIDE_LABEL } from "./bulls
 export type { Bullseye, Side } from "./bullseye.js";
 export { DEFAULT_PACKAGE_COLOR } from "./packages.js";
 export type { Package } from "./packages.js";
+export { latLonToMissionXY, missionXYToLatLon, THEATER_PROJECTIONS } from "./theaterProjection.js";
+export type { TheaterProjectionParams } from "./theaterProjection.js";
