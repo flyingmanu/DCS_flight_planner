@@ -1,4 +1,4 @@
-import { POINT_KIND_LABEL, type Hand, type OrbitVariant, type PointKind } from "@dcs-flight-planner/core";
+import { POINT_KIND_LABEL, SIDE_LABEL, type Hand, type OrbitVariant, type PointKind, type Side } from "@dcs-flight-planner/core";
 import { useState } from "react";
 import { menuItemClassName, menuPanelClassName, submenuPanelStyle } from "./menuStyles";
 import type { CreationRequest } from "./placement";
@@ -16,9 +16,11 @@ const ORBIT_OPTIONS: Array<{ hand: Hand; variant: OrbitVariant; label: string }>
   { hand: "left", variant: "aar", label: "AAR — left-hand" },
 ];
 
+const SIDES: Side[] = ["blue", "red", "neutral"];
+
 export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [submenu, setSubmenu] = useState<"point" | "polygon" | null>(null);
+  const [submenu, setSubmenu] = useState<"point" | "polygon" | "bullseye" | null>(null);
   const [orbitOpen, setOrbitOpen] = useState(false);
 
   function closeAll() {
@@ -147,6 +149,29 @@ export function ObjectMenu({ onRequestCreation }: ObjectMenuProps) {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+            </div>
+
+            <div style={{ position: "relative" }}>
+              <button
+                type="button"
+                className={menuItemClassName}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOrbitOpen(false);
+                  setSubmenu((s) => (s === "bullseye" ? null : "bullseye"));
+                }}
+              >
+                Bullseye ▸
+              </button>
+              {submenu === "bullseye" && (
+                <div className={menuPanelClassName} style={submenuPanelStyle}>
+                  {SIDES.map((side) => (
+                    <button key={side} type="button" className={menuItemClassName} onClick={() => request({ kind: "bullseye", side })}>
+                      {SIDE_LABEL[side]}
+                    </button>
+                  ))}
                 </div>
               )}
             </div>

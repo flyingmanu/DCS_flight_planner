@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { distanceKm, toLocalMeters, type LatLon } from "./geo.js";
-import { circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
+import { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
 
 const ORIGIN: LatLon = { lat: 45, lon: 40 };
 
@@ -67,6 +67,28 @@ describe("orbitTrackPoints", () => {
     const northOffsets = points.map((p) => toLocalMeters(ORIGIN, p).y);
     const span = Math.max(...northOffsets) - Math.min(...northOffsets);
     expect(span).toBeCloseTo((legLengthNm + 2 * turnRadiusNm) * 1852, -2);
+  });
+});
+
+describe("bullseyeRingRadiiNm", () => {
+  it("evenly spaces rings out to the outer ring radius", () => {
+    expect(bullseyeRingRadiiNm(60, 3)).toEqual([20, 40, 60]);
+  });
+});
+
+describe("bullseyeSpokeEndpoints", () => {
+  it("places each endpoint at the outer ring radius from center", () => {
+    const points = bullseyeSpokeEndpoints(ORIGIN, 60, 4);
+    expect(points).toHaveLength(4);
+    for (const p of points) {
+      expect(distanceKm(ORIGIN, p)).toBeCloseTo(60 * 1.852, 0);
+    }
+  });
+
+  it("starts the first spoke due north", () => {
+    const [first] = bullseyeSpokeEndpoints(ORIGIN, 60, 4);
+    expect(toLocalMeters(ORIGIN, first!).x).toBeCloseTo(0, 0);
+    expect(toLocalMeters(ORIGIN, first!).y).toBeGreaterThan(0);
   });
 });
 

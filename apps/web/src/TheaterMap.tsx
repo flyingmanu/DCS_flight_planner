@@ -1,5 +1,13 @@
-import type { Flight, LatLon, MapView, MissionObject, PolygonObject, Theater } from "@dcs-flight-planner/core";
-import { DEFAULT_FLIGHT_COLOR, DEFAULT_POLYGON_COLOR, findAircraft } from "@dcs-flight-planner/core";
+import type { Bullseye, Flight, LatLon, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
+import {
+  bullseyeRingRadiiNm,
+  bullseyeSpokeEndpoints,
+  circlePoints,
+  DEFAULT_BULLSEYE_COLOR,
+  DEFAULT_FLIGHT_COLOR,
+  DEFAULT_POLYGON_COLOR,
+  findAircraft,
+} from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
@@ -24,6 +32,8 @@ const OBJECTS_ORBIT_ANCHOR_SOURCE_ID = "mission-objects-orbit-anchors";
 const OBJECTS_ORBIT_ANCHOR_LAYER_ID = "mission-objects-orbit-anchors-layer";
 const EDITING_ROUTE_LINE_SOURCE_ID = "editing-route-line";
 const EDITING_ROUTE_LINE_LAYER_ID = "editing-route-line-layer";
+const BULLSEYE_LINES_SOURCE_ID = "bullseye-lines";
+const BULLSEYE_LINES_LAYER_ID = "bullseye-lines-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -105,6 +115,60 @@ function waypointMarkerElement(index: number, color: string): HTMLElement {
   return el;
 }
 
+function bullseyeMarkerElement(bullseye: Bullseye): HTMLElement {
+  const color = bullseye.color ?? DEFAULT_BULLSEYE_COLOR[bullseye.side];
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.flexDirection = "column";
+  wrap.style.alignItems = "center";
+  wrap.style.cursor = "grab";
+  wrap.innerHTML = `
+    <svg width="22" height="22" viewBox="0 0 22 22">
+      <circle cx="11" cy="11" r="8" fill="none" stroke="${color}" stroke-width="2" />
+      <line x1="11" y1="0" x2="11" y2="22" stroke="${color}" stroke-width="2" />
+      <line x1="0" y1="11" x2="22" y2="11" stroke="${color}" stroke-width="2" />
+    </svg>`;
+  if (bullseye.showName ?? true) {
+    const label = document.createElement("div");
+    label.textContent = "BULLSEYE";
+    label.style.fontSize = "9px";
+    label.style.fontWeight = "700";
+    label.style.color = color;
+    label.style.background = "rgba(255,255,255,0.85)";
+    label.style.padding = "0 3px";
+    label.style.borderRadius = "2px";
+    label.style.whiteSpace = "nowrap";
+    wrap.appendChild(label);
+  }
+  return wrap;
+}
+
+function bullseyeLinesFeatureCollection(list: Bullseye[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.flatMap((b) => {
+      const color = b.color ?? DEFAULT_BULLSEYE_COLOR[b.side];
+      const rings = bullseyeRingRadiiNm(b.outerRingNm, b.rings).map((radiusNm) => ({
+        type: "Feature" as const,
+        properties: { color },
+        geometry: { type: "LineString" as const, coordinates: circlePoints(b.position, radiusNm * 1852).map((p): [number, number] => [p.lon, p.lat]) },
+      }));
+      const spokes = bullseyeSpokeEndpoints(b.position, b.outerRingNm, b.spokes).map((end) => ({
+        type: "Feature" as const,
+        properties: { color },
+        geometry: {
+          type: "LineString" as const,
+          coordinates: [
+            [b.position.lon, b.position.lat],
+            [end.lon, end.lat],
+          ] as [number, number][],
+        },
+      }));
+      return [...rings, ...spokes];
+    }),
+  };
+}
+
 export interface HoverInfo {
   lat: number;
   lon: number;
@@ -115,6 +179,7 @@ interface TheaterMapProps {
   theater: Theater;
   objects: MissionObject[];
   flights: Flight[];
+  bullseyes?: Bullseye[];
   /** The flight currently open in the editor, if any - its route is drawn live on the map. */
   editingFlight?: Flight | null;
   creationRequest: CreationRequest | null;
@@ -122,9 +187,11 @@ interface TheaterMapProps {
   onCreationCancel: () => void;
   onSelectObject?: (id: string) => void;
   onSelectFlight?: (id: string) => void;
+  onSelectBullseye?: (side: Side) => void;
   onMovePoint?: (id: string, position: LatLon) => void;
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
   onMoveWaypoint?: (waypointId: string, position: LatLon) => void;
+  onMoveBullseye?: (side: Side, position: LatLon) => void;
   onHover?: (info: HoverInfo | null) => void;
 }
 
@@ -183,15 +250,18 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     theater,
     objects,
     flights,
+    bullseyes = [],
     editingFlight,
     creationRequest,
     onDraftComplete,
     onCreationCancel,
     onSelectObject,
     onSelectFlight,
+    onSelectBullseye,
     onMovePoint,
     onMovePolygon,
     onMoveWaypoint,
+    onMoveBullseye,
     onHover,
   },
   ref,
@@ -208,12 +278,16 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onSelectObjectRef.current = onSelectObject;
   const onSelectFlightRef = useRef(onSelectFlight);
   onSelectFlightRef.current = onSelectFlight;
+  const onSelectBullseyeRef = useRef(onSelectBullseye);
+  onSelectBullseyeRef.current = onSelectBullseye;
   const onMovePointRef = useRef(onMovePoint);
   onMovePointRef.current = onMovePoint;
   const onMovePolygonRef = useRef(onMovePolygon);
   onMovePolygonRef.current = onMovePolygon;
   const onMoveWaypointRef = useRef(onMoveWaypoint);
   onMoveWaypointRef.current = onMoveWaypoint;
+  const onMoveBullseyeRef = useRef(onMoveBullseye);
+  onMoveBullseyeRef.current = onMoveBullseye;
   const polygonsRef = useRef<PolygonObject[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -492,6 +566,65 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       for (const marker of flightMarkers) marker.remove();
     };
   }, [flights, theater]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    function renderLines() {
+      if (!map) return;
+      const data = bullseyeLinesFeatureCollection(bullseyes);
+      const source = map.getSource(BULLSEYE_LINES_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+      if (source) {
+        source.setData(data);
+        return;
+      }
+      map.addSource(BULLSEYE_LINES_SOURCE_ID, { type: "geojson", data });
+      map.addLayer({
+        id: BULLSEYE_LINES_LAYER_ID,
+        type: "line",
+        source: BULLSEYE_LINES_SOURCE_ID,
+        paint: { "line-color": ["get", "color"], "line-width": 1.5, "line-opacity": 0.85 },
+      });
+    }
+
+    if (map.getSource(BULLSEYE_LINES_SOURCE_ID)) {
+      renderLines();
+    } else {
+      map.once("load", renderLines);
+    }
+
+    const bullseyeMarkers: maplibregl.Marker[] = [];
+    for (const bullseye of bullseyes) {
+      const element = bullseyeMarkerElement(bullseye);
+      const marker = new maplibregl.Marker({ element, draggable: true, anchor: "center" })
+        .setLngLat([bullseye.position.lon, bullseye.position.lat])
+        .addTo(map);
+
+      let didDrag = false;
+      marker.on("dragstart", () => {
+        didDrag = true;
+      });
+      marker.on("dragend", () => {
+        const lngLat = marker.getLngLat();
+        onMoveBullseyeRef.current?.(bullseye.side, { lat: lngLat.lat, lon: lngLat.lng });
+      });
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (didDrag) {
+          didDrag = false;
+          return;
+        }
+        onSelectBullseyeRef.current?.(bullseye.side);
+      });
+
+      bullseyeMarkers.push(marker);
+    }
+
+    return () => {
+      for (const marker of bullseyeMarkers) marker.remove();
+    };
+  }, [bullseyes]);
 
   useEffect(() => {
     const map = mapRef.current;

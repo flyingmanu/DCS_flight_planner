@@ -1,3 +1,4 @@
+import type { Bullseye } from "./bullseye.js";
 import type { Flight } from "./flights.js";
 import type { MissionObject } from "./objects.js";
 
@@ -20,4 +21,6 @@ export interface Mission {
   objects: MissionObject[];
   /** Optional for backward compatibility with missions saved before flights existed. */
   flights?: Flight[];
+  /** At most one per side (blue/red/neutral). */
+  bullseyes?: Bullseye[];
 }

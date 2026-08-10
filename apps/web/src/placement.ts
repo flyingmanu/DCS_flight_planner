@@ -10,6 +10,7 @@ import {
   type OrbitVariant,
   type PointKind,
   type PolygonShape,
+  type Side,
 } from "@dcs-flight-planner/core";
 import maplibregl from "maplibre-gl";
 
@@ -21,12 +22,14 @@ export type CreationRequest =
   | { kind: "polygon"; polygonKind: "rectangle" }
   | { kind: "polygon"; polygonKind: "circle" }
   | { kind: "polygon"; polygonKind: "orbit"; hand: Hand; variant: OrbitVariant }
-  | { kind: "waypoint" };
+  | { kind: "waypoint" }
+  | { kind: "bullseye"; side: Side };
 
 export type ObjectDraft =
   | { type: "point"; kind: PointKind; position: LatLon }
   | { type: "polygon"; shape: PolygonShape }
-  | { type: "waypoint"; position: LatLon };
+  | { type: "waypoint"; position: LatLon }
+  | { type: "bullseye"; side: Side; position: LatLon };
 
 const DRAFT_SOURCE_ID = "draft-shape";
 
@@ -142,6 +145,13 @@ export function setupPlacement(map: maplibregl.Map, request: CreationRequest, ha
   if (request.kind === "waypoint") {
     on("click", (e: maplibregl.MapMouseEvent) => {
       finish({ type: "waypoint", position: toLatLon(e.lngLat) });
+    });
+    return teardown;
+  }
+
+  if (request.kind === "bullseye") {
+    on("click", (e: maplibregl.MapMouseEvent) => {
+      finish({ type: "bullseye", side: request.side, position: toLatLon(e.lngLat) });
     });
     return teardown;
   }

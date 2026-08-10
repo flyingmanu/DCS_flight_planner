@@ -27,5 +27,7 @@ export { DEFAULT_ORBIT_TURN_RADIUS_NM, DEFAULT_POINT_COLOR, DEFAULT_POLYGON_COLO
 export type { Dmpi, Hand, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
 export { toLocalMeters, fromLocalMeters } from "./geo.js";
 export type { LocalMeters } from "./geo.js";
-export { circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
+export { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";
 export type { OrbitDirectionArrow, OrbitTrackParams } from "./shapes.js";
+export { DEFAULT_BULLSEYE_COLOR, makeDefaultBullseye, SIDE_LABEL } from "./bullseye.js";
+export type { Bullseye, Side } from "./bullseye.js";

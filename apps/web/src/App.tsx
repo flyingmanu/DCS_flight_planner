@@ -1,7 +1,8 @@
-import type { CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Theater } from "@dcs-flight-planner/core";
-import { DEFAULT_FLIGHT_COLOR, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
+import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Side, Theater } from "@dcs-flight-planner/core";
+import { DEFAULT_FLIGHT_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
+import { BullseyeEditPanel } from "./BullseyeEditPanel";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
 import { CustomAircraftEditor } from "./CustomAircraftEditor";
 import { CustomAircraftMenu } from "./CustomAircraftMenu";
@@ -24,8 +25,8 @@ import type { CreationRequest, ObjectDraft } from "./placement";
 const theater = caucasus as Theater;
 const UNTITLED = "Untitled";
 
-/** ObjectDraft narrowed to the kinds that become a MissionObject (waypoints are routed elsewhere). */
-type PlaceableObjectDraft = Exclude<ObjectDraft, { type: "waypoint" }>;
+/** ObjectDraft narrowed to the kinds that become a MissionObject (waypoints and bullseyes are routed elsewhere). */
+type PlaceableObjectDraft = Exclude<ObjectDraft, { type: "waypoint" } | { type: "bullseye" }>;
 
 const POLYGON_KIND_DEFAULT_NAME: Record<string, string> = {
   freeform: "Zone",
@@ -87,6 +88,9 @@ function App() {
   const [flightForm, setFlightForm] = useState<{ flight: Flight; isNew: boolean } | null>(null);
   const [customAircraft, setCustomAircraft] = useState<CustomAircraft[]>([]);
   const [customAircraftForm, setCustomAircraftForm] = useState<{ aircraft: CustomAircraft; isNew: boolean } | null>(null);
+  const [bullseyes, setBullseyes] = useState<Bullseye[]>([]);
+  const [selectedBullseyeSide, setSelectedBullseyeSide] = useState<Side | null>(null);
+  const selectedBullseye = bullseyes.find((b) => b.side === selectedBullseyeSide) ?? null;
 
   useEffect(() => {
     setMissions(listMissions());
@@ -105,6 +109,7 @@ function App() {
       view: mapRef.current?.getView() ?? { center: [42, 43], zoom: 6 },
       objects,
       flights,
+      bullseyes,
     };
     saveMission(mission);
     setMissions(listMissions());
@@ -117,6 +122,8 @@ function App() {
     setActiveMissionName(UNTITLED);
     setObjects([]);
     setFlights([]);
+    setBullseyes([]);
+    setSelectedBullseyeSide(null);
   }
 
   function handleOpen(id: string) {
@@ -126,6 +133,8 @@ function App() {
     setActiveMissionName(mission.name);
     setObjects(mission.objects);
     setFlights(mission.flights ?? []);
+    setBullseyes(mission.bullseyes ?? []);
+    setSelectedBullseyeSide(null);
     mapRef.current?.setView(mission.view);
   }
 
@@ -275,6 +284,25 @@ function App() {
     if (customAircraftForm?.aircraft.id === id) setCustomAircraftForm(null);
   }
 
+  function handleBullseyeCreate(side: Side, position: LatLon) {
+    const bullseye = makeDefaultBullseye(side, position);
+    setBullseyes((prev) => [...prev.filter((b) => b.side !== side), bullseye]);
+    setSelectedBullseyeSide(side);
+  }
+
+  function handleBullseyeChange(updated: Bullseye) {
+    setBullseyes((prev) => prev.map((b) => (b.side === updated.side ? updated : b)));
+  }
+
+  function handleBullseyeDelete(side: Side) {
+    setBullseyes((prev) => prev.filter((b) => b.side !== side));
+    if (selectedBullseyeSide === side) setSelectedBullseyeSide(null);
+  }
+
+  function handleMoveBullseye(side: Side, position: LatLon) {
+    setBullseyes((prev) => prev.map((b) => (b.side === side ? { ...b, position } : b)));
+  }
+
   /** Appends a preset to a custom aircraft's saved list and persists it immediately (called from the flight form). */
   function handleSavePreset(customAircraftId: string, preset: LoadoutPreset) {
     const aircraft = customAircraft.find((a) => a.id === customAircraftId);
@@ -337,6 +365,7 @@ function App() {
           theater={theater}
           objects={visibleObjects}
           flights={visibleFlights}
+          bullseyes={bullseyes}
           editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
           onDraftComplete={(draft) => {
@@ -355,14 +384,26 @@ function App() {
               );
               return;
             }
+            if (draft.type === "bullseye") {
+              handleBullseyeCreate(draft.side, draft.position);
+              return;
+            }
             setPendingDraft(draft);
           }}
           onCreationCancel={() => setCreationRequest(null)}
-          onSelectObject={setSelectedObjectId}
+          onSelectObject={(id) => {
+            setSelectedObjectId(id);
+            setSelectedBullseyeSide(null);
+          }}
           onSelectFlight={handleEditFlight}
+          onSelectBullseye={(side) => {
+            setSelectedBullseyeSide(side);
+            setSelectedObjectId(null);
+          }}
           onMovePoint={handleMovePoint}
           onMovePolygon={handleMovePolygon}
           onMoveWaypoint={handleMoveWaypoint}
+          onMoveBullseye={handleMoveBullseye}
           onHover={setHover}
         />
       </div>
@@ -374,6 +415,14 @@ function App() {
           onDelete={() => handleObjectDelete(selectedObject.id)}
           onClose={() => setSelectedObjectId(null)}
           onResetDmpiElevation={() => handleResetDmpiElevation(selectedObject.id)}
+        />
+      )}
+      {selectedBullseye && (
+        <BullseyeEditPanel
+          bullseye={selectedBullseye}
+          onChange={handleBullseyeChange}
+          onDelete={() => handleBullseyeDelete(selectedBullseye.side)}
+          onClose={() => setSelectedBullseyeSide(null)}
         />
       )}
       {objectListOpen && (

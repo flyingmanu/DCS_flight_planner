@@ -42,6 +42,18 @@ export function rectangleCorners(
   return [place(relativeCorners[0]), place(relativeCorners[1]), place(relativeCorners[2]), place(relativeCorners[3])];
 }
 
+/** Radii (in NM) of each concentric ring of a bullseye, evenly spaced out to outerRingNm. */
+export function bullseyeRingRadiiNm(outerRingNm: number, rings: number): number[] {
+  const step = outerRingNm / rings;
+  return Array.from({ length: rings }, (_, i) => step * (i + 1));
+}
+
+/** Endpoints of each bearing spoke of a bullseye, evenly spaced starting from true north. */
+export function bullseyeSpokeEndpoints(center: LatLon, outerRingNm: number, spokes: number): LatLon[] {
+  const radiusM = outerRingNm * NM_TO_M;
+  return Array.from({ length: spokes }, (_, i) => fromLocalMeters(center, rotateClockwise({ x: 0, y: radiusM }, (360 / spokes) * i)));
+}
+
 /** Points approximating a circle of `radiusM` around `center`. */
 export function circlePoints(center: LatLon, radiusM: number, steps = 64): LatLon[] {
   const points: LatLon[] = [];
