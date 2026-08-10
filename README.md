@@ -36,11 +36,11 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Object editing (click an object → right-side panel): name, color, coordinates, DMPI altitude, orientation and size depending on type; delete
 - [x] Object list (top-right "Objects" button): overview of points/zones, click to edit, direct delete
 - [x] Flight object (Flight menu: create, edit, delete; also listed alongside points/zones in the Objects popup): Combat Flite-inspired attributes (callsign, aircraft, size, task, departure/arrival/alternate airbases, takeoff time, TACAN, radio, IFF modes, notes, color), saved with the mission
-- [x] Aircraft catalog (`packages/core`): all playable DCS modules (fixed-wing + helicopters) with standard DCS task types, approximate performance figures (max speed, ceiling, combat radius, internal fuel), and a typical-weapons reference — the performance/armament-management foundation for a key advantage over Combat Flite — plus a starter set of AI-only aircraft; picked from a dropdown in the flight form, with category icons (fixed-wing / helicopter) shown on the map at each flight's departure airbase; free-text loadout field with a "typical weapons" hint
+- [x] Aircraft catalog (`packages/core`): all playable DCS modules (fixed-wing + helicopters) plus a starter set of AI-only aircraft — name, category, and standard task types only, picked from a dropdown in the flight form, with category icons (fixed-wing / helicopter) shown on the map at each flight's departure airbase. Deliberately simple: no performance or armament data, for anyone who just wants to lay out flight plans quickly
 - [x] Waypoint add/remove/edit for a flight's route, Combat-Flite style: click "Add waypoint on map" then click the map; route drawn live on the map — departure airbase → waypoints → arrival airbase — as a connected line with numbered, draggable markers whenever the flight is open (from its map marker or the Objects list); position editable via DDM fields or by dragging on the map, altitude/airspeed editable, remove from the list
 - [x] Route leg calculations: each waypoint in the flight form shows distance, true track, and ETE from the previous leg, plus a running ETA once a takeoff time and every leg's airspeed are set; total route distance shown
 - [x] Mission overview ("Overview" button): read-only summary of every flight (airbases, comms, loadout, full leg table) and every mission point/zone on one screen — a first step toward kneeboard export
-- [x] Per-pylon armament: every playable aircraft/helicopter defines its weapon stations against a shared weapon catalog (with approximate per-round weights); the flight form shows one dropdown per pylon (options limited to that station's known-compatible weapons) plus a live weight readout (empty + fuel + ordnance = estimated gross weight), also surfaced in Mission Overview — another edge over Combat Flite
+- [x] Custom aircraft ("Aircraft" menu): build fully custom aircraft with detailed, user-entered performance (weights, speeds, ceiling, cruise fuel flow, a takeoff-distance reference point) and a detailed armament page — pylon count, per-pylon compatible weapons, per-weapon compatible launchers, and launcher weights — plus named loadout presets you can save from a flight and reapply. The flight form shows a live weight readout (gross weight + light/medium/heavy classification), estimated takeoff distance, and estimated endurance/range, also surfaced in Mission Overview — another edge over Combat Flite. F-16C is the first test case, built from real reference data in a JTFF Drive spreadsheet
 - [x] Kneeboard export, first pass: "Export kneeboards (PNG)" in Mission Overview downloads one portrait card per flight (header, airbases/comms, armament + weight, full leg table) — page size is a legible guess, not yet checked against a real DCS kneeboard display
 - [ ] TOT (time-on-target) planning/back-timing across a package
 - [ ] Desktop application (Tauri)
@@ -64,31 +64,26 @@ these against the real thing when you're back:
   reference used at all beyond "kneeboard-style summary." Layout, what's
   included, and what a first kneeboard-export pass should actually contain
   are all open.
-- **Aircraft catalog performance figures** (max speed, ceiling, combat
-  radius, internal fuel) and the **weapons/loadout reference lists** are
-  approximate, publicly-known reference figures I already flagged in the
-  data model's doc comments — not derived from DCS's flight model or a
-  DCS-side loadout table. Treat every number as a placeholder to verify.
 - **AI-only aircraft list** is a starter set, not exhaustive — additions
   welcome.
-- **Pylon layouts and weapon weights** (added later, same session): every
-  playable aircraft's pylon count and per-station compatible-weapons list is
-  an approximation — all pylons on an airframe currently share one
-  compatible-weapons list rather than modeling exact per-station DCS
-  restrictions, and munition weights are representative public figures, not
-  DCS store data. Good enough for rough weight/range planning; needs a pass
-  against real DCS loadouts before treating gross-weight numbers as precise.
 - **Kneeboard PNG export** (new): first pass only. Page size (1024×1400,
   portrait) is a legible guess since I don't have a way to check DCS's actual
   in-game kneeboard display size, which reportedly varies a bit by aircraft —
   worth comparing a generated PNG against a real DCS kneeboard page before
   relying on it. Content/layout is likewise unreviewed by a human.
-- **F-16C empty weight (19,899 lb) and internal fuel (7,163 lb)**: pulled
-  from a real F-16C mission-planning data card workbook in the shared JTFF
-  Drive folder (a pilot's TOLD/fuel-planning spreadsheet), not from memory —
-  more reliable than the earlier rough estimate, and internally consistent
-  with the sheet's own worked example. Other aircraft in the catalog haven't
-  had the same treatment yet.
+- **Architecture change**: the built-in catalog's performance/armament data
+  (and the shared weapon catalog + fixed pylon list it used) has been removed
+  in favor of user-built **custom aircraft** (new "Aircraft" menu), each with
+  its own performance fields, launchers, weapons, and pylons — see the
+  Progress list above. The catalog is back to name/category/task only.
+- **F-16C reference data**: 19,899 lb empty weight, 7,163 lb internal fuel,
+  and the SCL-sheet pylon/rack/weapon layout (stations 1/2/8/9 = AIM-9/
+  AIM-120 rail; 3/7 = flexible heavy rack; 4/6 = heavy store or fuel tank;
+  5L/5/5R = HTS/ECM-fuel/targeting-pod) came from real F-16C mission-planning
+  workbooks in the shared JTFF Drive folder, not memory. This data hasn't
+  been entered into a custom aircraft yet — F-16C was named as the intended
+  first test case but the actual "F-16C" custom aircraft still needs to be
+  built by hand in the new editor using these figures.
 - **Route line bugfix**: the flight-route line on the map could get stuck
   and never update (root cause: gating the redraw on `map.isStyleLoaded()`,
   which can transiently go false long after the map's one-time "load" event
@@ -96,7 +91,7 @@ these against the real thing when you're back:
   runs again). Fixed by gating on whether the line's GeoJSON source exists
   instead. Worth an extra look if route lines ever seem to freeze again.
 - Everything above was verified with `tsc`, `oxlint`, the `packages/core`
-  unit tests (61 passing), and a scripted Playwright pass against the built
+  unit tests (60 passing), and a scripted Playwright pass against the built
   app — not by a human clicking around, so UI feel/spacing/interaction
   details haven't had a human pass since the theming work.
 
