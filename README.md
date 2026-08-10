@@ -40,6 +40,7 @@ pnpm --filter @dcs-flight-planner/web dev
 - [x] Waypoint add/remove/edit for a flight's route, Combat-Flite style: click "Add waypoint on map" then click the map; route drawn live on the map as numbered, draggable markers whenever the flight is open (from its map marker or the Objects list); position editable via DDM fields or by dragging on the map, altitude/airspeed editable, remove from the list
 - [x] Route leg calculations: each waypoint in the flight form shows distance, true track, and ETE from the previous leg, plus a running ETA once a takeoff time and every leg's airspeed are set; total route distance shown
 - [x] Mission overview ("Overview" button): read-only summary of every flight (airbases, comms, loadout, full leg table) and every mission point/zone on one screen — a first step toward kneeboard export
+- [x] Per-pylon armament: every playable aircraft/helicopter defines its weapon stations against a shared weapon catalog (with approximate per-round weights); the flight form shows one dropdown per pylon (options limited to that station's known-compatible weapons) plus a live weight readout (empty + fuel + ordnance = estimated gross weight), also surfaced in Mission Overview — another edge over Combat Flite
 - [ ] Kneeboard export (printable/image, DCS-kneeboard-ready)
 - [ ] TOT (time-on-target) planning/back-timing across a package
 - [ ] Desktop application (Tauri)
@@ -70,8 +71,15 @@ these against the real thing when you're back:
   DCS-side loadout table. Treat every number as a placeholder to verify.
 - **AI-only aircraft list** is a starter set, not exhaustive — additions
   welcome.
+- **Pylon layouts and weapon weights** (added later, same session): every
+  playable aircraft's pylon count and per-station compatible-weapons list is
+  an approximation — all pylons on an airframe currently share one
+  compatible-weapons list rather than modeling exact per-station DCS
+  restrictions, and munition weights are representative public figures, not
+  DCS store data. Good enough for rough weight/range planning; needs a pass
+  against real DCS loadouts before treating gross-weight numbers as precise.
 - Everything above was verified with `tsc`, `oxlint`, the `packages/core`
-  unit tests (48 passing), and a scripted Playwright pass against the built
+  unit tests (61 passing), and a scripted Playwright pass against the built
   app — not by a human clicking around, so UI feel/spacing/interaction
   details haven't had a human pass since the theming work.
 
