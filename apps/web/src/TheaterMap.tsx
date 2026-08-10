@@ -100,6 +100,20 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
   `;
 }
 
+// Unfilled circle marking a flight's alternate (diversion) airbase - same
+// color as its waypoints, but never connected to the route line: it's a
+// fallback destination, not a leg the flight is planned to actually fly.
+function alternateAirbaseMarkerElement(color: string): HTMLElement {
+  const el = document.createElement("div");
+  el.style.width = "20px";
+  el.style.height = "20px";
+  el.style.borderRadius = "50%";
+  el.style.border = `3px solid ${color}`;
+  el.style.boxSizing = "border-box";
+  el.style.background = "transparent";
+  return el;
+}
+
 // Small numbered, draggable waypoint marker used while a flight's route is
 // being edited (index is 1-based, matching the "WP{n}" labels in the panel).
 function waypointMarkerElement(index: number, color: string): HTMLElement {
@@ -831,6 +845,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     const airbaseById = new Map(theater.airbases.map((ab) => [ab.id, ab]));
     const departureAirbase = editingFlight?.departureAirbaseId ? airbaseById.get(editingFlight.departureAirbaseId) : undefined;
     const arrivalAirbase = editingFlight?.arrivalAirbaseId ? airbaseById.get(editingFlight.arrivalAirbaseId) : undefined;
+    const alternateAirbase = editingFlight?.alternateAirbaseId ? airbaseById.get(editingFlight.alternateAirbaseId) : undefined;
 
     function withAirbaseEndpoints(positions: LatLon[]): LatLon[] {
       return [
@@ -889,8 +904,17 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       waypointMarkers.push(marker);
     });
 
+    const alternateMarkers: maplibregl.Marker[] = [];
+    if (alternateAirbase) {
+      const marker = new maplibregl.Marker({ element: alternateAirbaseMarkerElement(color) })
+        .setLngLat([alternateAirbase.position.lon, alternateAirbase.position.lat])
+        .addTo(map);
+      alternateMarkers.push(marker);
+    }
+
     return () => {
       for (const marker of waypointMarkers) marker.remove();
+      for (const marker of alternateMarkers) marker.remove();
     };
     // objects/flights/bullseyes are only read inside dragend (glue snap
     // candidates); see the point/label marker effect above for why this
