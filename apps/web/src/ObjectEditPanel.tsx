@@ -87,6 +87,17 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
           <ColorField value={object.color ?? defaultColor} onChange={(color) => onChange({ ...object, color })} />
         </Field>
 
+        <Field label="Notes">
+          <textarea
+            defaultValue={object.notes ?? ""}
+            key={`${object.id}-notes`}
+            className="dfp-input"
+            rows={3}
+            style={{ resize: "vertical", fontFamily: "inherit" }}
+            onBlur={(e) => onChange({ ...object, notes: e.target.value || undefined })}
+          />
+        </Field>
+
         {object.type === "point" && (
           <>
             {(() => {

@@ -47,6 +47,8 @@ export interface PointObject {
   color?: string;
   /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
   visible?: boolean;
+  /** Free-text notes/comment for briefing purposes. */
+  notes?: string;
 }
 
 export type Hand = "left" | "right";
@@ -77,6 +79,8 @@ export interface PolygonObject {
   color?: string;
   /** Whether this object is rendered on the map. Defaults to true (visible) when absent. */
   visible?: boolean;
+  /** Free-text notes/comment for briefing purposes. */
+  notes?: string;
 }
 
 export type MissionObject = PointObject | PolygonObject;
