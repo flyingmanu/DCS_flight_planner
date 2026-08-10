@@ -95,7 +95,8 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
   return `
     <strong>${airbase.name}</strong><br />
     ${CATEGORY_LABEL[airbase.category]}<br />
-    Tower ${airbase.radioFrequencyMhz} MHz · TACAN ${airbase.tacanChannel}<br />
+    HF ${airbase.radio.hfMhz} · VHF-L ${airbase.radio.vhfLowMhz} · VHF-H ${airbase.radio.vhfHighMhz} · UHF ${airbase.radio.uhfMhz}<br />
+    TACAN ${airbase.tacanChannel}<br />
     ${runways || "Runway unknown"}
   `;
 }

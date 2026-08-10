@@ -89,9 +89,9 @@ function normalizeAirbase(raw: RawAirbase): Airbase | null {
     initialCoalition: raw.coalition ?? -1,
     position,
     runways,
-    // The DCS export doesn't expose tower/TACAN data; both are assigned
+    // The DCS export doesn't expose radio/TACAN data; both are filled in
     // separately for the curated theater data files (see data/caucasus.json).
-    radioFrequencyMhz: "N/A",
+    radio: { hfMhz: "N/A", vhfLowMhz: "N/A", vhfHighMhz: "N/A", uhfMhz: "N/A" },
     tacanChannel: "N/A",
   };
 }

@@ -17,6 +17,14 @@ export interface Runway {
   ilsFrequencyMhz: string;
 }
 
+/** Real per-band ATC radio frequencies in MHz, e.g. "251.000", or "N/A" when unknown. */
+export interface AirbaseRadio {
+  hfMhz: string;
+  vhfLowMhz: string;
+  vhfHighMhz: string;
+  uhfMhz: string;
+}
+
 export interface Airbase {
   id: string;
   name: string;
@@ -30,8 +38,8 @@ export interface Airbase {
   initialCoalition: number;
   position: GeoPosition;
   runways: Runway[];
-  /** Tower/ATC radio frequency in MHz, e.g. "251.000". */
-  radioFrequencyMhz: string;
+  /** Real ATC radio frequencies in MHz, sourced from DCS World's own airbase database. */
+  radio: AirbaseRadio;
   /** TACAN channel + band, e.g. "10X", or "N/A" when the airbase has none. */
   tacanChannel: string;
 }

@@ -25,8 +25,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "251.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "3.750",
+        "vhfLowMhz": "38.400",
+        "vhfHighMhz": "121.000",
+        "uhfMhz": "250.000"
+      }
     },
     {
       "id": "batumi",
@@ -51,8 +56,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "251.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.250",
+        "vhfLowMhz": "40.400",
+        "vhfHighMhz": "131.000",
+        "uhfMhz": "260.000"
+      }
     },
     {
       "id": "beslan",
@@ -77,8 +87,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "252.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.750",
+        "vhfLowMhz": "42.400",
+        "vhfHighMhz": "141.000",
+        "uhfMhz": "270.000"
+      }
     },
     {
       "id": "gelendzhik",
@@ -103,8 +118,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "252.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.000",
+        "vhfLowMhz": "39.400",
+        "vhfHighMhz": "126.000",
+        "uhfMhz": "255.000"
+      }
     },
     {
       "id": "gudauta",
@@ -129,8 +149,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "253.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.200",
+        "vhfLowMhz": "40.200",
+        "vhfHighMhz": "130.000",
+        "uhfMhz": "259.000"
+      }
     },
     {
       "id": "kobuleti",
@@ -155,8 +180,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "253.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.350",
+        "vhfLowMhz": "40.800",
+        "vhfHighMhz": "133.000",
+        "uhfMhz": "262.000"
+      }
     },
     {
       "id": "krasnodar-center",
@@ -181,8 +211,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "254.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "3.800",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "122.000",
+        "uhfMhz": "251.000"
+      }
     },
     {
       "id": "krasnodar-pashkovsky",
@@ -207,8 +242,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "254.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.100",
+        "vhfLowMhz": "39.800",
+        "vhfHighMhz": "128.000",
+        "uhfMhz": "257.000"
+      }
     },
     {
       "id": "krymsk",
@@ -233,8 +273,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "255.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "3.900",
+        "vhfLowMhz": "39.000",
+        "vhfHighMhz": "124.000",
+        "uhfMhz": "253.000"
+      }
     },
     {
       "id": "kutaisi",
@@ -259,8 +304,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "255.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.400",
+        "vhfLowMhz": "41.000",
+        "vhfHighMhz": "134.000",
+        "uhfMhz": "263.000"
+      }
     },
     {
       "id": "maykop-khanskaya",
@@ -285,8 +335,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "256.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "3.950",
+        "vhfLowMhz": "39.200",
+        "vhfHighMhz": "125.000",
+        "uhfMhz": "254.000"
+      }
     },
     {
       "id": "mineralnye-vody",
@@ -311,8 +366,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "256.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.450",
+        "vhfLowMhz": "41.200",
+        "vhfHighMhz": "135.000",
+        "uhfMhz": "264.000"
+      }
     },
     {
       "id": "mozdok",
@@ -337,8 +397,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "257.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.550",
+        "vhfLowMhz": "41.600",
+        "vhfHighMhz": "137.000",
+        "uhfMhz": "266.000"
+      }
     },
     {
       "id": "nalchik",
@@ -363,8 +428,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "257.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.500",
+        "vhfLowMhz": "41.400",
+        "vhfHighMhz": "136.000",
+        "uhfMhz": "265.000"
+      }
     },
     {
       "id": "novorossiysk",
@@ -389,8 +459,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "258.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "3.850",
+        "vhfLowMhz": "38.800",
+        "vhfHighMhz": "123.000",
+        "uhfMhz": "252.000"
+      }
     },
     {
       "id": "senaki-kolkhi",
@@ -415,8 +490,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "258.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.300",
+        "vhfLowMhz": "40.600",
+        "vhfHighMhz": "132.000",
+        "uhfMhz": "261.000"
+      }
     },
     {
       "id": "sochi-adler",
@@ -441,8 +521,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "259.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.050",
+        "vhfLowMhz": "39.600",
+        "vhfHighMhz": "127.000",
+        "uhfMhz": "256.000"
+      }
     },
     {
       "id": "soganlug",
@@ -467,8 +552,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "259.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.650",
+        "vhfLowMhz": "42.000",
+        "vhfHighMhz": "139.000",
+        "uhfMhz": "268.000"
+      }
     },
     {
       "id": "sukhumi-babushara",
@@ -493,8 +583,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "260.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.150",
+        "vhfLowMhz": "40.000",
+        "vhfHighMhz": "129.000",
+        "uhfMhz": "258.000"
+      }
     },
     {
       "id": "tbilisi-lochini",
@@ -519,8 +614,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "260.500",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.600",
+        "vhfLowMhz": "41.800",
+        "vhfHighMhz": "138.000",
+        "uhfMhz": "267.000"
+      }
     },
     {
       "id": "vaziani",
@@ -545,8 +645,13 @@
           "ilsFrequencyMhz": "N/A"
         }
       ],
-      "radioFrequencyMhz": "261.000",
-      "tacanChannel": "N/A"
+      "tacanChannel": "N/A",
+      "radio": {
+        "hfMhz": "4.700",
+        "vhfLowMhz": "42.200",
+        "vhfHighMhz": "140.000",
+        "uhfMhz": "269.000"
+      }
     }
   ]
 }
