@@ -3,11 +3,11 @@ export { normalizeTheaterExport } from "./normalize-export.js";
 export type { RawExport } from "./normalize-export.js";
 export { bearingDeg, distanceKm, distanceNm } from "./geo.js";
 export type { LatLon } from "./geo.js";
-export { addMinutesToClock, computeRouteLegs, formatEte, totalRouteDistanceNm } from "./route.js";
+export { addMinutesToClock, computeRouteLegs, computeWaypointEtas, formatEte, totalRouteDistanceNm } from "./route.js";
 export type { RouteLeg } from "./route.js";
 export type { MapView, Mission } from "./mission.js";
-export { DEFAULT_FLIGHT_COLOR, TASK_TYPE_LABEL } from "./flights.js";
-export type { Flight, TaskType, Waypoint } from "./flights.js";
+export { ALTITUDE_REFERENCE_LABEL, DEFAULT_FLIGHT_COLOR, SPEED_TYPE_LABEL, TASK_TYPE_LABEL } from "./flights.js";
+export type { AltitudeReference, Flight, SpeedType, TaskType, Waypoint } from "./flights.js";
 export { AIRCRAFT_CATALOG, findAircraft } from "./aircraft.js";
 export type { Aircraft, AircraftCategory } from "./aircraft.js";
 export {

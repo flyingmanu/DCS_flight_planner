@@ -1,8 +1,8 @@
 import {
-  addMinutesToClock,
   computeGrossWeightLb,
   computeLoadoutWeightLb,
   computeRouteLegs,
+  computeWaypointEtas,
   DEFAULT_FLIGHT_COLOR,
   formatEte,
   formatLatLonDdm,
@@ -37,20 +37,7 @@ export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], customA
   const aircraft = customAircraft.find((a) => a.id === flight.customAircraftId);
   const route = flight.route ?? [];
   const legs = computeRouteLegs(route);
-
-  const etas: (string | null)[] = [];
-  let cumMin = 0;
-  let cumValid = true;
-  for (let i = 0; i < route.length; i++) {
-    if (i === 0) {
-      etas.push(flight.takeoffTime ?? null);
-      continue;
-    }
-    const leg = legs[i - 1];
-    if (!leg || leg.eteMin === undefined) cumValid = false;
-    cumMin += leg?.eteMin ?? 0;
-    etas.push(cumValid && flight.takeoffTime ? addMinutesToClock(flight.takeoffTime, cumMin) : null);
-  }
+  const etas = computeWaypointEtas(route, legs, flight.takeoffTime);
 
   // Background
   ctx.fillStyle = "#f5f2ea";

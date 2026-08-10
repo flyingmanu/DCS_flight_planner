@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { Waypoint } from "./flights.js";
-import { addMinutesToClock, computeRouteLegs, formatEte, totalRouteDistanceNm } from "./route.js";
+import { addMinutesToClock, computeRouteLegs, computeWaypointEtas, formatEte, totalRouteDistanceNm } from "./route.js";
 
-function wp(lat: number, lon: number, airspeedKt?: number): Waypoint {
-  return { id: crypto.randomUUID(), position: { lat, lon }, airspeedKt };
+function wp(lat: number, lon: number, airspeedKt?: number, extra?: Partial<Waypoint>): Waypoint {
+  return { id: crypto.randomUUID(), position: { lat, lon }, airspeedKt, ...extra };
 }
 
 describe("computeRouteLegs", () => {
@@ -55,6 +55,50 @@ describe("formatEte", () => {
 
   it("formats an hour or more as H:MM:SS", () => {
     expect(formatEte(90)).toBe("1:30:00");
+  });
+});
+
+describe("computeWaypointEtas", () => {
+  it("cascades ETAs from the takeoff time using each leg's ETE", () => {
+    const route = [wp(0, 0), wp(0, 1, 60), wp(0, 2, 60)];
+    const legs = computeRouteLegs(route);
+    const etas = computeWaypointEtas(route, legs, "10:00");
+    expect(etas[0]).toBe("10:00");
+    expect(etas[1]).toBe("11:00");
+    expect(etas[2]).toBe("12:00");
+  });
+
+  it("returns null for every waypoint when there's no takeoff time", () => {
+    const route = [wp(0, 0), wp(0, 1, 60)];
+    const legs = computeRouteLegs(route);
+    expect(computeWaypointEtas(route, legs, undefined)).toEqual([null, null]);
+  });
+
+  it("returns null once a leg's ETE is missing (no airspeed set)", () => {
+    const route = [wp(0, 0), wp(0, 1), wp(0, 2, 60)];
+    const legs = computeRouteLegs(route);
+    const etas = computeWaypointEtas(route, legs, "10:00");
+    expect(etas[0]).toBe("10:00");
+    expect(etas[1]).toBeNull();
+    expect(etas[2]).toBeNull();
+  });
+
+  it("uses a locked waypoint's TOT as its own ETA and as the new anchor for later waypoints", () => {
+    const route = [wp(0, 0), wp(0, 1, 60, { totLocked: true, tot: "14:00" }), wp(0, 2, 60)];
+    const legs = computeRouteLegs(route);
+    const etas = computeWaypointEtas(route, legs, "10:00");
+    expect(etas[0]).toBe("10:00");
+    expect(etas[1]).toBe("14:00"); // locked TOT wins over the cascaded 11:00
+    expect(etas[2]).toBe("15:00"); // cascades from the locked TOT, not the original takeoff time
+  });
+
+  it("still anchors from a locked waypoint even without a takeoff time", () => {
+    const route = [wp(0, 0), wp(0, 1, 60, { totLocked: true, tot: "14:00" }), wp(0, 2, 60)];
+    const legs = computeRouteLegs(route);
+    const etas = computeWaypointEtas(route, legs, undefined);
+    expect(etas[0]).toBeNull();
+    expect(etas[1]).toBe("14:00");
+    expect(etas[2]).toBe("15:00");
   });
 });
 

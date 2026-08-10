@@ -1,10 +1,11 @@
 import {
-  addMinutesToClock,
   AIRCRAFT_CATALOG,
+  ALTITUDE_REFERENCE_LABEL,
   classifyLoad,
   computeGrossWeightLb,
   computeLoadoutWeightLb,
   computeRouteLegs,
+  computeWaypointEtas,
   DEFAULT_FLIGHT_COLOR,
   estimateEnduranceMin,
   estimateRangeNm,
@@ -13,15 +14,18 @@ import {
   findCustomWeapon,
   findLauncher,
   formatEte,
+  SPEED_TYPE_LABEL,
   TASK_TYPE_LABEL,
   totalRouteDistanceNm,
   type Airbase,
+  type AltitudeReference,
   type CustomAircraft,
   type Dmpi,
   type Flight,
   type LatLon,
   type LoadoutPreset,
   type PylonSelection,
+  type SpeedType,
   type TaskType,
   type Waypoint,
 } from "@dcs-flight-planner/core";
@@ -75,21 +79,7 @@ export function FlightFormDialog({
   const legs = computeRouteLegs(route);
   const [presetName, setPresetName] = useState("");
 
-  // Cumulative ETA per waypoint index (undefined until we have a takeoff time and every
-  // preceding leg's ETE, i.e. every waypoint from #2 onward has an airspeed set).
-  const etas: (string | null)[] = [];
-  let cumMin = 0;
-  let cumValid = true;
-  for (let i = 0; i < route.length; i++) {
-    if (i === 0) {
-      etas.push(flight.takeoffTime ?? null);
-      continue;
-    }
-    const leg = legs[i - 1];
-    if (!leg || leg.eteMin === undefined) cumValid = false;
-    cumMin += leg?.eteMin ?? 0;
-    etas.push(cumValid && flight.takeoffTime ? addMinutesToClock(flight.takeoffTime, cumMin) : null);
-  }
+  const etas = computeWaypointEtas(route, legs, flight.takeoffTime);
 
   function set<K extends keyof Flight>(key: K, value: Flight[K]) {
     onChange({ ...flight, [key]: value });
@@ -507,7 +497,7 @@ export function FlightFormDialog({
                 </div>
               )}
               <CoordinateFields point={wp.position} onChange={(position: LatLon) => updateWaypoint(wp.id, { position })} />
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 70px", gap: 8, marginBottom: 8 }}>
                 <input
                   type="number"
                   className="dfp-input"
@@ -515,12 +505,54 @@ export function FlightFormDialog({
                   value={wp.altitudeFt ?? ""}
                   onChange={(e) => updateWaypoint(wp.id, { altitudeFt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
                 />
+                <select
+                  className="dfp-input"
+                  value={wp.altitudeReference ?? "MSL"}
+                  onChange={(e) => updateWaypoint(wp.id, { altitudeReference: e.target.value as AltitudeReference })}
+                >
+                  {(Object.keys(ALTITUDE_REFERENCE_LABEL) as AltitudeReference[]).map((ref) => (
+                    <option key={ref} value={ref}>
+                      {ALTITUDE_REFERENCE_LABEL[ref]}
+                    </option>
+                  ))}
+                </select>
                 <input
                   type="number"
                   className="dfp-input"
                   placeholder="Speed (kt)"
                   value={wp.airspeedKt ?? ""}
                   onChange={(e) => updateWaypoint(wp.id, { airspeedKt: e.target.value ? Number.parseInt(e.target.value, 10) : undefined })}
+                />
+                <select
+                  className="dfp-input"
+                  value={wp.speedType ?? "IAS"}
+                  onChange={(e) => updateWaypoint(wp.id, { speedType: e.target.value as SpeedType })}
+                >
+                  {(Object.keys(SPEED_TYPE_LABEL) as SpeedType[]).map((st) => (
+                    <option key={st} value={st}>
+                      {SPEED_TYPE_LABEL[st]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, whiteSpace: "nowrap" }}>
+                  <input
+                    type="checkbox"
+                    checked={wp.totLocked ?? false}
+                    onChange={(e) => updateWaypoint(wp.id, { totLocked: e.target.checked })}
+                  />
+                  Lock TOT
+                </label>
+                <input
+                  type="text"
+                  className="dfp-input"
+                  placeholder="HH:MM"
+                  disabled={!wp.totLocked}
+                  value={wp.tot ?? ""}
+                  onChange={(e) => updateWaypoint(wp.id, { tot: e.target.value })}
+                  style={{ flex: 1 }}
                 />
               </div>
 

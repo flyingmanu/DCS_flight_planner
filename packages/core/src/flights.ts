@@ -21,15 +21,29 @@ export const TASK_TYPE_LABEL: Record<TaskType, string> = {
 
 export const DEFAULT_FLIGHT_COLOR = "#1d4ed8";
 
+export type SpeedType = "IAS" | "TAS" | "GS";
+export const SPEED_TYPE_LABEL: Record<SpeedType, string> = { IAS: "IAS", TAS: "TAS", GS: "GS" };
+
+export type AltitudeReference = "AGL" | "MSL";
+export const ALTITUDE_REFERENCE_LABEL: Record<AltitudeReference, string> = { AGL: "AGL", MSL: "MSL" };
+
 export interface Waypoint {
   id: string;
   /** Optional custom label; defaults to "WP{n}" (1-based position in the route) when absent. */
   name?: string;
   position: LatLon;
   altitudeFt?: number;
+  /** Whether altitudeFt is above ground level or mean sea level. Defaults to MSL when absent. */
+  altitudeReference?: AltitudeReference;
   airspeedKt?: number;
+  /** How airspeedKt should be interpreted for display. Defaults to IAS when absent. */
+  speedType?: SpeedType;
   /** Target aim-points attached to this waypoint, e.g. for a strike run-in point. */
   dmpis?: Dmpi[];
+  /** Locks this waypoint's time-on-target, overriding the cascaded ETA and anchoring later waypoints' ETAs to it. */
+  totLocked?: boolean;
+  /** Time-on-target, "HH:MM"; only meaningful when totLocked is true. */
+  tot?: string;
 }
 
 /**

@@ -55,3 +55,36 @@ export function addMinutesToClock(hhmm: string, minutes: number): string | null 
   const mm = total % 60;
   return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
 }
+
+/**
+ * Cumulative ETA per waypoint, cascading from the flight's takeoff time.
+ * A waypoint with `totLocked` and a `tot` set overrides the cascade at that
+ * point: its own ETA becomes the locked TOT, and every following waypoint's
+ * ETA is computed from that TOT instead of the original takeoff time - i.e.
+ * a locked waypoint acts as a new time anchor for the rest of the route.
+ * `legs` must be `computeRouteLegs(route)` for the same route.
+ */
+export function computeWaypointEtas(route: Waypoint[], legs: RouteLeg[], takeoffTime?: string): (string | null)[] {
+  const etas: (string | null)[] = [];
+  let anchorTime = takeoffTime ?? null;
+  let cumMin = 0;
+  let cumValid = anchorTime !== null;
+
+  for (let i = 0; i < route.length; i++) {
+    const wp = route[i]!;
+    if (i > 0) {
+      const leg = legs[i - 1];
+      if (!leg || leg.eteMin === undefined) cumValid = false;
+      cumMin += leg?.eteMin ?? 0;
+    }
+    if (wp.totLocked && wp.tot) {
+      etas.push(wp.tot);
+      anchorTime = wp.tot;
+      cumMin = 0;
+      cumValid = true;
+      continue;
+    }
+    etas.push(cumValid && anchorTime ? addMinutesToClock(anchorTime, cumMin) : null);
+  }
+  return etas;
+}
