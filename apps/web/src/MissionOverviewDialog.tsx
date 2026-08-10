@@ -13,6 +13,7 @@ import {
   type CustomAircraft,
   type Flight,
   type MissionObject,
+  type Package,
   type PolygonShape,
 } from "@dcs-flight-planner/core";
 import { useState } from "react";
@@ -26,6 +27,7 @@ interface MissionOverviewDialogProps {
   flights: Flight[];
   customAircraft: CustomAircraft[];
   objects: MissionObject[];
+  packages: Package[];
   onClose: () => void;
 }
 
@@ -73,11 +75,17 @@ function Td({ children, mono }: { children: React.ReactNode; mono?: boolean }) {
   );
 }
 
-export function MissionOverviewDialog({ missionName, theaterName, airbases, flights, customAircraft, objects, onClose }: MissionOverviewDialogProps) {
+export function MissionOverviewDialog({ missionName, theaterName, airbases, flights, customAircraft, objects, packages, onClose }: MissionOverviewDialogProps) {
   const airbaseName = (id: string | undefined) => (id ? (airbases.find((a) => a.id === id)?.name ?? id) : "—");
   const points = objects.filter((o) => o.type === "point");
   const polygons = objects.filter((o) => o.type === "polygon");
   const [exporting, setExporting] = useState(false);
+  const packageName = (packageId: string | undefined) => packages.find((p) => p.id === packageId)?.name;
+  // Group flights by package (in package order), then ungrouped flights, preserving each group's original order.
+  const orderedFlights = [
+    ...packages.flatMap((pkg) => flights.filter((f) => f.packageId === pkg.id)),
+    ...flights.filter((f) => !f.packageId || !packages.some((p) => p.id === f.packageId)),
+  ];
 
   async function handleExportKneeboards() {
     setExporting(true);
@@ -131,13 +139,24 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
 
           {flights.length === 0 && <div style={{ color: "var(--dfp-text-muted)", fontSize: 13, marginBottom: 20 }}>No flights planned yet.</div>}
 
-          {flights.map((flight) => {
-            const route = flight.route ?? [];
-            const legs = computeRouteLegs(route);
-            const etas = computeWaypointEtas(route, legs, flight.takeoffTime);
+          {(() => {
+            let lastPackageId: string | undefined | null = null;
+            return orderedFlights.map((flight) => {
+              const route = flight.route ?? [];
+              const legs = computeRouteLegs(route);
+              const etas = computeWaypointEtas(route, legs, flight.takeoffTime);
+              const name = packageName(flight.packageId);
+              const showPackageHeader = name !== undefined && flight.packageId !== lastPackageId;
+              lastPackageId = flight.packageId;
 
-            return (
-              <div key={flight.id} style={{ marginBottom: 22, border: "1px solid var(--dfp-border)", borderRadius: "var(--dfp-radius-sm)" }}>
+              return (
+                <div key={flight.id}>
+                  {showPackageHeader && (
+                    <div className="dfp-label" style={{ margin: "10px 4px 4px" }}>
+                      Package: {name}
+                    </div>
+                  )}
+                  <div style={{ marginBottom: 22, border: "1px solid var(--dfp-border)", borderRadius: "var(--dfp-radius-sm)" }}>
                 <div
                   style={{
                     display: "flex",
@@ -225,9 +244,11 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                     </div>
                   </div>
                 )}
-              </div>
-            );
-          })}
+                  </div>
+                </div>
+              );
+            });
+          })()}
 
           {points.length > 0 && (
             <>

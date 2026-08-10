@@ -82,4 +82,6 @@ export interface Flight {
   pylonLoadout?: PylonSelection[];
   /** Whether this flight's marker/route is rendered on the map. Defaults to true (visible) when absent. */
   visible?: boolean;
+  /** References Package.id when this flight is grouped into a COMAO/package. */
+  packageId?: string;
 }

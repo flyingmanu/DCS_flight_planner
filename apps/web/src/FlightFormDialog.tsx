@@ -24,6 +24,7 @@ import {
   type Flight,
   type LatLon,
   type LoadoutPreset,
+  type Package,
   type PylonSelection,
   type SpeedType,
   type TaskType,
@@ -38,12 +39,14 @@ interface FlightFormDialogProps {
   airbases: Airbase[];
   flight: Flight;
   customAircraft: CustomAircraft[];
+  packages: Package[];
   onChange: (updated: Flight) => void;
   onSave: () => void;
   onDelete?: () => void;
   onCancel: () => void;
   onAddWaypointOnMap: () => void;
   onSavePreset: (customAircraftId: string, preset: LoadoutPreset) => void;
+  onCreatePackage: (name: string) => string;
   isNew: boolean;
 }
 
@@ -64,12 +67,14 @@ export function FlightFormDialog({
   airbases,
   flight,
   customAircraft,
+  packages,
   onChange,
   onSave,
   onDelete,
   onCancel,
   onAddWaypointOnMap,
   onSavePreset,
+  onCreatePackage,
   isNew,
 }: FlightFormDialogProps) {
   const sortedAirbases = [...airbases].sort((a, b) => a.name.localeCompare(b.name));
@@ -78,6 +83,7 @@ export function FlightFormDialog({
   const route = flight.route ?? [];
   const legs = computeRouteLegs(route);
   const [presetName, setPresetName] = useState("");
+  const [newPackageName, setNewPackageName] = useState("");
 
   const etas = computeWaypointEtas(route, legs, flight.takeoffTime);
 
@@ -306,6 +312,44 @@ export function FlightFormDialog({
             ))}
           </select>
         </Field>
+
+        <Field label="Package">
+          <select
+            className="dfp-select"
+            style={{ width: "100%" }}
+            value={flight.packageId ?? ""}
+            onChange={(e) => set("packageId", e.target.value || undefined)}
+          >
+            <option value="">— None —</option>
+            {packages.map((pkg) => (
+              <option key={pkg.id} value={pkg.id}>
+                {pkg.name}
+              </option>
+            ))}
+          </select>
+        </Field>
+        <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+          <input
+            type="text"
+            className="dfp-input"
+            style={{ flex: 1 }}
+            placeholder="New package name"
+            value={newPackageName}
+            onChange={(e) => setNewPackageName(e.target.value)}
+          />
+          <button
+            type="button"
+            className="dfp-btn"
+            disabled={!newPackageName.trim()}
+            onClick={() => {
+              const id = onCreatePackage(newPackageName.trim());
+              set("packageId", id);
+              setNewPackageName("");
+            }}
+          >
+            + New package
+          </button>
+        </div>
 
         <div className="dfp-label" style={{ marginTop: 4 }}>
           Airbases

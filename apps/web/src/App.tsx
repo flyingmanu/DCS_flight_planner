@@ -1,5 +1,5 @@
-import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Side, Theater } from "@dcs-flight-planner/core";
-import { DEFAULT_FLIGHT_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
+import type { Bullseye, CustomAircraft, Dmpi, Flight, LatLon, LoadoutPreset, Mission, MissionObject, Package, Side, Theater } from "@dcs-flight-planner/core";
+import { DEFAULT_FLIGHT_COLOR, DEFAULT_PACKAGE_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import { useEffect, useRef, useState } from "react";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
@@ -95,6 +95,7 @@ function App() {
   const [bullseyes, setBullseyes] = useState<Bullseye[]>([]);
   const [selectedBullseyeSide, setSelectedBullseyeSide] = useState<Side | null>(null);
   const selectedBullseye = bullseyes.find((b) => b.side === selectedBullseyeSide) ?? null;
+  const [packages, setPackages] = useState<Package[]>([]);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -114,6 +115,7 @@ function App() {
       objects,
       flights,
       bullseyes,
+      packages,
     };
     saveMission(mission);
     setMissions(listMissions());
@@ -128,6 +130,7 @@ function App() {
     setFlights([]);
     setBullseyes([]);
     setSelectedBullseyeSide(null);
+    setPackages([]);
   }
 
   function handleOpen(id: string) {
@@ -139,6 +142,7 @@ function App() {
     setFlights(mission.flights ?? []);
     setBullseyes(mission.bullseyes ?? []);
     setSelectedBullseyeSide(null);
+    setPackages(mission.packages ?? []);
     mapRef.current?.setView(mission.view);
   }
 
@@ -320,6 +324,13 @@ function App() {
     setCustomAircraft(listCustomAircraft());
   }
 
+  /** Quick-creates a package from the flight form and returns its id for immediate assignment. */
+  function handleCreatePackage(name: string): string {
+    const pkg: Package = { id: crypto.randomUUID(), name, color: DEFAULT_PACKAGE_COLOR };
+    setPackages((prev) => [...prev, pkg]);
+    return pkg.id;
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <header
@@ -438,6 +449,7 @@ function App() {
         <ObjectListDialog
           objects={objects}
           flights={flights}
+          packages={packages}
           onSelect={(id) => {
             setSelectedObjectId(id);
             setObjectListOpen(false);
@@ -461,6 +473,7 @@ function App() {
           flights={flights}
           customAircraft={customAircraft}
           objects={objects}
+          packages={packages}
           onClose={() => setOverviewOpen(false)}
         />
       )}
@@ -469,6 +482,7 @@ function App() {
           airbases={theater.airbases}
           flight={flightForm.flight}
           customAircraft={customAircraft}
+          packages={packages}
           isNew={flightForm.isNew}
           onChange={(flight) => setFlightForm((prev) => (prev ? { ...prev, flight } : prev))}
           onSave={handleFlightSave}
@@ -476,6 +490,7 @@ function App() {
           onCancel={() => setFlightForm(null)}
           onAddWaypointOnMap={() => setCreationRequest({ kind: "waypoint" })}
           onSavePreset={handleSavePreset}
+          onCreatePackage={handleCreatePackage}
         />
       )}
       {customAircraftForm && (

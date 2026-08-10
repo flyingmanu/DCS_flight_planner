@@ -7,11 +7,13 @@ import {
   TASK_TYPE_LABEL,
   type Flight,
   type MissionObject,
+  type Package,
 } from "@dcs-flight-planner/core";
 
 interface ObjectListDialogProps {
   objects: MissionObject[];
   flights: Flight[];
+  packages: Package[];
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onToggleVisible: (id: string) => void;
@@ -103,6 +105,7 @@ function ListRow({
 export function ObjectListDialog({
   objects,
   flights,
+  packages,
   onSelect,
   onDelete,
   onToggleVisible,
@@ -115,6 +118,7 @@ export function ObjectListDialog({
   const polygons = objects.filter((o) => o.type === "polygon");
   const labels = objects.filter((o) => o.type === "label");
   const total = objects.length + flights.length;
+  const ungroupedFlights = flights.filter((f) => !f.packageId || !packages.some((p) => p.id === f.packageId));
 
   return (
     <div
@@ -156,7 +160,42 @@ export function ObjectListDialog({
               <div className="dfp-label" style={{ margin: "8px 4px 2px" }}>
                 Flights
               </div>
-              {flights.map((flight) => (
+              {packages.map((pkg) => {
+                const pkgFlights = flights.filter((f) => f.packageId === pkg.id);
+                if (pkgFlights.length === 0) return null;
+                return (
+                  <div key={pkg.id} style={{ marginBottom: 4 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        color: "var(--dfp-text-muted)",
+                        margin: "4px 4px 2px",
+                      }}
+                    >
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: pkg.color ?? DEFAULT_FLIGHT_COLOR, flexShrink: 0 }} />
+                      {pkg.name}
+                    </div>
+                    {pkgFlights.map((flight) => (
+                      <ListRow
+                        key={flight.id}
+                        name={flight.name}
+                        label={[flight.aircraftType, TASK_TYPE_LABEL[flight.taskType]].filter(Boolean).join(" · ")}
+                        color={flight.color ?? DEFAULT_FLIGHT_COLOR}
+                        round={false}
+                        visible={flight.visible !== false}
+                        onSelect={() => onSelectFlight(flight.id)}
+                        onDelete={() => onDeleteFlight(flight.id)}
+                        onToggleVisible={() => onToggleFlightVisible(flight.id)}
+                      />
+                    ))}
+                  </div>
+                );
+              })}
+              {ungroupedFlights.map((flight) => (
                 <ListRow
                   key={flight.id}
                   name={flight.name}

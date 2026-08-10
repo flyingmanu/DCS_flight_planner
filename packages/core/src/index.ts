@@ -40,3 +40,5 @@ export { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirecti
 export type { OrbitDirectionArrow, OrbitTrackParams } from "./shapes.js";
 export { DEFAULT_BULLSEYE_COLOR, makeDefaultBullseye, SIDE_LABEL } from "./bullseye.js";
 export type { Bullseye, Side } from "./bullseye.js";
+export { DEFAULT_PACKAGE_COLOR } from "./packages.js";
+export type { Package } from "./packages.js";
