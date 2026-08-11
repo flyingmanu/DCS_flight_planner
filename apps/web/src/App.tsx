@@ -28,6 +28,7 @@ import {
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import nevada from "@dcs-flight-planner/core/data/nevada.json";
 import persianGulf from "@dcs-flight-planner/core/data/persian-gulf.json";
+import afghanistan from "@dcs-flight-planner/core/data/afghanistan.json";
 import iraq from "@dcs-flight-planner/core/data/iraq.json";
 import kola from "@dcs-flight-planner/core/data/kola.json";
 import marianas from "@dcs-flight-planner/core/data/marianas.json";
@@ -72,6 +73,7 @@ const THEATERS: Theater[] = [
   marianas as Theater,
   kola as Theater,
   iraq as Theater,
+  afghanistan as Theater,
 ];
 const UNTITLED = "Untitled";
 
