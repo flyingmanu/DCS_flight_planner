@@ -3,6 +3,7 @@ import type {
   CustomAircraft,
   Dmpi,
   Flight,
+  GlobalAirport,
   LatLon,
   LoadoutPreset,
   Mission,
@@ -12,11 +13,20 @@ import type {
   MissionWeather,
   Package,
   Side,
+  SimTarget,
   Theater,
 } from "@dcs-flight-planner/core";
-import { DEFAULT_FLIGHT_COLOR, DEFAULT_PACKAGE_COLOR, makeDefaultBullseye, metersToFeet, POINT_KIND_LABEL } from "@dcs-flight-planner/core";
+import {
+  DEFAULT_FLIGHT_COLOR,
+  DEFAULT_PACKAGE_COLOR,
+  isWithinBoundingBox,
+  makeDefaultBullseye,
+  metersToFeet,
+  POINT_KIND_LABEL,
+  theaterBoundingBox,
+} from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BriefingDialog } from "./BriefingDialog";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
@@ -24,6 +34,7 @@ import { CustomAircraftEditor } from "./CustomAircraftEditor";
 import { CustomAircraftMenu } from "./CustomAircraftMenu";
 import { deleteCustomAircraft, listCustomAircraft, saveCustomAircraft } from "./customAircraftStore";
 import { getElevationAt } from "./elevation";
+import { loadGlobalAirports } from "./globalAirportsLoader";
 import { deleteMission, listMissions, saveMission } from "./missionStore";
 import { FileMenu } from "./FileMenu";
 import { FlightFormDialog } from "./FlightFormDialog";
@@ -35,12 +46,20 @@ import { ObjectEditPanel } from "./ObjectEditPanel";
 import { ObjectListDialog } from "./ObjectListDialog";
 import { ObjectMenu } from "./ObjectMenu";
 import { PromptDialog } from "./PromptDialog";
+import { ReferenceLayerMenu } from "./ReferenceLayerMenu";
 import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
 import { translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import type { CreationRequest, ObjectDraft } from "./placement";
 
 const theater = caucasus as Theater;
 const UNTITLED = "Untitled";
+
+/** Curated theaters available per target sim - the source of truth this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
+const THEATERS_BY_SIM: Record<SimTarget, { id: string; name: string; theater: Theater }[]> = {
+  dcs: [{ id: theater.id, name: theater.name, theater }],
+  bms: [],
+  fs: [],
+};
 
 /** ObjectDraft narrowed to the kinds that become a MissionObject (waypoints and bullseyes are routed elsewhere). */
 type PlaceableObjectDraft = Exclude<ObjectDraft, { type: "waypoint" } | { type: "bullseye" }>;
@@ -123,6 +142,25 @@ function App() {
   const [missionDate, setMissionDate] = useState<MissionDate | undefined>(undefined);
   const [missionWeather, setMissionWeather] = useState<MissionWeather | undefined>(undefined);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [showGlobalAirports, setShowGlobalAirports] = useState(false);
+  const [simTarget, setSimTarget] = useState<SimTarget>("dcs");
+  const [referenceTheaterId, setReferenceTheaterId] = useState<string | null>(theater.id);
+  const [allGlobalAirports, setAllGlobalAirports] = useState<GlobalAirport[]>([]);
+
+  useEffect(() => {
+    if (!showGlobalAirports || allGlobalAirports.length > 0) return;
+    loadGlobalAirports()
+      .then(setAllGlobalAirports)
+      .catch((err: unknown) => console.error("Failed to load OurAirports reference data", err));
+  }, [showGlobalAirports, allGlobalAirports.length]);
+
+  const visibleGlobalAirports = useMemo(() => {
+    if (!showGlobalAirports || allGlobalAirports.length === 0) return [];
+    const referenceTheater = THEATERS_BY_SIM[simTarget].find((t) => t.id === referenceTheaterId)?.theater;
+    if (!referenceTheater) return allGlobalAirports;
+    const box = theaterBoundingBox(referenceTheater);
+    return allGlobalAirports.filter((a) => !isWithinBoundingBox({ lat: a.lat, lon: a.lon }, box));
+  }, [showGlobalAirports, allGlobalAirports, simTarget, referenceTheaterId]);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -423,6 +461,18 @@ function App() {
           >
             🧴 Glue
           </button>
+          <ReferenceLayerMenu
+            showGlobalAirports={showGlobalAirports}
+            onToggleShowGlobalAirports={() => setShowGlobalAirports((v) => !v)}
+            simTarget={simTarget}
+            onChangeSimTarget={(sim) => {
+              setSimTarget(sim);
+              setReferenceTheaterId(THEATERS_BY_SIM[sim][0]?.id ?? null);
+            }}
+            theaterId={referenceTheaterId}
+            onChangeTheaterId={setReferenceTheaterId}
+            availableTheaters={THEATERS_BY_SIM[simTarget].map((t) => ({ id: t.id, name: t.name }))}
+          />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
@@ -447,6 +497,7 @@ function App() {
           objects={visibleObjects}
           flights={visibleFlights}
           bullseyes={bullseyes}
+          globalAirports={visibleGlobalAirports}
           editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
           snapEnabled={snapEnabled}

@@ -1,4 +1,16 @@
-import type { Bullseye, Flight, LabelObject, LatLon, LineObject, MapView, MissionObject, PolygonObject, Side, Theater } from "@dcs-flight-planner/core";
+import type {
+  Bullseye,
+  Flight,
+  GlobalAirport,
+  LabelObject,
+  LatLon,
+  LineObject,
+  MapView,
+  MissionObject,
+  PolygonObject,
+  Side,
+  Theater,
+} from "@dcs-flight-planner/core";
 import {
   bullseyeRingRadiiNm,
   bullseyeSpokeEndpoints,
@@ -42,6 +54,8 @@ const EDITING_ROUTE_LINE_SOURCE_ID = "editing-route-line";
 const EDITING_ROUTE_LINE_LAYER_ID = "editing-route-line-layer";
 const BULLSEYE_LINES_SOURCE_ID = "bullseye-lines";
 const BULLSEYE_LINES_LAYER_ID = "bullseye-lines-layer";
+const GLOBAL_AIRPORTS_SOURCE_ID = "global-airports";
+const GLOBAL_AIRPORTS_LAYER_ID = "global-airports-layer";
 
 const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
@@ -100,6 +114,27 @@ function popupHtml(airbase: Theater["airbases"][number]): string {
     HF ${airbase.radio.hfMhz} · VHF-L ${airbase.radio.vhfLowMhz} · VHF-H ${airbase.radio.vhfHighMhz} · UHF ${airbase.radio.uhfMhz}<br />
     TACAN ${airbase.tacanChannel}<br />
     ${runways || "Runway unknown"}
+  `;
+}
+
+function globalAirportsFeatureCollection(list: GlobalAirport[]): GeoJSON.FeatureCollection {
+  return {
+    type: "FeatureCollection",
+    features: list.map((a) => ({
+      type: "Feature",
+      properties: { name: a.name, type: a.type, country: a.country, icao: a.icao, iata: a.iata },
+      geometry: { type: "Point", coordinates: [a.lon, a.lat] },
+    })),
+  };
+}
+
+function globalAirportPopupHtml(props: GeoJSON.GeoJsonProperties): string {
+  const name = String(props?.name ?? "Unknown airport");
+  const code = props?.icao || props?.iata;
+  const country = props?.country ? String(props.country) : "";
+  return `
+    <strong>${name}</strong>${code ? ` (${code})` : ""}<br />
+    ${country}
   `;
 }
 
@@ -315,6 +350,8 @@ interface TheaterMapProps {
   objects: MissionObject[];
   flights: Flight[];
   bullseyes?: Bullseye[];
+  /** Worldwide reference airports (OurAirports) to show as a background layer, already filtered by the caller (e.g. masked to a theater's bounding box). */
+  globalAirports?: GlobalAirport[];
   /** The flight currently open in the editor, if any - its route is drawn live on the map. */
   editingFlight?: Flight | null;
   creationRequest: CreationRequest | null;
@@ -401,6 +438,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     objects,
     flights,
     bullseyes = [],
+    globalAirports = [],
     editingFlight,
     creationRequest,
     snapEnabled = false,
@@ -533,6 +571,57 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       onHoverRef.current?.(null);
     };
   }, [theater]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    function renderGlobalAirports() {
+      if (!map) return;
+      const data = globalAirportsFeatureCollection(globalAirports);
+      const source = map.getSource(GLOBAL_AIRPORTS_SOURCE_ID) as maplibregl.GeoJSONSource | undefined;
+
+      if (source) {
+        source.setData(data);
+        return;
+      }
+
+      map.addSource(GLOBAL_AIRPORTS_SOURCE_ID, { type: "geojson", data });
+      map.addLayer({
+        id: GLOBAL_AIRPORTS_LAYER_ID,
+        type: "circle",
+        source: GLOBAL_AIRPORTS_SOURCE_ID,
+        paint: {
+          "circle-radius": ["case", ["==", ["get", "type"], "large"], 4, 3],
+          "circle-color": "#7a8699",
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+          "circle-opacity": 0.75,
+        },
+      });
+
+      map.on("mouseenter", GLOBAL_AIRPORTS_LAYER_ID, () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", GLOBAL_AIRPORTS_LAYER_ID, () => {
+        map.getCanvas().style.cursor = "";
+      });
+      map.on("click", GLOBAL_AIRPORTS_LAYER_ID, (e) => {
+        const feature = e.features?.[0];
+        if (!feature || feature.geometry.type !== "Point") return;
+        const lngLat: [number, number] = [feature.geometry.coordinates[0] ?? 0, feature.geometry.coordinates[1] ?? 0];
+        new maplibregl.Popup({ offset: 8 }).setLngLat(lngLat).setHTML(globalAirportPopupHtml(feature.properties)).addTo(map);
+      });
+    }
+
+    // Reference layer - rendered once early so mission-object layers (added
+    // by later effects) draw on top of it, not the other way around.
+    if (map.getSource(GLOBAL_AIRPORTS_SOURCE_ID) || map.isStyleLoaded()) {
+      renderGlobalAirports();
+    } else {
+      map.once("load", renderGlobalAirports);
+    }
+  }, [globalAirports]);
 
   useEffect(() => {
     const map = mapRef.current;

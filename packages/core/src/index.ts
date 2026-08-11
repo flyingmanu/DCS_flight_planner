@@ -45,3 +45,5 @@ export { DEFAULT_PACKAGE_COLOR } from "./packages.js";
 export type { Package } from "./packages.js";
 export { latLonToMissionXY, missionXYToLatLon, THEATER_PROJECTIONS } from "./theaterProjection.js";
 export type { TheaterProjectionParams } from "./theaterProjection.js";
+export { isWithinBoundingBox, SIM_TARGET_LABEL, theaterBoundingBox } from "./globalAirports.js";
+export type { BoundingBox, GlobalAirport, SimTarget } from "./globalAirports.js";
