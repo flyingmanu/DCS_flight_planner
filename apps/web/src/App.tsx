@@ -83,13 +83,6 @@ const THEATERS: Theater[] = [
 ];
 const UNTITLED = "Untitled";
 
-/** Curated theaters available per target sim - the source of truth this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
-const THEATERS_BY_SIM: Record<SimTarget, { id: string; name: string; theater: Theater }[]> = {
-  dcs: THEATERS.map((t) => ({ id: t.id, name: t.name, theater: t })),
-  bms: [],
-  fs: [],
-};
-
 /** ObjectDraft narrowed to the kinds that become a MissionObject (waypoints and bullseyes are routed elsewhere). */
 type PlaceableObjectDraft = Exclude<ObjectDraft, { type: "waypoint" } | { type: "bullseye" }>;
 
@@ -173,25 +166,26 @@ function App() {
   const [missionDate, setMissionDate] = useState<MissionDate | undefined>(undefined);
   const [missionWeather, setMissionWeather] = useState<MissionWeather | undefined>(undefined);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [showGlobalAirports, setShowGlobalAirports] = useState(false);
   const [simTarget, setSimTarget] = useState<SimTarget>("dcs");
-  const [referenceTheaterId, setReferenceTheaterId] = useState<string | null>(theater.id);
   const [allGlobalAirports, setAllGlobalAirports] = useState<GlobalAirport[]>([]);
 
+  // World airports are always shown; the active sim's curated theater (when
+  // it has one) masks out only the world entries it overrides within its own
+  // footprint, so DCS-specific data always wins where it exists.
   useEffect(() => {
-    if (!showGlobalAirports || allGlobalAirports.length > 0) return;
+    if (allGlobalAirports.length > 0) return;
     loadGlobalAirports()
       .then(setAllGlobalAirports)
       .catch((err: unknown) => console.error("Failed to load OurAirports reference data", err));
-  }, [showGlobalAirports, allGlobalAirports.length]);
+  }, [allGlobalAirports.length]);
 
   const visibleGlobalAirports = useMemo(() => {
-    if (!showGlobalAirports || allGlobalAirports.length === 0) return [];
-    const referenceTheater = THEATERS_BY_SIM[simTarget].find((t) => t.id === referenceTheaterId)?.theater;
-    if (!referenceTheater) return allGlobalAirports;
-    const box = theaterBoundingBox(referenceTheater);
+    if (allGlobalAirports.length === 0) return [];
+    const curatedTheater = simTarget === "dcs" ? theater : null;
+    if (!curatedTheater) return allGlobalAirports;
+    const box = theaterBoundingBox(curatedTheater);
     return allGlobalAirports.filter((a) => !isWithinBoundingBox({ lat: a.lat, lon: a.lon }, box));
-  }, [showGlobalAirports, allGlobalAirports, simTarget, referenceTheaterId]);
+  }, [allGlobalAirports, simTarget, theater]);
 
   useEffect(() => {
     setMissions(listMissions());
@@ -515,18 +509,7 @@ function App() {
           <ObjectMenu onRequestCreation={setCreationRequest} />
           <FlightMenu flights={flights} onNewFlight={handleNewFlight} onEditFlight={handleEditFlight} />
           <CustomAircraftMenu customAircraft={customAircraft} onNew={handleNewCustomAircraft} onEdit={handleEditCustomAircraft} />
-          <ReferenceLayerMenu
-            showGlobalAirports={showGlobalAirports}
-            onToggleShowGlobalAirports={() => setShowGlobalAirports((v) => !v)}
-            simTarget={simTarget}
-            onChangeSimTarget={(sim) => {
-              setSimTarget(sim);
-              setReferenceTheaterId(THEATERS_BY_SIM[sim][0]?.id ?? null);
-            }}
-            theaterId={referenceTheaterId}
-            onChangeTheaterId={setReferenceTheaterId}
-            availableTheaters={THEATERS_BY_SIM[simTarget].map((t) => ({ id: t.id, name: t.name }))}
-          />
+          <ReferenceLayerMenu simTarget={simTarget} onChangeSimTarget={setSimTarget} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>

@@ -4,30 +4,18 @@ import { menuPanelClassName } from "./menuStyles";
 
 const SIM_TARGETS: SimTarget[] = ["dcs", "bms", "fs"];
 
-interface TheaterOption {
-  id: string;
-  name: string;
-}
-
 interface ReferenceLayerMenuProps {
-  showGlobalAirports: boolean;
-  onToggleShowGlobalAirports: () => void;
   simTarget: SimTarget;
   onChangeSimTarget: (sim: SimTarget) => void;
-  theaterId: string | null;
-  onChangeTheaterId: (id: string | null) => void;
-  availableTheaters: TheaterOption[];
 }
 
-export function ReferenceLayerMenu({
-  showGlobalAirports,
-  onToggleShowGlobalAirports,
-  simTarget,
-  onChangeSimTarget,
-  theaterId,
-  onChangeTheaterId,
-  availableTheaters,
-}: ReferenceLayerMenuProps) {
+/**
+ * World airports (OurAirports) are always shown as a background layer; the
+ * active curated theater for the selected sim (when it has one) masks out
+ * only the world entries it overrides within its own footprint. This menu
+ * just lets the target sim be picked ahead of future BMS/MSFS support.
+ */
+export function ReferenceLayerMenu({ simTarget, onChangeSimTarget }: ReferenceLayerMenuProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,7 +25,7 @@ export function ReferenceLayerMenu({
         className="dfp-btn dfp-btn-onnavy"
         data-open={open}
         onClick={() => setOpen((o) => !o)}
-        title="World airports reference layer (OurAirports) and target sim/theater"
+        title="World airports reference layer (OurAirports) target sim"
       >
         🌐 Reference
       </button>
@@ -47,19 +35,18 @@ export function ReferenceLayerMenu({
           <div onClick={() => setOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 10 }} />
           <div
             className={menuPanelClassName}
-            style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 11, minWidth: 260, padding: 10 }}
+            style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 11, minWidth: 240, padding: 10 }}
           >
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, padding: "4px 2px", cursor: "pointer" }}>
-              <input type="checkbox" checked={showGlobalAirports} onChange={onToggleShowGlobalAirports} />
-              World airports (OurAirports)
-            </label>
-
-            <div className="dfp-label" style={{ margin: "10px 2px 2px" }}>
+            <div style={{ fontSize: 12, padding: "2px 2px 8px" }}>
+              World airports (OurAirports) are always shown on the map. The active DCS theater's own data overrides
+              the world layer within its area.
+            </div>
+            <div className="dfp-label" style={{ margin: "4px 2px 2px" }}>
               Target sim
             </div>
             <select
               className="dfp-select"
-              style={{ width: "100%", marginBottom: 8 }}
+              style={{ width: "100%" }}
               value={simTarget}
               onChange={(e) => onChangeSimTarget(e.target.value as SimTarget)}
             >
@@ -69,35 +56,6 @@ export function ReferenceLayerMenu({
                 </option>
               ))}
             </select>
-
-            <div className="dfp-label" style={{ margin: "4px 2px 2px" }}>
-              World layer region (doesn't switch the map)
-            </div>
-            <select
-              className="dfp-select"
-              style={{ width: "100%" }}
-              value={theaterId ?? ""}
-              disabled={availableTheaters.length === 0}
-              onChange={(e) => onChangeTheaterId(e.target.value || null)}
-            >
-              <option value="">— None —</option>
-              {availableTheaters.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-            {availableTheaters.length === 0 && (
-              <div style={{ fontSize: 11.5, color: "var(--dfp-text-muted)", marginTop: 4 }}>
-                No curated theater yet for {SIM_TARGET_LABEL[simTarget]} — the world layer shows everywhere.
-              </div>
-            )}
-            {availableTheaters.length > 0 && (
-              <div style={{ fontSize: 11.5, color: "var(--dfp-text-muted)", marginTop: 4 }}>
-                Only masks the World airports overlay above to this region. To switch the active map, use the theater
-                selector next to the app title.
-              </div>
-            )}
           </div>
         </>
       )}
