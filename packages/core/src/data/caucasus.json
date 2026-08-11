@@ -53,7 +53,7 @@
           ],
           "lengthM": 2070.3959960938,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "110.30 / N/A"
         }
       ],
       "tacanChannel": "16X",
@@ -84,7 +84,7 @@
           ],
           "lengthM": 2842.931640625,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.50"
+          "ilsFrequencyMhz": "110.50 / N/A"
         }
       ],
       "tacanChannel": "N/A",
@@ -178,7 +178,7 @@
           ],
           "lengthM": 2257.6027832031,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.50"
+          "ilsFrequencyMhz": "111.50 / N/A"
         }
       ],
       "tacanChannel": "67X",
@@ -307,7 +307,7 @@
           ],
           "lengthM": 2419.0322265625,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.75"
+          "ilsFrequencyMhz": "109.75 / N/A"
         }
       ],
       "tacanChannel": "44X",
@@ -437,7 +437,7 @@
           ],
           "lengthM": 2048.4140625,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.50"
+          "ilsFrequencyMhz": "N/A / 110.50"
         }
       ],
       "tacanChannel": "N/A",
@@ -499,7 +499,7 @@
           ],
           "lengthM": 2211.6474609375,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.90"
+          "ilsFrequencyMhz": "108.90 / N/A"
         }
       ],
       "tacanChannel": "31X",
@@ -530,7 +530,7 @@
           ],
           "lengthM": 2952.4521484375,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.10"
+          "ilsFrequencyMhz": "111.10 / N/A"
         }
       ],
       "tacanChannel": "N/A",
@@ -655,7 +655,7 @@
           ],
           "lengthM": 2390.5002441406,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.75"
+          "ilsFrequencyMhz": "108.75 / 108.75"
         }
       ],
       "tacanChannel": "22X",

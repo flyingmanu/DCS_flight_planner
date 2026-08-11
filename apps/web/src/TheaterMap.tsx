@@ -31,7 +31,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { flightMarkerElement } from "./aircraftIcons";
 import { getElevationAt } from "./elevation";
-import { addHillshadeLayer, ensureOrbitArrowImage, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
+import { addHillshadeLayer, ensureOrbitArrowImage, GlueControl, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
 import { lineMidpoint, orbitArrow, polygonCentroid, polygonRing, translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
 import { setupPlacement, snapToNearestCandidate, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
@@ -103,11 +103,23 @@ function airportMarkerElement(airbase: Theater["airbases"][number]): HTMLElement
   return el;
 }
 
+// Runway.ilsFrequencyMhz is either a bare value ("110.30", source didn't say
+// which end) or "<end1> / <end2>" matching designators order, with "N/A" for
+// an unserved end. Render the latter as "RWY13 N/A · RWY31 110.50" so the
+// popup never shows a frequency without saying which approach it serves.
+function formatIls(rw: Theater["airbases"][number]["runways"][number]): string {
+  // The " / " (with spaces) separates the two ends; a bare "N/A" value has no
+  // spaces around its own "/", so this never misfires on the no-ILS sentinel.
+  if (!rw.ilsFrequencyMhz.includes(" / ")) return `ILS ${rw.ilsFrequencyMhz}`;
+  const [end1, end2] = rw.ilsFrequencyMhz.split(" / ");
+  return `ILS RWY${rw.designators[0]} ${end1} · RWY${rw.designators[1]} ${end2}`;
+}
+
 function popupHtml(airbase: Theater["airbases"][number]): string {
   const runways = airbase.runways
     .map(
       (rw) =>
-        `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m — ILS ${rw.ilsFrequencyMhz}` +
+        `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m — ${formatIls(rw)}` +
         (rw.prmgChannel ? ` — PRMG ${rw.prmgChannel}` : ""),
     )
     .join("<br />");
@@ -369,6 +381,8 @@ interface TheaterMapProps {
   creationRequest: CreationRequest | null;
   /** "Glue": when true, a placement click near an existing point snaps to its exact coordinates. */
   snapEnabled?: boolean;
+  /** Called when the map's Glue control is clicked; the caller owns the actual snapEnabled state. */
+  onToggleSnap?: () => void;
   onDraftComplete: (draft: ObjectDraft) => void;
   onCreationCancel: () => void;
   onSelectObject?: (id: string) => void;
@@ -454,6 +468,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     editingFlight,
     creationRequest,
     snapEnabled = false,
+    onToggleSnap,
     onDraftComplete,
     onCreationCancel,
     onSelectObject,
@@ -493,6 +508,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onMoveWaypointRef.current = onMoveWaypoint;
   const onMoveBullseyeRef = useRef(onMoveBullseye);
   onMoveBullseyeRef.current = onMoveBullseye;
+  const onToggleSnapRef = useRef(onToggleSnap);
+  onToggleSnapRef.current = onToggleSnap;
   const onMoveLabelRef = useRef(onMoveLabel);
   onMoveLabelRef.current = onMoveLabel;
   const polygonsRef = useRef<PolygonObject[]>([]);
@@ -531,6 +548,12 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       ensureOrbitArrowImage(map);
       map.addControl(new ReliefControl(), "top-left");
       map.addControl(new MeasureControl(), "top-left");
+      map.addControl(
+        new GlueControl(snapEnabledRef.current, (active) => {
+          if (active !== snapEnabledRef.current) onToggleSnapRef.current?.();
+        }),
+        "top-left",
+      );
 
       map.addSource(EDITING_ROUTE_LINE_SOURCE_ID, { type: "geojson", data: { type: "FeatureCollection", features: [] } });
       map.addLayer({

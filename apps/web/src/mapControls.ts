@@ -102,6 +102,41 @@ export class ReliefControl implements maplibregl.IControl {
   }
 }
 
+/**
+ * Toggle button that turns "glue" (snap-to-nearby-point) on/off. The button
+ * owns its own visual active state (like Relief/Measure above); clicks call
+ * back into React, which owns the actual snapEnabled state.
+ */
+export class GlueControl implements maplibregl.IControl {
+  private container!: HTMLDivElement;
+  private button!: HTMLButtonElement;
+  private active: boolean;
+  private readonly onToggle: (active: boolean) => void;
+
+  constructor(initialActive: boolean, onToggle: (active: boolean) => void) {
+    this.active = initialActive;
+    this.onToggle = onToggle;
+  }
+
+  onAdd(): HTMLElement {
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this.button = controlButton("🧴", "Glue: snap new points/waypoints/zones to nearby existing points");
+    setButtonActive(this.button, this.active);
+    this.button.addEventListener("click", () => {
+      this.active = !this.active;
+      setButtonActive(this.button, this.active);
+      this.onToggle(this.active);
+    });
+    this.container.appendChild(this.button);
+    return this.container;
+  }
+
+  onRemove(): void {
+    this.container.remove();
+  }
+}
+
 const MEASURE_LINE_SOURCE_ID = "measure-line";
 const MEASURE_LINE_LAYER_ID = "measure-line-layer";
 

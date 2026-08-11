@@ -15,8 +15,11 @@ export interface Runway {
   widthM: number;
   /**
    * ILS frequency in MHz, e.g. "110.30", or "N/A" when the runway has none.
-   * When each end has its own ILS on a different frequency, formatted as
-   * "<end1 freq> / <end2 freq>" (order matches `designators`).
+   * When only one end is served, or both ends have their own (possibly
+   * identical) ILS, formatted as "<end1 freq> / <end2 freq>" (order matches
+   * `designators`), using "N/A" for an unserved end - e.g. "110.30 / N/A"
+   * means only the first designator's approach has an ILS. A bare value with
+   * no "/" means the source didn't specify which end it serves.
    */
   ilsFrequencyMhz: string;
   /** PRMG (Russian precision approach system) channel, when this runway end uses PRMG instead of/alongside ILS. */

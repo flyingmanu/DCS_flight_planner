@@ -515,16 +515,6 @@ function App() {
           <ObjectMenu onRequestCreation={setCreationRequest} />
           <FlightMenu flights={flights} onNewFlight={handleNewFlight} onEditFlight={handleEditFlight} />
           <CustomAircraftMenu customAircraft={customAircraft} onNew={handleNewCustomAircraft} onEdit={handleEditCustomAircraft} />
-          <button
-            type="button"
-            className="dfp-btn dfp-btn-onnavy"
-            data-open={snapEnabled}
-            onClick={() => setSnapEnabled((v) => !v)}
-            title="Glue: snap new points/waypoints/zones to nearby existing points"
-            aria-pressed={snapEnabled}
-          >
-            🧴 Glue
-          </button>
           <ReferenceLayerMenu
             showGlobalAirports={showGlobalAirports}
             onToggleShowGlobalAirports={() => setShowGlobalAirports((v) => !v)}
@@ -565,6 +555,7 @@ function App() {
           editingFlight={flightForm?.flight ?? null}
           creationRequest={creationRequest}
           snapEnabled={snapEnabled}
+          onToggleSnap={() => setSnapEnabled((v) => !v)}
           onDraftComplete={(draft) => {
             setCreationRequest(null);
             if (draft.type === "waypoint") {

@@ -71,7 +71,7 @@ export function ReferenceLayerMenu({
             </select>
 
             <div className="dfp-label" style={{ margin: "4px 2px 2px" }}>
-              Target theater
+              World layer region (doesn't switch the map)
             </div>
             <select
               className="dfp-select"
@@ -94,7 +94,8 @@ export function ReferenceLayerMenu({
             )}
             {availableTheaters.length > 0 && (
               <div style={{ fontSize: 11.5, color: "var(--dfp-text-muted)", marginTop: 4 }}>
-                The selected theater's own data overrides the world layer within its area.
+                Only masks the World airports overlay above to this region. To switch the active map, use the theater
+                selector next to the app title.
               </div>
             )}
           </div>
