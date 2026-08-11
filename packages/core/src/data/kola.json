@@ -84,7 +84,7 @@
           ],
           "lengthM": 1676.4,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.90"
+          "ilsFrequencyMhz": "108.90 / N/A"
         }
       ],
       "radio": {
@@ -179,7 +179,7 @@
           ],
           "lengthM": 2499.4,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.30"
+          "ilsFrequencyMhz": "N/A / 108.30"
         }
       ],
       "radio": {
@@ -306,7 +306,7 @@
           ],
           "lengthM": 1920.2,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.30"
+          "ilsFrequencyMhz": "N/A / 111.30"
         }
       ],
       "radio": {
@@ -337,7 +337,7 @@
           ],
           "lengthM": 2560.3,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.90"
+          "ilsFrequencyMhz": "108.90 / N/A"
         }
       ],
       "radio": {
@@ -668,7 +668,7 @@
           ],
           "lengthM": 1859.3,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "N/A / 110.30"
         }
       ],
       "radio": {
@@ -700,7 +700,7 @@
           ],
           "lengthM": 2438.4,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "N/A / 110.30"
         }
       ],
       "radio": {
@@ -732,7 +732,7 @@
           ],
           "lengthM": 2407.9,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.90"
+          "ilsFrequencyMhz": "N/A / 111.90"
         }
       ],
       "radio": {
@@ -794,7 +794,7 @@
           ],
           "lengthM": 2377.4,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "110.30 / N/A"
         }
       ],
       "radio": {
@@ -980,7 +980,7 @@
           ],
           "lengthM": 2895.6,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.70"
+          "ilsFrequencyMhz": "N/A / 111.70"
         }
       ],
       "radio": {
@@ -1105,7 +1105,7 @@
           ],
           "lengthM": 2133.6,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.50"
+          "ilsFrequencyMhz": "N/A / 109.50"
         }
       ],
       "radio": {
