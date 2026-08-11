@@ -53,7 +53,7 @@
           ],
           "lengthM": 2682.2,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.70"
+          "ilsFrequencyMhz": "108.70 / N/A"
         }
       ],
       "radio": {
@@ -85,7 +85,7 @@
           ],
           "lengthM": 2682.2,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.70"
+          "ilsFrequencyMhz": "N/A / 109.70"
         }
       ],
       "radio": {
@@ -272,7 +272,7 @@
           ],
           "lengthM": 2712.7,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.10"
+          "ilsFrequencyMhz": "109.10 / N/A"
         }
       ],
       "radio": {
@@ -304,7 +304,7 @@
           ],
           "lengthM": 2133.6,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.70"
+          "ilsFrequencyMhz": "110.70 / N/A"
         },
         {
           "id": "16/34",
@@ -314,7 +314,7 @@
           ],
           "lengthM": 3139.4,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.10"
+          "ilsFrequencyMhz": "110.10 / N/A"
         },
         {
           "id": "17/35",
@@ -324,7 +324,7 @@
           ],
           "lengthM": 2316.5,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.50"
+          "ilsFrequencyMhz": "109.50 / N/A"
         }
       ],
       "radio": {
@@ -356,7 +356,7 @@
           ],
           "lengthM": 2682.2,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.70"
+          "ilsFrequencyMhz": "N/A / 109.70"
         },
         {
           "id": "08/26",
@@ -482,7 +482,7 @@
           ],
           "lengthM": 2651.8,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.30"
+          "ilsFrequencyMhz": "N/A / 108.30"
         }
       ],
       "radio": {
@@ -546,7 +546,7 @@
           ],
           "lengthM": 2773.7,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.10"
+          "ilsFrequencyMhz": "N/A / 109.10"
         }
       ],
       "radio": {
@@ -578,7 +578,7 @@
           ],
           "lengthM": 2286.0,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.50"
+          "ilsFrequencyMhz": "108.50 / N/A"
         }
       ],
       "radio": {
@@ -838,7 +838,7 @@
           ],
           "lengthM": 2926.1,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.90"
+          "ilsFrequencyMhz": "108.90 / N/A"
         }
       ],
       "radio": {
@@ -870,7 +870,7 @@
           ],
           "lengthM": 2316.5,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.50"
+          "ilsFrequencyMhz": "108.50 / N/A"
         },
         {
           "id": "11L/29L",
@@ -1076,7 +1076,7 @@
           ],
           "lengthM": 2011.7,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.10"
+          "ilsFrequencyMhz": "N/A / 109.10"
         }
       ],
       "radio": {
@@ -1262,7 +1262,7 @@
           ],
           "lengthM": 2682.2,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "N/A / 110.30"
         }
       ],
       "radio": {
@@ -1397,7 +1397,7 @@
           ],
           "lengthM": 3169.9,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.50"
+          "ilsFrequencyMhz": "N/A / 109.50"
         }
       ],
       "radio": {
@@ -1522,7 +1522,7 @@
           ],
           "lengthM": 2651.8,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.70"
+          "ilsFrequencyMhz": "N/A / 109.70"
         },
         {
           "id": "13/31",
@@ -1656,7 +1656,7 @@
           ],
           "lengthM": 2621.3,
           "widthM": 60,
-          "ilsFrequencyMhz": "108.90"
+          "ilsFrequencyMhz": "N/A / 108.90"
         }
       ],
       "radio": {
@@ -1719,7 +1719,7 @@
           ],
           "lengthM": 2895.6,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.70"
+          "ilsFrequencyMhz": "N/A / 111.70"
         }
       ],
       "radio": {
@@ -1802,7 +1802,7 @@
           ],
           "lengthM": 2347.0,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.10"
+          "ilsFrequencyMhz": "N/A / 111.10"
         }
       ],
       "radio": {
@@ -1969,7 +1969,7 @@
           ],
           "lengthM": 3931.9,
           "widthM": 60,
-          "ilsFrequencyMhz": "111.90"
+          "ilsFrequencyMhz": "111.90 / N/A"
         }
       ],
       "radio": {
@@ -2186,7 +2186,7 @@
           ],
           "lengthM": 2316.5,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.10"
+          "ilsFrequencyMhz": "N/A / 109.10"
         }
       ],
       "radio": {
