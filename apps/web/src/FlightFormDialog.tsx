@@ -360,7 +360,7 @@ export function FlightFormDialog({
           <Field label="Alternate">{airbaseSelect(flight.alternateAirbaseId, "alternateAirbaseId")}</Field>
         </Row>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>
+        <Row>
           <Field label="Takeoff time">
             <input
               type="text"
@@ -388,6 +388,9 @@ export function FlightFormDialog({
               onChange={(e) => set("radioFrequencyMhz", e.target.value)}
             />
           </Field>
+        </Row>
+
+        <Row>
           <Field label="Internal (MHz)">
             <input
               type="text"
@@ -397,19 +400,17 @@ export function FlightFormDialog({
               onChange={(e) => set("internalFrequencyMhz", e.target.value)}
             />
           </Field>
-        </div>
-
-        <Row>
           <Field label="IFF Mode 1">
             <input type="text" className="dfp-input dfp-input-mono" value={flight.iffMode1 ?? ""} onChange={(e) => set("iffMode1", e.target.value)} />
           </Field>
           <Field label="IFF Mode 3">
             <input type="text" className="dfp-input dfp-input-mono" value={flight.iffMode3 ?? ""} onChange={(e) => set("iffMode3", e.target.value)} />
           </Field>
-          <Field label="Color">
-            <ColorField value={flight.color ?? DEFAULT_FLIGHT_COLOR} onChange={(color) => set("color", color)} />
-          </Field>
         </Row>
+
+        <Field label="Color">
+          <ColorField value={flight.color ?? DEFAULT_FLIGHT_COLOR} onChange={(color) => set("color", color)} />
+        </Field>
 
         <Field label="Notes">
           <textarea
