@@ -3,15 +3,129 @@
   "name": "Marianas",
   "airbases": [
     {
-      "id": "agana",
-      "name": "Agana",
-      "callsign": "Agana",
+      "id": "andersen-afb",
+      "name": "Andersen AFB",
+      "callsign": "Andersen AFB",
       "category": "airdrome",
       "initialCoalition": 0,
       "position": {
-        "lat": 13.482764,
-        "lon": 144.78955,
-        "altM": 79
+        "lat": 13.581917,
+        "lon": 144.931073,
+        "altM": 185
+      },
+      "runways": [
+        {
+          "id": "06L/24R",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 3139.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.30 / 109.35"
+        },
+        {
+          "id": "06R/24L",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 3322.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.10 / 110.15"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.850",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "126.200",
+        "uhfMhz": "250.100"
+      },
+      "tacanChannel": "54X"
+    },
+    {
+      "id": "antonio-bwp",
+      "name": "Antonio B. Won Pat",
+      "callsign": "Antonio B. Won Pat",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 13.484746,
+        "lon": 144.796891,
+        "altM": 86
+      },
+      "runways": [
+        {
+          "id": "06L/24R",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 3230.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        },
+        {
+          "id": "06R/24L",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 2621.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.825",
+        "vhfLowMhz": "38.550",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "340.200"
+      },
+      "tacanChannel": "105X",
+      "vorFrequencyMhz": "115.80"
+    },
+    {
+      "id": "north-west-field",
+      "name": "North West Field",
+      "callsign": "North West Field",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 13.625141,
+        "lon": 144.858191,
+        "altM": 160
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 1371.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "olf-orote",
+      "name": "Olf Orote",
+      "callsign": "Olf Orote",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 13.438136,
+        "lon": 144.642092,
+        "altM": 29
       },
       "runways": [
         {
@@ -20,69 +134,7 @@
             7,
             25
           ],
-          "lengthM": 1219.2,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.800",
-        "vhfLowMhz": "38.500",
-        "vhfHighMhz": "118.100",
-        "uhfMhz": "250.100"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "airfield-3",
-      "name": "Airfield 3",
-      "callsign": "Airfield 3",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.0678,
-        "lon": 145.634745,
-        "altM": 37
-      },
-      "runways": [
-        {
-          "id": "10/28",
-          "designators": [
-            10,
-            28
-          ],
-          "lengthM": 1036.3,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.850",
-        "vhfLowMhz": "38.600",
-        "vhfHighMhz": "118.200",
-        "uhfMhz": "250.200"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "airfield-4",
-      "name": "Airfield 4",
-      "callsign": "Airfield 4",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 14.982202,
-        "lon": 145.636444,
-        "altM": 96
-      },
-      "runways": [
-        {
-          "id": "05/23",
-          "designators": [
-            5,
-            23
-          ],
-          "lengthM": 883.9,
+          "lengthM": 1066.8,
           "widthM": 60,
           "ilsFrequencyMhz": "N/A"
         }
@@ -96,231 +148,14 @@
       "tacanChannel": "N/A"
     },
     {
-      "id": "charon-kanoa",
-      "name": "Charon Kanoa",
-      "callsign": "Charon Kanoa",
+      "id": "pagan-airstrip",
+      "name": "Pagan Airstrip",
+      "callsign": "Pagan Airstrip",
       "category": "airdrome",
       "initialCoalition": 0,
       "position": {
-        "lat": 15.160452,
-        "lon": 145.705932,
-        "altM": 3
-      },
-      "runways": [
-        {
-          "id": "03/21",
-          "designators": [
-            3,
-            21
-          ],
-          "lengthM": 1127.8,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.875",
-        "vhfLowMhz": "38.650",
-        "vhfHighMhz": "118.250",
-        "uhfMhz": "250.250"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "dededo-airfield",
-      "name": "Dededo Airfield",
-      "callsign": "Dededo Airfield",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 13.547454,
-        "lon": 144.824574,
-        "altM": 103
-      },
-      "runways": [
-        {
-          "id": "09/27",
-          "designators": [
-            9,
-            27
-          ],
-          "lengthM": 1341.1,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "N/A",
-        "vhfLowMhz": "N/A",
-        "vhfHighMhz": "N/A",
-        "uhfMhz": "N/A"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "gurguan-point",
-      "name": "Gurguan Point",
-      "callsign": "Gurguan Point",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.001698,
-        "lon": 145.598869,
-        "altM": 85
-      },
-      "runways": [
-        {
-          "id": "09/27",
-          "designators": [
-            9,
-            27
-          ],
-          "lengthM": 1249.7,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.900",
-        "vhfLowMhz": "38.700",
-        "vhfHighMhz": "118.300",
-        "uhfMhz": "250.300"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "isley",
-      "name": "Isley",
-      "callsign": "Isley",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.119493,
-        "lon": 145.726269,
-        "altM": 66
-      },
-      "runways": [
-        {
-          "id": "09/27",
-          "designators": [
-            9,
-            27
-          ],
-          "lengthM": 1127.8,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.925",
-        "vhfLowMhz": "38.750",
-        "vhfHighMhz": "118.350",
-        "uhfMhz": "250.350"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "kagman",
-      "name": "Kagman",
-      "callsign": "Kagman",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.167516,
-        "lon": 145.773447,
-        "altM": 70
-      },
-      "runways": [
-        {
-          "id": "09/27",
-          "designators": [
-            9,
-            27
-          ],
-          "lengthM": 975.4,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.950",
-        "vhfLowMhz": "38.800",
-        "vhfHighMhz": "118.400",
-        "uhfMhz": "250.400"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "marpi",
-      "name": "Marpi",
-      "callsign": "Marpi",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.281918,
-        "lon": 145.81243,
-        "altM": 45
-      },
-      "runways": [
-        {
-          "id": "11/29",
-          "designators": [
-            11,
-            29
-          ],
-          "lengthM": 1036.3,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.975",
-        "vhfLowMhz": "38.850",
-        "vhfHighMhz": "118.450",
-        "uhfMhz": "250.450"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "orote",
-      "name": "Orote",
-      "callsign": "Orote",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 13.437289,
-        "lon": 144.639265,
-        "altM": 25
-      },
-      "runways": [
-        {
-          "id": "11/29",
-          "designators": [
-            11,
-            29
-          ],
-          "lengthM": 1432.6,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "3.825",
-        "vhfLowMhz": "38.550",
-        "vhfHighMhz": "118.150",
-        "uhfMhz": "250.150"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "pagan",
-      "name": "Pagan",
-      "callsign": "Pagan",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 18.123727,
-        "lon": 145.764971,
+        "lat": 18.123166,
+        "lon": 145.762992,
         "altM": 15
       },
       "runways": [
@@ -330,29 +165,29 @@
             11,
             29
           ],
-          "lengthM": 731.5,
+          "lengthM": 548.6,
           "widthM": 60,
           "ilsFrequencyMhz": "N/A"
         }
       ],
       "radio": {
-        "hfMhz": "3.775",
-        "vhfLowMhz": "38.450",
-        "vhfHighMhz": "118.050",
-        "uhfMhz": "250.050"
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
       },
       "tacanChannel": "N/A"
     },
     {
-      "id": "rota",
+      "id": "rota-modern",
       "name": "Rota",
       "callsign": "Rota",
       "category": "airdrome",
       "initialCoalition": 0,
       "position": {
-        "lat": 14.174296,
-        "lon": 145.242089,
-        "altM": 181
+        "lat": 14.174295,
+        "lon": 145.240962,
+        "altM": 173
       },
       "runways": [
         {
@@ -361,38 +196,7 @@
             9,
             27
           ],
-          "lengthM": 1432.6,
-          "widthM": 60,
-          "ilsFrequencyMhz": "N/A"
-        }
-      ],
-      "radio": {
-        "hfMhz": "4.000",
-        "vhfLowMhz": "38.900",
-        "vhfHighMhz": "118.500",
-        "uhfMhz": "250.500"
-      },
-      "tacanChannel": "N/A"
-    },
-    {
-      "id": "ushi",
-      "name": "Ushi",
-      "callsign": "Ushi",
-      "category": "airdrome",
-      "initialCoalition": 0,
-      "position": {
-        "lat": 15.078248,
-        "lon": 145.636722,
-        "altM": 32
-      },
-      "runways": [
-        {
-          "id": "09/27",
-          "designators": [
-            9,
-            27
-          ],
-          "lengthM": 1280.2,
+          "lengthM": 2011.7,
           "widthM": 60,
           "ilsFrequencyMhz": "N/A"
         }
@@ -400,8 +204,80 @@
       "radio": {
         "hfMhz": "3.750",
         "vhfLowMhz": "38.400",
-        "vhfHighMhz": "118.000",
+        "vhfHighMhz": "123.600",
         "uhfMhz": "250.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "saipan",
+      "name": "Saipan",
+      "callsign": "Saipan",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 15.118926,
+        "lon": 145.729096,
+        "altM": 65
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 1889.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 3230.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.775",
+        "vhfLowMhz": "38.450",
+        "vhfHighMhz": "125.700",
+        "uhfMhz": "256.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "tinian",
+      "name": "Tinian",
+      "callsign": "Tinian",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 14.999431,
+        "lon": 145.619208,
+        "altM": 87
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 2499.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.800",
+        "vhfLowMhz": "38.500",
+        "vhfHighMhz": "123.650",
+        "uhfMhz": "250.050"
       },
       "tacanChannel": "N/A"
     }

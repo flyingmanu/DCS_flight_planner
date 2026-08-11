@@ -32,6 +32,7 @@ import afghanistan from "@dcs-flight-planner/core/data/afghanistan.json";
 import iraq from "@dcs-flight-planner/core/data/iraq.json";
 import kola from "@dcs-flight-planner/core/data/kola.json";
 import marianas from "@dcs-flight-planner/core/data/marianas.json";
+import marianasWwii from "@dcs-flight-planner/core/data/marianas-wwii.json";
 import sinai from "@dcs-flight-planner/core/data/sinai.json";
 import southAtlantic from "@dcs-flight-planner/core/data/south-atlantic.json";
 import syria from "@dcs-flight-planner/core/data/syria.json";
@@ -71,6 +72,7 @@ const THEATERS: Theater[] = [
   theChannel as Theater,
   southAtlantic as Theater,
   marianas as Theater,
+  marianasWwii as Theater,
   kola as Theater,
   iraq as Theater,
   afghanistan as Theater,
