@@ -63,6 +63,7 @@ import { PromptDialog } from "./PromptDialog";
 import { ReferenceLayerMenu } from "./ReferenceLayerMenu";
 import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap";
 import { translateLineVertices, translatePolygonShape } from "./objectGeometry";
+import { WeatherDialog } from "./WeatherDialog";
 import type { CreationRequest, ObjectDraft } from "./placement";
 
 /** Curated theaters this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
@@ -170,6 +171,7 @@ function App() {
   const [missionDate, setMissionDate] = useState<MissionDate | undefined>(undefined);
   const [missionWeather, setMissionWeather] = useState<MissionWeather | undefined>(undefined);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [weatherOpen, setWeatherOpen] = useState(false);
   const [simTarget, setSimTarget] = useState<SimTarget>("dcs");
   const [allGlobalAirports, setAllGlobalAirports] = useState<GlobalAirport[]>([]);
 
@@ -526,7 +528,10 @@ function App() {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <em style={{ fontSize: 12.5, color: "var(--dfp-text-inverse-muted)", fontStyle: "normal" }}>{activeMissionName}</em>
           <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setSettingsOpen(true)}>
-            Date &amp; weather
+            Date
+          </button>
+          <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setWeatherOpen(true)}>
+            Weather
           </button>
           <button type="button" className="dfp-btn dfp-btn-onnavy" onClick={() => setBriefingOpen(true)}>
             Briefing
@@ -660,13 +665,14 @@ function App() {
         <BriefingDialog missionName={activeMissionName} briefing={briefing} onChange={setBriefing} onClose={() => setBriefingOpen(false)} />
       )}
       {settingsOpen && (
-        <MissionSettingsDialog
+        <MissionSettingsDialog missionName={activeMissionName} date={missionDate} onChangeDate={setMissionDate} onClose={() => setSettingsOpen(false)} />
+      )}
+      {weatherOpen && (
+        <WeatherDialog
           missionName={activeMissionName}
-          date={missionDate}
           weather={missionWeather}
-          onChangeDate={setMissionDate}
           onChangeWeather={setMissionWeather}
-          onClose={() => setSettingsOpen(false)}
+          onClose={() => setWeatherOpen(false)}
         />
       )}
       {overviewOpen && (

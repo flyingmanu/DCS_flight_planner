@@ -23,18 +23,53 @@ export interface MissionDate {
   year: number;
 }
 
+export type WeatherMode = "static" | "dynamic";
+export type PrecipitationKind = "none" | "rain" | "thunderstorm" | "snow" | "snowstorm";
+export type IceHaloMode = "auto" | "on" | "off";
+
+/**
+ * One of DCS's three fixed-altitude wind layers. `altitudeFt` is the layer's
+ * reference altitude (ground/mid/high) - not user-editable, only direction
+ * and velocity are.
+ */
+export interface WindLayer {
+  altitudeFt: number;
+  /** Direction the wind is blowing FROM, degrees true (0-360). */
+  directionDeg: number;
+  velocityKt: number;
+}
+
 /** Mission-wide weather snapshot, mirroring the fields a DCS mission itself stores. */
 export interface MissionWeather {
-  temperatureC?: number;
-  qnhInHg?: number;
-  windSpeedKt?: number;
-  /** Direction the wind is blowing FROM, degrees true. */
-  windDirectionDeg?: number;
-  visibilityKm?: number;
+  mode?: WeatherMode;
+  /** Ground, mid-altitude, and high-altitude wind layers, low to high. */
+  wind?: [WindLayer, WindLayer, WindLayer];
   cloudBaseFt?: number;
+  cloudThicknessFt?: number;
   /** Sky coverage in oktas (0-8). */
   cloudCoverageOktas?: number;
+  iceHalo?: IceHaloMode;
+  precipitation?: PrecipitationKind;
+  /** Name of the last-applied weather preset, if any (purely informational). */
+  preset?: string;
+  fogEnabled?: boolean;
+  fogVisibilityFt?: number;
+  fogThicknessFt?: number;
+  dustEnabled?: boolean;
+  dustVisibilityFt?: number;
+  /** Turbulence, ft/s. */
   turbulence?: number;
+  temperatureC?: number;
+  qnhHpa?: number;
+
+  /** @deprecated superseded by `qnhHpa`; kept only so old saved missions still parse. */
+  qnhInHg?: number;
+  /** @deprecated superseded by `wind`; kept only so old saved missions still parse. */
+  windSpeedKt?: number;
+  /** @deprecated superseded by `wind`; kept only so old saved missions still parse. */
+  windDirectionDeg?: number;
+  /** @deprecated superseded by `fogVisibilityFt`/`dustVisibilityFt`; kept only so old saved missions still parse. */
+  visibilityKm?: number;
 }
 
 /**

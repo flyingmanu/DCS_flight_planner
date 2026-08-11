@@ -5,7 +5,17 @@ export { bearingDeg, distanceKm, distanceNm } from "./geo.js";
 export type { LatLon } from "./geo.js";
 export { addMinutesToClock, computeRouteLegs, computeWaypointEtas, formatEte, totalRouteDistanceNm } from "./route.js";
 export type { RouteLeg } from "./route.js";
-export type { MapView, Mission, MissionBriefing, MissionDate, MissionWeather } from "./mission.js";
+export type { IceHaloMode, MapView, Mission, MissionBriefing, MissionDate, MissionWeather, PrecipitationKind, WeatherMode, WindLayer } from "./mission.js";
+export {
+  defaultMissionWeather,
+  ICE_HALO_LABEL,
+  PRECIPITATION_LABEL,
+  summarizeWeatherMetar,
+  WEATHER_MODE_LABEL,
+  WEATHER_PRESETS,
+  WIND_LAYER_ALTITUDES_FT,
+  withWeatherDefaults,
+} from "./weather.js";
 export { ALTITUDE_REFERENCE_LABEL, DEFAULT_FLIGHT_COLOR, SPEED_TYPE_LABEL, TASK_TYPE_LABEL } from "./flights.js";
 export type { AltitudeReference, Flight, SpeedType, TaskType, Waypoint } from "./flights.js";
 export { AIRCRAFT_CATALOG, findAircraft } from "./aircraft.js";
