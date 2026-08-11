@@ -26,6 +26,7 @@ import {
   theaterBoundingBox,
 } from "@dcs-flight-planner/core";
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
+import nevada from "@dcs-flight-planner/core/data/nevada.json";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BriefingDialog } from "./BriefingDialog";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
@@ -51,12 +52,13 @@ import { TheaterMap, type HoverInfo, type TheaterMapHandle } from "./TheaterMap"
 import { translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import type { CreationRequest, ObjectDraft } from "./placement";
 
-const theater = caucasus as Theater;
+/** Curated theaters this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
+const THEATERS: Theater[] = [caucasus as Theater, nevada as Theater];
 const UNTITLED = "Untitled";
 
 /** Curated theaters available per target sim - the source of truth this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
 const THEATERS_BY_SIM: Record<SimTarget, { id: string; name: string; theater: Theater }[]> = {
-  dcs: [{ id: theater.id, name: theater.name, theater }],
+  dcs: THEATERS.map((t) => ({ id: t.id, name: t.name, theater: t })),
   bms: [],
   fs: [],
 };
@@ -114,6 +116,8 @@ function makeBlankCustomAircraft(): CustomAircraft {
 
 function App() {
   const mapRef = useRef<TheaterMapHandle | null>(null);
+  const [activeTheaterId, setActiveTheaterId] = useState(THEATERS[0]!.id);
+  const theater = THEATERS.find((t) => t.id === activeTheaterId) ?? THEATERS[0]!;
   const [missions, setMissions] = useState<Mission[]>([]);
   const [activeMissionId, setActiveMissionId] = useState<string | null>(null);
   const [activeMissionName, setActiveMissionName] = useState(UNTITLED);
@@ -204,9 +208,27 @@ function App() {
     setMissionWeather(undefined);
   }
 
+  function handleChangeTheater(id: string) {
+    if (id === activeTheaterId || !THEATERS.some((t) => t.id === id)) return;
+    setActiveTheaterId(id);
+    setActiveMissionId(null);
+    setActiveMissionName(UNTITLED);
+    setObjects([]);
+    setFlights([]);
+    setBullseyes([]);
+    setSelectedBullseyeSide(null);
+    setPackages([]);
+    setBriefing({});
+    setMissionDate(undefined);
+    setMissionWeather(undefined);
+  }
+
   function handleOpen(id: string) {
     const mission = missions.find((m) => m.id === id);
     if (!mission) return;
+    if (mission.theaterId !== activeTheaterId && THEATERS.some((t) => t.id === mission.theaterId)) {
+      setActiveTheaterId(mission.theaterId);
+    }
     setActiveMissionId(mission.id);
     setActiveMissionName(mission.name);
     setObjects(mission.objects);
@@ -434,9 +456,24 @@ function App() {
           <Logo />
           <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginRight: 6 }}>
             <strong style={{ fontSize: 15, letterSpacing: "0.01em" }}>DCS Flight Planner</strong>
-            <span style={{ fontSize: 12, color: "var(--dfp-text-inverse-muted)" }}>
-              {theater.name} · {theater.airbases.length} airbases
-            </span>
+            <select
+              value={theater.id}
+              onChange={(e) => handleChangeTheater(e.target.value)}
+              title="Switch theater (starts a new mission)"
+              style={{
+                fontSize: 12,
+                color: "var(--dfp-text-inverse-muted)",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              {THEATERS.map((t) => (
+                <option key={t.id} value={t.id} style={{ color: "var(--dfp-navy-900)" }}>
+                  {t.name} · {t.airbases.length} airbases
+                </option>
+              ))}
+            </select>
           </div>
           <div style={{ width: 1, alignSelf: "stretch", background: "rgba(255,255,255,0.14)" }} />
           <FileMenu
