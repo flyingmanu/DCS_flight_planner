@@ -99,6 +99,8 @@ export function drawFlightKneeboard(flight: Flight, airbases: Airbase[], customA
   labelValue("TACAN", flight.tacanChannel ?? "—", left + colWidth, y);
   labelValue("Radio", flight.radioFrequencyMhz ? `${flight.radioFrequencyMhz} MHz` : "—", left + colWidth * 2, y);
   y += 50;
+  labelValue("Internal", flight.internalFrequencyMhz ? `${flight.internalFrequencyMhz} MHz` : "—", left, y);
+  y += 50;
   labelValue("IFF 1 / 3", `${flight.iffMode1 ?? "—"} / ${flight.iffMode3 ?? "—"}`, left, y);
   if (aircraft?.performance.maxSpeedKt) {
     labelValue("Max speed", `${aircraft.performance.maxSpeedKt} kt`, left + colWidth, y);

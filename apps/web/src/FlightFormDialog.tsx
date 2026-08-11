@@ -360,7 +360,7 @@ export function FlightFormDialog({
           <Field label="Alternate">{airbaseSelect(flight.alternateAirbaseId, "alternateAirbaseId")}</Field>
         </Row>
 
-        <Row>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>
           <Field label="Takeoff time">
             <input
               type="text"
@@ -388,7 +388,16 @@ export function FlightFormDialog({
               onChange={(e) => set("radioFrequencyMhz", e.target.value)}
             />
           </Field>
-        </Row>
+          <Field label="Internal (MHz)">
+            <input
+              type="text"
+              className="dfp-input dfp-input-mono"
+              placeholder="e.g. 305.0"
+              value={flight.internalFrequencyMhz ?? ""}
+              onChange={(e) => set("internalFrequencyMhz", e.target.value)}
+            />
+          </Field>
+        </div>
 
         <Row>
           <Field label="IFF Mode 1">

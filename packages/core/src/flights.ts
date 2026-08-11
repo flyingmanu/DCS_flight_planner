@@ -71,6 +71,8 @@ export interface Flight {
   takeoffTime?: string;
   tacanChannel?: string;
   radioFrequencyMhz?: string;
+  /** Intra-flight ("fence"/admin) frequency used between aircraft in this flight, distinct from radioFrequencyMhz (the mission/package freq). */
+  internalFrequencyMhz?: string;
   iffMode1?: string;
   iffMode3?: string;
   notes?: string;

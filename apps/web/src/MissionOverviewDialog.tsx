@@ -187,6 +187,7 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                   <div>Takeoff: {flight.takeoffTime ?? "—"}</div>
                   <div>TACAN: {flight.tacanChannel ?? "—"}</div>
                   <div>Radio: {flight.radioFrequencyMhz ? `${flight.radioFrequencyMhz} MHz` : "—"}</div>
+                  <div>Internal: {flight.internalFrequencyMhz ? `${flight.internalFrequencyMhz} MHz` : "—"}</div>
                   {(() => {
                     const aircraft = customAircraft.find((a) => a.id === flight.customAircraftId);
                     const summary = loadoutSummary(flight, aircraft);
