@@ -46,6 +46,8 @@ export {
   POINT_KIND_LABEL,
 } from "./objects.js";
 export type { Dmpi, Hand, LabelObject, LineObject, MissionObject, OrbitVariant, PointKind, PointObject, PolygonObject, PolygonShape } from "./objects.js";
+export { findThreatSystem, THREAT_SYSTEMS } from "./threatSystems.js";
+export type { ThreatCategory, ThreatSystem } from "./threatSystems.js";
 export { toLocalMeters, fromLocalMeters } from "./geo.js";
 export type { LocalMeters } from "./geo.js";
 export { bullseyeRingRadiiNm, bullseyeSpokeEndpoints, circlePoints, orbitDirectionArrow, orbitTrackPoints, rectangleCorners } from "./shapes.js";

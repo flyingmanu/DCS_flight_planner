@@ -91,6 +91,8 @@ export interface PolygonObject {
   frequencyMhz?: number;
   /** When true, this object can't be dragged on the map. */
   locked?: boolean;
+  /** For a circle shape sized from a threatSystems.ts entry: which system, so the ring stays labeled even after manual radius/altitude tweaks. */
+  threatSystemId?: string;
 }
 
 export const DEFAULT_LINE_COLOR = "#7c3aed";

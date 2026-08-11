@@ -7,10 +7,12 @@ import {
   DEFAULT_ORBIT_TURN_RADIUS_NM,
   DEFAULT_POINT_COLOR,
   DEFAULT_POLYGON_COLOR,
+  findThreatSystem,
   fromLocalMeters,
   metersToNm,
   nmToMeters,
   POINT_KIND_LABEL,
+  THREAT_SYSTEMS,
   toLocalMeters,
   type Dmpi,
   type MissionObject,
@@ -18,6 +20,9 @@ import {
 import { ColorField } from "./ColorField";
 import { CoordinateFields } from "./CoordinateFields";
 import { Field } from "./FormField";
+
+// Distinct from DEFAULT_POLYGON_COLOR so a threat ring reads as a threat at a glance (matches the app's danger-red token).
+const DEFAULT_THREAT_COLOR = "#b8382c";
 
 interface ObjectEditPanelProps {
   object: MissionObject;
@@ -227,6 +232,45 @@ export function ObjectEditPanel({ object, onChange, onDelete, onClose, onResetDm
               return (
                 <>
                   <CoordinateFields point={shape.center} onChange={(center) => onChange({ ...polygon, shape: { ...shape, center } })} />
+                  <Field label="Threat system">
+                    <select
+                      className="dfp-select"
+                      style={{ width: "100%" }}
+                      value={polygon.threatSystemId ?? ""}
+                      onChange={(e) => {
+                        const system = findThreatSystem(e.target.value || undefined);
+                        if (!system) {
+                          onChange({ ...polygon, threatSystemId: undefined });
+                          return;
+                        }
+                        onChange({
+                          ...polygon,
+                          threatSystemId: system.id,
+                          name: polygon.name === "Circular zone" ? system.name : polygon.name,
+                          color: polygon.color ?? DEFAULT_THREAT_COLOR,
+                          shape: { ...shape, radiusM: nmToMeters(system.maxRangeNm) },
+                          minAltFt: system.minAltFt ?? polygon.minAltFt,
+                          maxAltFt: system.maxAltFt ?? polygon.maxAltFt,
+                        });
+                      }}
+                    >
+                      <option value="">— None (custom radius) —</option>
+                      <optgroup label="SAM">
+                        {THREAT_SYSTEMS.filter((s) => s.category === "SAM").map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="AAA">
+                        {THREAT_SYSTEMS.filter((s) => s.category === "AAA").map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                    </select>
+                  </Field>
                   <NumberField
                     label="Radius (NM)"
                     step={0.1}
