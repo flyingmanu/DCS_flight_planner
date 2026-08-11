@@ -105,14 +105,26 @@ function airportMarkerElement(airbase: Theater["airbases"][number]): HTMLElement
 
 function popupHtml(airbase: Theater["airbases"][number]): string {
   const runways = airbase.runways
-    .map((rw) => `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m — ILS ${rw.ilsFrequencyMhz}`)
+    .map(
+      (rw) =>
+        `${rw.id} — ${Math.round(rw.lengthM)} m × ${Math.round(rw.widthM)} m — ILS ${rw.ilsFrequencyMhz}` +
+        (rw.prmgChannel ? ` — PRMG ${rw.prmgChannel}` : ""),
+    )
     .join("<br />");
+
+  const navaids = [
+    `TACAN ${airbase.tacanChannel}`,
+    airbase.vorFrequencyMhz ? `VOR ${airbase.vorFrequencyMhz}` : null,
+    airbase.rsbnChannel ? `RSBN ${airbase.rsbnChannel}` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return `
     <strong>${airbase.name}</strong><br />
     ${CATEGORY_LABEL[airbase.category]}<br />
     HF ${airbase.radio.hfMhz} · VHF-L ${airbase.radio.vhfLowMhz} · VHF-H ${airbase.radio.vhfHighMhz} · UHF ${airbase.radio.uhfMhz}<br />
-    TACAN ${airbase.tacanChannel}<br />
+    ${navaids}<br />
     ${runways || "Runway unknown"}
   `;
 }
