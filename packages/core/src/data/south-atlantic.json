@@ -1,0 +1,1720 @@
+{
+  "id": "south-atlantic",
+  "name": "South Atlantic",
+  "airbases": [
+    {
+      "id": "goose-green",
+      "name": "Goose Green",
+      "callsign": "Goose Green",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.819774,
+        "lon": -58.980225,
+        "altM": 19
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.075",
+        "vhfLowMhz": "39.050",
+        "vhfHighMhz": "126.000",
+        "uhfMhz": "250.650"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "gull-point",
+      "name": "Gull Point",
+      "callsign": "Gull Point",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.179379,
+        "lon": -58.860734,
+        "altM": 10
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 365.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 457.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.450",
+        "vhfLowMhz": "39.500",
+        "vhfHighMhz": "126.500",
+        "uhfMhz": "234.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "mount-pleasant",
+      "name": "Mount Pleasant",
+      "callsign": "Mount Pleasant",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.820622,
+        "lon": -58.457629,
+        "altM": 68
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 1463.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2468.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.150",
+        "vhfLowMhz": "39.200",
+        "vhfHighMhz": "133.350",
+        "uhfMhz": "250.800"
+      },
+      "tacanChannel": "59X",
+      "vorFrequencyMhz": "114.70"
+    },
+    {
+      "id": "port-stanley",
+      "name": "Port Stanley",
+      "callsign": "Port Stanley",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.685876,
+        "lon": -57.777964,
+        "altM": 21
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 1341.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.975",
+        "vhfLowMhz": "38.850",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "250.450"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "113.30"
+    },
+    {
+      "id": "san-carlos-fob",
+      "name": "San Carlos FOB",
+      "callsign": "San Carlos FOB",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.501132,
+        "lon": -59.004804,
+        "altM": 21
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 335.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.175",
+        "vhfLowMhz": "39.250",
+        "vhfHighMhz": "134.350",
+        "uhfMhz": "250.850"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "almirante-schroeders",
+      "name": "Almirante Schroeders",
+      "callsign": "Almirante Schroeders",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -53.613273,
+        "lon": -70.475142,
+        "altM": 49
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 1127.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 1432.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.000",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "118.250",
+        "uhfMhz": "229.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "comandante-luis-piedrabuena",
+      "name": "Comandante Luis Piedrabuena",
+      "callsign": "Comandante Luis Piedrabuena",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -49.994917,
+        "lon": -68.951412,
+        "altM": 22
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 1097.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.900",
+        "vhfLowMhz": "38.700",
+        "vhfHighMhz": "122.100",
+        "uhfMhz": "250.300"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "cullen",
+      "name": "Cullen",
+      "callsign": "Cullen",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.885031,
+        "lon": -68.412709,
+        "altM": 41
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1158.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "el-calafate",
+      "name": "El Calafate",
+      "callsign": "El Calafate",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -50.280226,
+        "lon": -72.052546,
+        "altM": 204
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2529.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.850",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "119.950",
+        "uhfMhz": "250.200"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.70"
+    },
+    {
+      "id": "franco-bianco",
+      "name": "Franco Bianco",
+      "callsign": "Franco Bianco",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.736443,
+        "lon": -69.333619,
+        "altM": 32
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1463.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.050",
+        "vhfLowMhz": "39.000",
+        "vhfHighMhz": "128.500",
+        "uhfMhz": "250.600"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "gobernador-gregores",
+      "name": "Gobernador Gregores",
+      "callsign": "Gobernador Gregores",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -48.78333,
+        "lon": -70.148023,
+        "altM": 356
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2682.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.100",
+        "vhfLowMhz": "39.100",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "250.700"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "hipico-flying-club",
+      "name": "Hipico Flying Club",
+      "callsign": "Hipico Flying Club",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -48.756779,
+        "lon": -70.231355,
+        "altM": 285
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 731.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.500",
+        "vhfLowMhz": "39.600",
+        "vhfHighMhz": "131.500",
+        "uhfMhz": "235.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ohiggins",
+      "name": "O'Higgins",
+      "callsign": "O'Higgins",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -48.468927,
+        "lon": -72.563556,
+        "altM": 275
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 1219.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.125",
+        "vhfLowMhz": "39.150",
+        "vhfHighMhz": "118.250",
+        "uhfMhz": "250.750"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "pampa-guanaco",
+      "name": "Pampa Guanaco",
+      "callsign": "Pampa Guanaco",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -54.049999,
+        "lon": -68.809039,
+        "altM": 159
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 731.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.750",
+        "vhfLowMhz": "38.400",
+        "vhfHighMhz": "118.000",
+        "uhfMhz": "250.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "porvenir",
+      "name": "Porvenir",
+      "callsign": "Porvenir",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -53.253673,
+        "lon": -70.31921,
+        "altM": 34
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 883.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2468.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.950",
+        "vhfLowMhz": "38.800",
+        "vhfHighMhz": "126.700",
+        "uhfMhz": "250.400"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "puerto-natales",
+      "name": "Puerto Natales",
+      "callsign": "Puerto Natales",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.670623,
+        "lon": -72.528247,
+        "altM": 67
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 1524.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.825",
+        "vhfLowMhz": "38.550",
+        "vhfHighMhz": "128.100",
+        "uhfMhz": "250.150"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "115.90"
+    },
+    {
+      "id": "puerto-santa-cruz",
+      "name": "Puerto Santa Cruz",
+      "callsign": "Puerto Santa Cruz",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -50.01695,
+        "lon": -68.579095,
+        "altM": 111
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1737.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.875",
+        "vhfLowMhz": "38.650",
+        "vhfHighMhz": "118.600",
+        "uhfMhz": "250.250"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "puerto-williams",
+      "name": "Puerto Williams",
+      "callsign": "Puerto Williams",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -54.931072,
+        "lon": -67.62627,
+        "altM": 26
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 1341.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.800",
+        "vhfLowMhz": "38.500",
+        "vhfHighMhz": "118.500",
+        "uhfMhz": "250.100"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.90"
+    },
+    {
+      "id": "punta-arenas",
+      "name": "Punta Arenas",
+      "callsign": "Punta Arenas",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -53.00537,
+        "lon": -70.856782,
+        "altM": 34
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 1585.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2773.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.90"
+        },
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.300",
+        "vhfLowMhz": "39.500",
+        "vhfHighMhz": "118.700",
+        "uhfMhz": "251.100"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.10"
+    },
+    {
+      "id": "rio-chico",
+      "name": "Rio Chico",
+      "callsign": "Rio Chico",
+      "category": "helipad",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.668929,
+        "lon": -69.266101,
+        "altM": 23
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 1005.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.025",
+        "vhfLowMhz": "38.950",
+        "vhfHighMhz": "118.200",
+        "uhfMhz": "250.550"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "rio-gallegos",
+      "name": "Rio Gallegos",
+      "callsign": "Rio Gallegos",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.608759,
+        "lon": -69.312427,
+        "altM": 19
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 3505.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.200",
+        "vhfLowMhz": "39.300",
+        "vhfHighMhz": "119.100",
+        "uhfMhz": "250.900"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "116.70"
+    },
+    {
+      "id": "rio-grande",
+      "name": "Rio Grande",
+      "callsign": "Rio Grande",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -53.777682,
+        "lon": -67.749998,
+        "altM": 19
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 1920.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.225",
+        "vhfLowMhz": "39.350",
+        "vhfHighMhz": "118.300",
+        "uhfMhz": "250.950"
+      },
+      "tacanChannel": "31X",
+      "vorFrequencyMhz": "117.30"
+    },
+    {
+      "id": "rio-turbio",
+      "name": "Rio Turbio",
+      "callsign": "Rio Turbio",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.605084,
+        "lon": -72.219775,
+        "altM": 274
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 1554.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.000",
+        "vhfLowMhz": "38.900",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "250.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "san-julian",
+      "name": "San Julian",
+      "callsign": "San Julian",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -49.306778,
+        "lon": -67.802545,
+        "altM": 44
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1950.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.775",
+        "vhfLowMhz": "38.450",
+        "vhfHighMhz": "118.050",
+        "uhfMhz": "250.050"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "117.70"
+    },
+    {
+      "id": "tolhuin",
+      "name": "Tolhuin",
+      "callsign": "Tolhuin",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -54.499716,
+        "lon": -67.172317,
+        "altM": 109
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1097.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.925",
+        "vhfLowMhz": "38.750",
+        "vhfHighMhz": "118.150",
+        "uhfMhz": "250.350"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ushuaia",
+      "name": "Ushuaia",
+      "callsign": "Ushuaia",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -54.843222,
+        "lon": -68.296042,
+        "altM": 19
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.250",
+        "vhfLowMhz": "39.400",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "251.000"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "113.70"
+    },
+    {
+      "id": "ushuaia-helo-port",
+      "name": "Ushuaia Helo Port",
+      "callsign": "Ushuaia Helo Port",
+      "category": "helipad",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -54.82288,
+        "lon": -68.304236,
+        "altM": 13
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 1554.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.275",
+        "vhfLowMhz": "39.450",
+        "vhfHighMhz": "118.500",
+        "uhfMhz": "251.050"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "113.70"
+    },
+    {
+      "id": "bleaker-island",
+      "name": "Bleaker Is. (Lafonia Point)",
+      "callsign": "Bleaker Is. (Lafonia Point)",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.20085,
+        "lon": -58.849996,
+        "altM": 61
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 548.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "carcass-island",
+      "name": "Carcass Island",
+      "callsign": "Carcass Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.259321,
+        "lon": -60.592939,
+        "altM": 64
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 792.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "chartres",
+      "name": "Chartres",
+      "callsign": "Chartres",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.719211,
+        "lon": -60.062146,
+        "altM": 31
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 396.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "douglas-station",
+      "name": "Douglas Station",
+      "callsign": "Douglas Station",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.460451,
+        "lon": -58.613556,
+        "altM": 66
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 396.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "dunnose-head",
+      "name": "Dunnose Head",
+      "callsign": "Dunnose Head",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.753389,
+        "lon": -60.416097,
+        "altM": 45
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 518.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "fox-bay",
+      "name": "Fox Bay",
+      "callsign": "Fox Bay",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.933618,
+        "lon": -60.061582,
+        "altM": 112
+      },
+      "runways": [
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 670.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "george-island",
+      "name": "George Island",
+      "callsign": "George Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.349997,
+        "lon": -59.759606,
+        "altM": 24
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "hill-cove",
+      "name": "Hill Cove",
+      "callsign": "Hill Cove",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.50424,
+        "lon": -60.14435,
+        "altM": 74
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "lively-island",
+      "name": "Lively Island",
+      "callsign": "Lively Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.996044,
+        "lon": -58.457345,
+        "altM": 40
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "north-arm",
+      "name": "North Arm",
+      "callsign": "North Arm",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.124292,
+        "lon": -59.371468,
+        "altM": 37
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 365.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "pebble-island",
+      "name": "Pebble Island",
+      "callsign": "Pebble Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.308759,
+        "lon": -59.610449,
+        "altM": 104
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "port-albemarle",
+      "name": "Port Albemarle",
+      "callsign": "Port Albemarle",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.205649,
+        "lon": -60.534747,
+        "altM": 239
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 579.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "port-howard",
+      "name": "Port Howard",
+      "callsign": "Port Howard",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.612711,
+        "lon": -59.516385,
+        "altM": 57
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 396.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "port-howard-purvis-pond",
+      "name": "Port Howard Purvis Pond",
+      "callsign": "Port Howard Purvis Pond",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.567232,
+        "lon": -59.535313,
+        "altM": 180
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 548.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "port-stephens",
+      "name": "Port Stephens",
+      "callsign": "Port Stephens",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.095196,
+        "lon": -60.851696,
+        "altM": 97
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 579.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "puerto-calderon",
+      "name": "Puerto Calderon",
+      "callsign": "Puerto Calderon",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.331355,
+        "lon": -59.580789,
+        "altM": 56
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 365.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "roy-cove",
+      "name": "Roy Cove",
+      "callsign": "Roy Cove",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.53955,
+        "lon": -60.356779,
+        "altM": 80
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 548.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "salvador",
+      "name": "Salvador",
+      "callsign": "Salvador",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.436444,
+        "lon": -58.378531,
+        "altM": 78
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 457.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "san-carlos-bonners-bay",
+      "name": "San Carlos (Bonners Bay)",
+      "callsign": "San Carlos (Bonners Bay)",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.575704,
+        "lon": -59.041808,
+        "altM": 33
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 487.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "saunders-island",
+      "name": "Saunders Island",
+      "callsign": "Saunders Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.377963,
+        "lon": -60.092939,
+        "altM": 53
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 731.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "sea-lion-lodge",
+      "name": "Sea Lion Lodge",
+      "callsign": "Sea Lion Lodge",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.427686,
+        "lon": -59.078249,
+        "altM": 45
+      },
+      "runways": [
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 457.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "shallow-harbour",
+      "name": "Shallow Harbour",
+      "callsign": "Shallow Harbour",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.755649,
+        "lon": -60.534465,
+        "altM": 265
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 487.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "speedwell-island",
+      "name": "Speedwell Island",
+      "callsign": "Speedwell Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -52.229941,
+        "lon": -59.744351,
+        "altM": 43
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 487.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "spring-point",
+      "name": "Spring Point",
+      "callsign": "Spring Point",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.829377,
+        "lon": -60.450285,
+        "altM": 76
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 640.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "walker-creek",
+      "name": "Walker Creek",
+      "callsign": "Walker Creek",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.964686,
+        "lon": -58.786444,
+        "altM": 72
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 579.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "west-point-island",
+      "name": "West Point Island",
+      "callsign": "West Point Island",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": -51.345199,
+        "lon": -60.68418,
+        "altM": 84
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 259.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    }
+  ]
+}
