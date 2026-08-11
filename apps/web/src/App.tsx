@@ -28,6 +28,7 @@ import {
 import caucasus from "@dcs-flight-planner/core/data/caucasus.json";
 import nevada from "@dcs-flight-planner/core/data/nevada.json";
 import persianGulf from "@dcs-flight-planner/core/data/persian-gulf.json";
+import marianas from "@dcs-flight-planner/core/data/marianas.json";
 import sinai from "@dcs-flight-planner/core/data/sinai.json";
 import southAtlantic from "@dcs-flight-planner/core/data/south-atlantic.json";
 import syria from "@dcs-flight-planner/core/data/syria.json";
@@ -66,6 +67,7 @@ const THEATERS: Theater[] = [
   sinai as Theater,
   theChannel as Theater,
   southAtlantic as Theater,
+  marianas as Theater,
 ];
 const UNTITLED = "Untitled";
 
