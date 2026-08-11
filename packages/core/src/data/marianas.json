@@ -63,7 +63,7 @@
           ],
           "lengthM": 3230.9,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.30"
+          "ilsFrequencyMhz": "110.30 / N/A"
         },
         {
           "id": "06R/24L",
@@ -73,7 +73,7 @@
           ],
           "lengthM": 2621.3,
           "widthM": 60,
-          "ilsFrequencyMhz": "110.90"
+          "ilsFrequencyMhz": "110.90 / N/A"
         }
       ],
       "radio": {
@@ -239,7 +239,7 @@
           ],
           "lengthM": 3230.9,
           "widthM": 60,
-          "ilsFrequencyMhz": "109.90"
+          "ilsFrequencyMhz": "109.90 / N/A"
         }
       ],
       "radio": {
