@@ -30,6 +30,7 @@ import nevada from "@dcs-flight-planner/core/data/nevada.json";
 import persianGulf from "@dcs-flight-planner/core/data/persian-gulf.json";
 import sinai from "@dcs-flight-planner/core/data/sinai.json";
 import syria from "@dcs-flight-planner/core/data/syria.json";
+import theChannel from "@dcs-flight-planner/core/data/the-channel.json";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BriefingDialog } from "./BriefingDialog";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
@@ -56,7 +57,14 @@ import { translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import type { CreationRequest, ObjectDraft } from "./placement";
 
 /** Curated theaters this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
-const THEATERS: Theater[] = [caucasus as Theater, nevada as Theater, persianGulf as Theater, syria as Theater, sinai as Theater];
+const THEATERS: Theater[] = [
+  caucasus as Theater,
+  nevada as Theater,
+  persianGulf as Theater,
+  syria as Theater,
+  sinai as Theater,
+  theChannel as Theater,
+];
 const UNTITLED = "Untitled";
 
 /** Curated theaters available per target sim - the source of truth this app can actually plan against, as opposed to the worldwide OurAirports reference layer. */
