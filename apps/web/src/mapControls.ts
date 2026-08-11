@@ -137,6 +137,82 @@ export class GlueControl implements maplibregl.IControl {
   }
 }
 
+const SATELLITE_SOURCE_ID = "esri-world-imagery";
+const SATELLITE_LAYER_ID = "esri-world-imagery-layer";
+
+// Esri's public World Imagery basemap - free to use (no API key) under
+// Esri's ArcGIS Online terms. The tile path uses Esri's own {z}/{y}/{x}
+// order, not the usual XYZ {z}/{x}/{y}.
+const ESRI_WORLD_IMAGERY_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+
+/**
+ * Toggle between the vector basemap and Esri World Imagery satellite tiles,
+ * like the map/satellite switch in Google Maps. Rather than swapping the
+ * whole map style (which would drop every runtime-added source/layer -
+ * mission objects, airbases, hillshade...), this inserts a hidden raster
+ * layer below the vector style's own layers and simply flips visibility on
+ * the two layer sets, so everything drawn on top keeps working unchanged.
+ */
+export class BasemapControl implements maplibregl.IControl {
+  private map?: maplibregl.Map;
+  private container!: HTMLDivElement;
+  private mapButton!: HTMLButtonElement;
+  private satButton!: HTMLButtonElement;
+  private satellite = false;
+  private readonly baseLayerIds: string[];
+
+  /** `baseLayerIds` must be captured before any other runtime layer is added, e.g. from map.getStyle().layers right after "load". */
+  constructor(baseLayerIds: string[]) {
+    this.baseLayerIds = baseLayerIds;
+  }
+
+  onAdd(map: maplibregl.Map): HTMLElement {
+    this.map = map;
+    if (!map.getSource(SATELLITE_SOURCE_ID)) {
+      map.addSource(SATELLITE_SOURCE_ID, {
+        type: "raster",
+        tiles: [ESRI_WORLD_IMAGERY_URL],
+        tileSize: 256,
+        maxzoom: 19,
+        attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics",
+      });
+      map.addLayer(
+        { id: SATELLITE_LAYER_ID, type: "raster", source: SATELLITE_SOURCE_ID, layout: { visibility: "none" } },
+        this.baseLayerIds[0],
+      );
+    }
+
+    this.container = document.createElement("div");
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
+    this.mapButton = controlButton("🗺", "Vector map basemap");
+    this.satButton = controlButton("🛰", "Satellite imagery basemap (Esri World Imagery)");
+    this.mapButton.addEventListener("click", () => this.setSatellite(false));
+    this.satButton.addEventListener("click", () => this.setSatellite(true));
+    this.container.appendChild(this.mapButton);
+    this.container.appendChild(this.satButton);
+    setButtonActive(this.mapButton, true);
+    return this.container;
+  }
+
+  onRemove(): void {
+    this.container.remove();
+    this.map = undefined;
+  }
+
+  private setSatellite(active: boolean): void {
+    if (!this.map || this.satellite === active) return;
+    this.satellite = active;
+    for (const id of this.baseLayerIds) {
+      if (this.map.getLayer(id)) this.map.setLayoutProperty(id, "visibility", active ? "none" : "visible");
+    }
+    if (this.map.getLayer(SATELLITE_LAYER_ID)) {
+      this.map.setLayoutProperty(SATELLITE_LAYER_ID, "visibility", active ? "visible" : "none");
+    }
+    setButtonActive(this.satButton, active);
+    setButtonActive(this.mapButton, !active);
+  }
+}
+
 const MEASURE_LINE_SOURCE_ID = "measure-line";
 const MEASURE_LINE_LAYER_ID = "measure-line-layer";
 

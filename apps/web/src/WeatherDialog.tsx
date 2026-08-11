@@ -11,8 +11,9 @@ import {
   type WeatherMode,
   type WindLayer,
 } from "@dcs-flight-planner/core";
+import { useEffect, useRef } from "react";
 import { canvasToPngBlob, downloadBlob, slug } from "./pngExport";
-import { drawWeatherSummary } from "./weatherExport";
+import { drawWeatherSummary, renderWeatherChartPreview } from "./weatherExport";
 
 interface WeatherDialogProps {
   missionName: string;
@@ -125,6 +126,11 @@ export function WeatherDialog({ missionName, weather, onChangeWeather, onClose }
     const blob = await canvasToPngBlob(canvas);
     if (blob) downloadBlob(blob, `${slug(missionName)}-weather.png`);
   }
+
+  const chartCanvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    if (chartCanvasRef.current) renderWeatherChartPreview(chartCanvasRef.current, w);
+  });
 
   // High to low, matching Combat Flite's top-to-bottom layout.
   const windRows = [...w.wind].reverse();
@@ -372,6 +378,18 @@ export function WeatherDialog({ missionName, weather, onChangeWeather, onClose }
                 onChange={(e) => {
                   const v = Number.parseFloat(e.target.value);
                   if (Number.isFinite(v)) commit({ qnhHpa: v });
+                }}
+              />
+
+              <canvas
+                ref={chartCanvasRef}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: 320,
+                  marginTop: 16,
+                  borderRadius: "var(--dfp-radius)",
+                  border: "1px solid var(--dfp-border)",
                 }}
               />
             </div>

@@ -31,7 +31,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { flightMarkerElement } from "./aircraftIcons";
 import { getElevationAt } from "./elevation";
-import { addHillshadeLayer, ensureOrbitArrowImage, GlueControl, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
+import { addHillshadeLayer, BasemapControl, ensureOrbitArrowImage, GlueControl, MeasureControl, ORBIT_ARROW_IMAGE_ID, ReliefControl } from "./mapControls";
 import { lineMidpoint, orbitArrow, polygonCentroid, polygonRing, translateLineVertices, translatePolygonShape } from "./objectGeometry";
 import { pointMarkerElement } from "./objectIcons";
 import { setupPlacement, snapToNearestCandidate, type CreationRequest, type ObjectDraft, type SnapOptions } from "./placement";
@@ -554,6 +554,9 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
 
     map.addControl(new maplibregl.NavigationControl(), "top-right");
     map.on("load", () => {
+      // Must be captured before any other runtime layer (hillshade, etc.) is added.
+      const baseLayerIds = map.getStyle().layers.map((l) => l.id);
+      map.addControl(new BasemapControl(baseLayerIds), "top-left");
       addHillshadeLayer(map);
       ensureOrbitArrowImage(map);
       map.addControl(new ReliefControl(), "top-left");
