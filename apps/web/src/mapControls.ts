@@ -145,20 +145,42 @@ const SATELLITE_LAYER_ID = "esri-world-imagery-layer";
 // order, not the usual XYZ {z}/{x}/{y}.
 const ESRI_WORLD_IMAGERY_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
+const VFR_CHART_SOURCE_ID = "sia-oaci-vfr-chart";
+const VFR_CHART_LAYER_ID = "sia-oaci-vfr-chart-layer";
+
+// IGN Geoplateforme WMTS, serving SIA's "Carte OACI-VFR" (the official
+// French VFR aeronautical chart) under the Etalab Licence Ouverte 2.0 (free
+// reuse incl. commercial, attribution only - no API key). The base
+// data.geopf.fr WMTS endpoint is IGN's long-standing stable public service;
+// the exact LAYER identifier below follows IGN's "SCAN-OACI" product naming
+// convention but could NOT be verified against the live GetCapabilities from
+// this sandbox (geoportail/data.geopf.fr is EGRESS_BLOCKED here) - if this
+// renders blank, check the layer name against IGN's current WMTS capabilities.
+const VFR_CHART_TILE_URL =
+  "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png";
+
+type BasemapMode = "vector" | "satellite" | "vfr";
+
+const BASEMAP_MODE_SPECS: Array<{ mode: BasemapMode; glyph: string; title: string }> = [
+  { mode: "vector", glyph: "🗺", title: "Vector map basemap" },
+  { mode: "satellite", glyph: "🛰", title: "Satellite imagery basemap (Esri World Imagery)" },
+  { mode: "vfr", glyph: "✈", title: "VFR aeronautical chart basemap (SIA/IGN Carte OACI-VFR, France only)" },
+];
+
 /**
- * Toggle between the vector basemap and Esri World Imagery satellite tiles,
- * like the map/satellite switch in Google Maps. Rather than swapping the
- * whole map style (which would drop every runtime-added source/layer -
- * mission objects, airbases, hillshade...), this inserts a hidden raster
- * layer below the vector style's own layers and simply flips visibility on
- * the two layer sets, so everything drawn on top keeps working unchanged.
+ * Switches between the vector basemap, Esri satellite imagery, and the
+ * French SIA/IGN VFR aeronautical chart - like the map/satellite switch in
+ * Google Maps, extended with a third option. Rather than swapping the whole
+ * map style (which would drop every runtime-added source/layer - mission
+ * objects, airbases, hillshade...), this inserts hidden raster layers below
+ * the vector style's own layers and flips visibility between exactly one
+ * active set at a time, so everything drawn on top keeps working unchanged.
  */
 export class BasemapControl implements maplibregl.IControl {
   private map?: maplibregl.Map;
   private container!: HTMLDivElement;
-  private mapButton!: HTMLButtonElement;
-  private satButton!: HTMLButtonElement;
-  private satellite = false;
+  private modeButtons: Array<{ mode: BasemapMode; button: HTMLButtonElement }> = [];
+  private mode: BasemapMode = "vector";
   private readonly baseLayerIds: string[];
 
   /** `baseLayerIds` must be captured before any other runtime layer is added, e.g. from map.getStyle().layers right after "load". */
@@ -181,16 +203,29 @@ export class BasemapControl implements maplibregl.IControl {
         this.baseLayerIds[0],
       );
     }
+    if (!map.getSource(VFR_CHART_SOURCE_ID)) {
+      map.addSource(VFR_CHART_SOURCE_ID, {
+        type: "raster",
+        tiles: [VFR_CHART_TILE_URL],
+        tileSize: 256,
+        maxzoom: 16,
+        attribution: "Carte OACI-VFR &copy; SIA/IGN - Etalab Licence Ouverte 2.0",
+      });
+      map.addLayer(
+        { id: VFR_CHART_LAYER_ID, type: "raster", source: VFR_CHART_SOURCE_ID, layout: { visibility: "none" } },
+        this.baseLayerIds[0],
+      );
+    }
 
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
-    this.mapButton = controlButton("🗺", "Vector map basemap");
-    this.satButton = controlButton("🛰", "Satellite imagery basemap (Esri World Imagery)");
-    this.mapButton.addEventListener("click", () => this.setSatellite(false));
-    this.satButton.addEventListener("click", () => this.setSatellite(true));
-    this.container.appendChild(this.mapButton);
-    this.container.appendChild(this.satButton);
-    setButtonActive(this.mapButton, true);
+    this.modeButtons = BASEMAP_MODE_SPECS.map(({ mode, glyph, title }) => {
+      const button = controlButton(glyph, title);
+      button.addEventListener("click", () => this.setMode(mode));
+      this.container.appendChild(button);
+      return { mode, button };
+    });
+    setButtonActive(this.modeButtons[0]!.button, true);
     return this.container;
   }
 
@@ -199,17 +234,19 @@ export class BasemapControl implements maplibregl.IControl {
     this.map = undefined;
   }
 
-  private setSatellite(active: boolean): void {
-    if (!this.map || this.satellite === active) return;
-    this.satellite = active;
+  private setMode(mode: BasemapMode): void {
+    if (!this.map || this.mode === mode) return;
+    this.mode = mode;
     for (const id of this.baseLayerIds) {
-      if (this.map.getLayer(id)) this.map.setLayoutProperty(id, "visibility", active ? "none" : "visible");
+      if (this.map.getLayer(id)) this.map.setLayoutProperty(id, "visibility", mode === "vector" ? "visible" : "none");
     }
     if (this.map.getLayer(SATELLITE_LAYER_ID)) {
-      this.map.setLayoutProperty(SATELLITE_LAYER_ID, "visibility", active ? "visible" : "none");
+      this.map.setLayoutProperty(SATELLITE_LAYER_ID, "visibility", mode === "satellite" ? "visible" : "none");
     }
-    setButtonActive(this.satButton, active);
-    setButtonActive(this.mapButton, !active);
+    if (this.map.getLayer(VFR_CHART_LAYER_ID)) {
+      this.map.setLayoutProperty(VFR_CHART_LAYER_ID, "visibility", mode === "vfr" ? "visible" : "none");
+    }
+    for (const { mode: m, button } of this.modeButtons) setButtonActive(button, m === mode);
   }
 }
 
