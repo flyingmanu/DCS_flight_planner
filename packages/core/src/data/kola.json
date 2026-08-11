@@ -1,0 +1,1151 @@
+{
+  "id": "kola",
+  "name": "Kola",
+  "airbases": [
+    {
+      "id": "afrikanda",
+      "name": "Afrikanda",
+      "callsign": "Afrikanda",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.457344,
+        "lon": 32.7839,
+        "altM": 151
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2347.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.775",
+        "vhfLowMhz": "39.900",
+        "vhfHighMhz": "121.300",
+        "uhfMhz": "311.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "alakurtti",
+      "name": "Alakurtti",
+      "callsign": "Alakurtti",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 66.972601,
+        "lon": 30.348586,
+        "altM": 167
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2072.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.025",
+        "vhfLowMhz": "38.950",
+        "vhfHighMhz": "118.350",
+        "uhfMhz": "250.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "alta",
+      "name": "Alta",
+      "callsign": "Alta",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.977399,
+        "lon": 23.366098,
+        "altM": 3
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 1676.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.150",
+        "vhfLowMhz": "39.200",
+        "vhfHighMhz": "120.400",
+        "uhfMhz": "250.750"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "117.40"
+    },
+    {
+      "id": "andoya",
+      "name": "Andoya",
+      "callsign": "Andoya",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.297736,
+        "lon": 16.135313,
+        "altM": 7
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2377.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.075",
+        "vhfLowMhz": "39.050",
+        "vhfHighMhz": "118.200",
+        "uhfMhz": "250.600"
+      },
+      "tacanChannel": "28X",
+      "vorFrequencyMhz": "112.20"
+    },
+    {
+      "id": "arvidsjaur",
+      "name": "Arvidsjaur",
+      "callsign": "Arvidsjaur",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.591525,
+        "lon": 19.277963,
+        "altM": 378
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2438.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.35 / 111.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "banak",
+      "name": "Banak",
+      "callsign": "Banak",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 70.068646,
+        "lon": 24.973446,
+        "altM": 5
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2499.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.050",
+        "vhfLowMhz": "39.000",
+        "vhfHighMhz": "118.050",
+        "uhfMhz": "250.550"
+      },
+      "tacanChannel": "47X",
+      "vorFrequencyMhz": "114.40"
+    },
+    {
+      "id": "bardufoss",
+      "name": "Bardufoss",
+      "callsign": "Bardufoss",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.055367,
+        "lon": 18.543503,
+        "altM": 74
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2011.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30 / 108.70"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.100",
+        "vhfLowMhz": "39.100",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "250.650"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.20"
+    },
+    {
+      "id": "boden",
+      "name": "Boden",
+      "callsign": "Boden",
+      "category": "helipad",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.809322,
+        "lon": 21.694631,
+        "altM": 13
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 396.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.475",
+        "vhfLowMhz": "40.150",
+        "vhfHighMhz": "118.750",
+        "uhfMhz": "252.250"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "bodo",
+      "name": "Bodo",
+      "callsign": "Bodo",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.269209,
+        "lon": 14.365534,
+        "altM": 13
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2743.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30 / 108.70"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.375",
+        "vhfLowMhz": "39.650",
+        "vhfHighMhz": "118.450",
+        "uhfMhz": "251.150"
+      },
+      "tacanChannel": "45X",
+      "vorFrequencyMhz": "117.55"
+    },
+    {
+      "id": "enontekio",
+      "name": "Enontekio",
+      "callsign": "Enontekio",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.362708,
+        "lon": 23.424013,
+        "altM": 306
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 1920.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.200",
+        "vhfLowMhz": "39.300",
+        "vhfHighMhz": "119.700",
+        "uhfMhz": "250.850"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "evenes",
+      "name": "Evenes",
+      "callsign": "Evenes",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.491242,
+        "lon": 16.678246,
+        "altM": 26
+      },
+      "runways": [
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2560.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.175",
+        "vhfLowMhz": "39.250",
+        "vhfHighMhz": "118.000",
+        "uhfMhz": "250.800"
+      },
+      "tacanChannel": "73X",
+      "vorFrequencyMhz": "117.35"
+    },
+    {
+      "id": "hemavan",
+      "name": "Hemavan",
+      "callsign": "Hemavan",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.805369,
+        "lon": 15.083338,
+        "altM": 458
+      },
+      "runways": [
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 1341.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.625",
+        "vhfLowMhz": "39.950",
+        "vhfHighMhz": "122.900",
+        "uhfMhz": "251.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "hosio",
+      "name": "Hosio",
+      "callsign": "Hosio",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.896046,
+        "lon": 25.703675,
+        "altM": 115
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 1798.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ivalo",
+      "name": "Ivalo",
+      "callsign": "Ivalo",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.607062,
+        "lon": 27.404802,
+        "altM": 146
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.000",
+        "vhfLowMhz": "38.900",
+        "vhfHighMhz": "118.000",
+        "uhfMhz": "250.450"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "jokkmokk",
+      "name": "Jokkmokk",
+      "callsign": "Jokkmokk",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 66.496328,
+        "lon": 20.147174,
+        "altM": 273
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 1920.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.825",
+        "vhfLowMhz": "38.550",
+        "vhfHighMhz": "123.300",
+        "uhfMhz": "250.150"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kalevala",
+      "name": "Kalevala",
+      "callsign": "Kalevala",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.209606,
+        "lon": 31.133899,
+        "altM": 122
+      },
+      "runways": [
+        {
+          "id": "02/20",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 609.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.775",
+        "vhfLowMhz": "38.400",
+        "vhfHighMhz": "119.300",
+        "uhfMhz": "301.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kalixfors",
+      "name": "Kalixfors",
+      "callsign": "Kalixfors",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.764971,
+        "lon": 20.25085,
+        "altM": 474
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 731.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 731.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 1127.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.875",
+        "vhfLowMhz": "38.650",
+        "vhfHighMhz": "118.300",
+        "uhfMhz": "301.100"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kallax",
+      "name": "Kallax",
+      "callsign": "Kallax",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.543784,
+        "lon": 22.122034,
+        "altM": 20
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 3261.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30 / 109.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.925",
+        "vhfLowMhz": "38.750",
+        "vhfHighMhz": "128.200",
+        "uhfMhz": "250.300"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kemi-tornio",
+      "name": "Kemi Tornio",
+      "callsign": "Kemi Tornio",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.781636,
+        "lon": 24.582481,
+        "altM": 14
+      },
+      "runways": [
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 2468.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.275",
+        "vhfLowMhz": "39.450",
+        "vhfHighMhz": "119.400",
+        "uhfMhz": "251.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kilpyavr",
+      "name": "Kilpyavr",
+      "callsign": "Kilpyavr",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.094915,
+        "lon": 32.400565,
+        "altM": 93
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2377.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.250",
+        "vhfLowMhz": "39.400",
+        "vhfHighMhz": "119.100",
+        "uhfMhz": "250.950"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kirkenes",
+      "name": "Kirkenes",
+      "callsign": "Kirkenes",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.725423,
+        "lon": 29.890113,
+        "altM": 86
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 1859.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.900",
+        "vhfLowMhz": "38.700",
+        "vhfHighMhz": "120.350",
+        "uhfMhz": "250.250"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "112.00"
+    },
+    {
+      "id": "kiruna",
+      "name": "Kiruna",
+      "callsign": "Kiruna",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.822032,
+        "lon": 20.336724,
+        "altM": 458
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2438.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.325",
+        "vhfLowMhz": "39.550",
+        "vhfHighMhz": "130.150",
+        "uhfMhz": "251.050"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "115.20"
+    },
+    {
+      "id": "kittila",
+      "name": "Kittila",
+      "callsign": "Kittila",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.70085,
+        "lon": 24.846892,
+        "altM": 197
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.125",
+        "vhfLowMhz": "39.150",
+        "vhfHighMhz": "118.950",
+        "uhfMhz": "250.700"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "koshka-yavr",
+      "name": "Koshka Yavr",
+      "callsign": "Koshka Yavr",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.251132,
+        "lon": 31.196328,
+        "altM": 144
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 2834.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.850",
+        "vhfLowMhz": "38.450",
+        "vhfHighMhz": "123.800",
+        "uhfMhz": "225.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kuusamo",
+      "name": "Kuusamo",
+      "callsign": "Kuusamo",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.98757,
+        "lon": 29.239267,
+        "altM": 264
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2377.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.950",
+        "vhfLowMhz": "38.800",
+        "vhfHighMhz": "118.650",
+        "uhfMhz": "250.350"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "luostari-pechenga",
+      "name": "Luostari Pechenga",
+      "callsign": "Luostari Pechenga",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.402262,
+        "lon": 30.990959,
+        "altM": 76
+      },
+      "runways": [
+        {
+          "id": "02/20",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 1645.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.450",
+        "vhfLowMhz": "41.200",
+        "vhfHighMhz": "119.350",
+        "uhfMhz": "281.300"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "monchegorsk",
+      "name": "Monchegorsk",
+      "callsign": "Monchegorsk",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.988983,
+        "lon": 33.018365,
+        "altM": 174
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.800",
+        "vhfLowMhz": "38.500",
+        "vhfHighMhz": "118.250",
+        "uhfMhz": "250.100"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "murmansk-international",
+      "name": "Murmansk International",
+      "callsign": "Murmansk International",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.781638,
+        "lon": 32.751133,
+        "altM": 80
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30 / 108.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.850",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "127.300",
+        "uhfMhz": "250.200"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "olenya",
+      "name": "Olenya",
+      "callsign": "Olenya",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.151695,
+        "lon": 33.464403,
+        "altM": 221
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3352.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.425",
+        "vhfLowMhz": "39.750",
+        "vhfHighMhz": "131.400",
+        "uhfMhz": "251.250"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "poduzhemye",
+      "name": "Poduzhemye",
+      "callsign": "Poduzhemye",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 64.918644,
+        "lon": 34.262994,
+        "altM": 48
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2438.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.925",
+        "vhfLowMhz": "38.450",
+        "vhfHighMhz": "120.100",
+        "uhfMhz": "250.550"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "rovaniemi",
+      "name": "Rovaniemi",
+      "callsign": "Rovaniemi",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 66.564969,
+        "lon": 25.830507,
+        "altM": 194
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2895.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.70"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.250",
+        "vhfLowMhz": "39.400",
+        "vhfHighMhz": "118.700",
+        "uhfMhz": "250.950"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "117.70"
+    },
+    {
+      "id": "severomorsk-1",
+      "name": "Severomorsk-1",
+      "callsign": "Severomorsk-1",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 69.030507,
+        "lon": 33.422883,
+        "altM": 83
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 3078.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.400",
+        "vhfLowMhz": "39.700",
+        "vhfHighMhz": "127.800",
+        "uhfMhz": "251.200"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "severomorsk-3",
+      "name": "Severomorsk-3",
+      "callsign": "Severomorsk-3",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 68.86667,
+        "lon": 33.718079,
+        "altM": 174
+      },
+      "runways": [
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.350",
+        "vhfLowMhz": "39.600",
+        "vhfHighMhz": "124.300",
+        "uhfMhz": "251.100"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "sodankyla",
+      "name": "Sodankyla",
+      "callsign": "Sodankyla",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.395194,
+        "lon": 26.61893,
+        "altM": 182
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 1402.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.225",
+        "vhfLowMhz": "39.350",
+        "vhfHighMhz": "123.400",
+        "uhfMhz": "250.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "vidsel",
+      "name": "Vidsel",
+      "callsign": "Vidsel",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 65.875143,
+        "lon": 20.149998,
+        "altM": 181
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2133.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.975",
+        "vhfLowMhz": "38.850",
+        "vhfHighMhz": "119.200",
+        "uhfMhz": "250.400"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "vuojarvi",
+      "name": "Vuojarvi",
+      "callsign": "Vuojarvi",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 67.068929,
+        "lon": 26.539829,
+        "altM": 224
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2133.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.300",
+        "vhfLowMhz": "39.500",
+        "vhfHighMhz": "118.400",
+        "uhfMhz": "257.100"
+      },
+      "tacanChannel": "N/A"
+    }
+  ]
+}
