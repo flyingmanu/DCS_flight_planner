@@ -145,34 +145,26 @@ const SATELLITE_LAYER_ID = "esri-world-imagery-layer";
 // order, not the usual XYZ {z}/{x}/{y}.
 const ESRI_WORLD_IMAGERY_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
-const VFR_CHART_SOURCE_ID = "sia-oaci-vfr-chart";
-const VFR_CHART_LAYER_ID = "sia-oaci-vfr-chart-layer";
-
-// IGN Geoplateforme WMTS, serving SIA's "Carte OACI-VFR" (the official
-// French VFR aeronautical chart) under the Etalab Licence Ouverte 2.0 (free
-// reuse incl. commercial, attribution only - no API key). The base
-// data.geopf.fr WMTS endpoint is IGN's long-standing stable public service;
-// the exact LAYER identifier below follows IGN's "SCAN-OACI" product naming
-// convention but could NOT be verified against the live GetCapabilities from
-// this sandbox (geoportail/data.geopf.fr is EGRESS_BLOCKED here) - if this
-// renders blank, check the layer name against IGN's current WMTS capabilities.
-const VFR_CHART_TILE_URL =
-  "https://data.geopf.fr/wmts?SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS.SCAN-OACI&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png";
-
-type BasemapMode = "vector" | "satellite" | "vfr";
+// A VFR aeronautical chart basemap (SIA/IGN "Carte OACI-VFR") was tried here
+// and pulled back out: IGN's SCAN-OACI raster product turns out to be one of
+// their rights-restricted datasets (needs a paid "ign_scan_ws" API key we
+// don't have), not the open one - it rendered blank in production. Open
+// Flightmaps (openflightmaps.org, genuinely open-licensed) is a live
+// candidate to replace it, but its exact tile/WMTS endpoint couldn't be
+// confirmed from this sandbox's network-restricted environment. See task
+// #152.
+type BasemapMode = "vector" | "satellite";
 
 const BASEMAP_MODE_SPECS: Array<{ mode: BasemapMode; glyph: string; title: string }> = [
   { mode: "vector", glyph: "🗺", title: "Vector map basemap" },
   { mode: "satellite", glyph: "🛰", title: "Satellite imagery basemap (Esri World Imagery)" },
-  { mode: "vfr", glyph: "✈", title: "VFR aeronautical chart basemap (SIA/IGN Carte OACI-VFR, France only)" },
 ];
 
 /**
- * Switches between the vector basemap, Esri satellite imagery, and the
- * French SIA/IGN VFR aeronautical chart - like the map/satellite switch in
- * Google Maps, extended with a third option. Rather than swapping the whole
- * map style (which would drop every runtime-added source/layer - mission
- * objects, airbases, hillshade...), this inserts hidden raster layers below
+ * Switches between the vector basemap and Esri satellite imagery, like the
+ * map/satellite switch in Google Maps. Rather than swapping the whole map
+ * style (which would drop every runtime-added source/layer - mission
+ * objects, airbases, hillshade...), this inserts a hidden raster layer below
  * the vector style's own layers and flips visibility between exactly one
  * active set at a time, so everything drawn on top keeps working unchanged.
  */
@@ -203,20 +195,6 @@ export class BasemapControl implements maplibregl.IControl {
         this.baseLayerIds[0],
       );
     }
-    if (!map.getSource(VFR_CHART_SOURCE_ID)) {
-      map.addSource(VFR_CHART_SOURCE_ID, {
-        type: "raster",
-        tiles: [VFR_CHART_TILE_URL],
-        tileSize: 256,
-        maxzoom: 16,
-        attribution: "Carte OACI-VFR &copy; SIA/IGN - Etalab Licence Ouverte 2.0",
-      });
-      map.addLayer(
-        { id: VFR_CHART_LAYER_ID, type: "raster", source: VFR_CHART_SOURCE_ID, layout: { visibility: "none" } },
-        this.baseLayerIds[0],
-      );
-    }
-
     this.container = document.createElement("div");
     this.container.className = "maplibregl-ctrl maplibregl-ctrl-group";
     this.modeButtons = BASEMAP_MODE_SPECS.map(({ mode, glyph, title }) => {
@@ -242,9 +220,6 @@ export class BasemapControl implements maplibregl.IControl {
     }
     if (this.map.getLayer(SATELLITE_LAYER_ID)) {
       this.map.setLayoutProperty(SATELLITE_LAYER_ID, "visibility", mode === "satellite" ? "visible" : "none");
-    }
-    if (this.map.getLayer(VFR_CHART_LAYER_ID)) {
-      this.map.setLayoutProperty(VFR_CHART_LAYER_ID, "visibility", mode === "vfr" ? "visible" : "none");
     }
     for (const { mode: m, button } of this.modeButtons) setButtonActive(button, m === mode);
   }
