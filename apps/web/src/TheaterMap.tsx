@@ -57,7 +57,7 @@ const BULLSEYE_LINES_LAYER_ID = "bullseye-lines-layer";
 const GLOBAL_AIRPORTS_SOURCE_ID = "global-airports";
 const GLOBAL_AIRPORTS_LAYER_ID = "global-airports-layer";
 
-const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
+export const CATEGORY_LABEL: Record<Theater["airbases"][number]["category"], string> = {
   airdrome: "Airdrome",
   helipad: "Helipad",
   ship: "Ship",
@@ -107,7 +107,7 @@ function airportMarkerElement(airbase: Theater["airbases"][number]): HTMLElement
 // which end) or "<end1> / <end2>" matching designators order, with "N/A" for
 // an unserved end. Render the latter as "RWY13 N/A · RWY31 110.50" so the
 // popup never shows a frequency without saying which approach it serves.
-function formatIls(rw: Theater["airbases"][number]["runways"][number]): string {
+export function formatIls(rw: Theater["airbases"][number]["runways"][number]): string {
   // The " / " (with spaces) separates the two ends; a bare "N/A" value has no
   // spaces around its own "/", so this never misfires on the no-ILS sentinel.
   if (!rw.ilsFrequencyMhz.includes(" / ")) return `ILS ${rw.ilsFrequencyMhz}`;
@@ -146,7 +146,7 @@ function globalAirportsFeatureCollection(list: GlobalAirport[]): GeoJSON.Feature
     type: "FeatureCollection",
     features: list.map((a) => ({
       type: "Feature",
-      properties: { name: a.name, type: a.type, country: a.country, icao: a.icao, iata: a.iata },
+      properties: { id: a.id, name: a.name, type: a.type, country: a.country, icao: a.icao, iata: a.iata },
       geometry: { type: "Point", coordinates: [a.lon, a.lat] },
     })),
   };
@@ -388,6 +388,10 @@ interface TheaterMapProps {
   onSelectObject?: (id: string) => void;
   onSelectFlight?: (id: string) => void;
   onSelectBullseye?: (side: Side) => void;
+  /** Called when a DCS theater airbase marker is clicked (hovering it still shows the quick-info popup). */
+  onSelectAirbase?: (airbaseId: string) => void;
+  /** Called when a world/OurAirports reference marker is clicked (hovering it still shows the quick-info popup). */
+  onSelectGlobalAirport?: (id: string) => void;
   onMovePoint?: (id: string, position: LatLon) => void;
   onMovePolygon?: (id: string, dLat: number, dLon: number) => void;
   onMoveLine?: (id: string, dLat: number, dLon: number) => void;
@@ -474,6 +478,8 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
     onSelectObject,
     onSelectFlight,
     onSelectBullseye,
+    onSelectAirbase,
+    onSelectGlobalAirport,
     onMovePoint,
     onMovePolygon,
     onMoveLine,
@@ -498,6 +504,10 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
   onSelectFlightRef.current = onSelectFlight;
   const onSelectBullseyeRef = useRef(onSelectBullseye);
   onSelectBullseyeRef.current = onSelectBullseye;
+  const onSelectAirbaseRef = useRef(onSelectAirbase);
+  onSelectAirbaseRef.current = onSelectAirbase;
+  const onSelectGlobalAirportRef = useRef(onSelectGlobalAirport);
+  onSelectGlobalAirportRef.current = onSelectGlobalAirport;
   const onMovePointRef = useRef(onMovePoint);
   onMovePointRef.current = onMovePoint;
   const onMovePolygonRef = useRef(onMovePolygon);
@@ -581,6 +591,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
 
     const bounds = new maplibregl.LngLatBounds();
     const markers: maplibregl.Marker[] = [];
+    const popups: maplibregl.Popup[] = [];
     airbaseMarkerElementsRef.current = [];
 
     for (const airbase of theater.airbases) {
@@ -588,11 +599,23 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
       bounds.extend(lngLat);
 
       const element = airportMarkerElement(airbase);
-      const popup = new maplibregl.Popup({ offset: 14 }).setHTML(popupHtml(airbase));
-      const marker = new maplibregl.Marker({ element }).setLngLat(lngLat).setPopup(popup).addTo(map);
+      // Hovering shows the quick-info popup (like before); clicking instead
+      // opens the full detail panel, so the marker is never wired to
+      // Marker.setPopup() (which would toggle the popup on click).
+      const popup = new maplibregl.Popup({ offset: 14, closeButton: false, closeOnClick: false }).setHTML(popupHtml(airbase));
+      const marker = new maplibregl.Marker({ element }).setLngLat(lngLat).addTo(map);
+
+      element.addEventListener("mouseenter", () => popup.setLngLat(lngLat).addTo(map));
+      element.addEventListener("mouseleave", () => popup.remove());
+      element.addEventListener("click", (e) => {
+        e.stopPropagation();
+        popup.remove();
+        onSelectAirbaseRef.current?.(airbase.id);
+      });
 
       airbaseMarkerElementsRef.current.push(element);
       markers.push(marker);
+      popups.push(popup);
     }
 
     if (theater.airbases.length > 0) {
@@ -601,6 +624,7 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
 
     return () => {
       for (const marker of markers) marker.remove();
+      for (const popup of popups) popup.remove();
       map.remove();
       mapRef.current = null;
       onHoverRef.current?.(null);
@@ -635,17 +659,25 @@ export const TheaterMap = forwardRef<TheaterMapHandle, TheaterMapProps>(function
         },
       });
 
-      map.on("mouseenter", GLOBAL_AIRPORTS_LAYER_ID, () => {
+      // Hovering shows the quick-info popup; clicking instead opens the full
+      // detail panel (same split as the DCS airbase markers above).
+      const hoverPopup = new maplibregl.Popup({ offset: 8, closeButton: false, closeOnClick: false });
+      map.on("mousemove", GLOBAL_AIRPORTS_LAYER_ID, (e) => {
         map.getCanvas().style.cursor = "pointer";
-      });
-      map.on("mouseleave", GLOBAL_AIRPORTS_LAYER_ID, () => {
-        map.getCanvas().style.cursor = "";
-      });
-      map.on("click", GLOBAL_AIRPORTS_LAYER_ID, (e) => {
         const feature = e.features?.[0];
         if (!feature || feature.geometry.type !== "Point") return;
         const lngLat: [number, number] = [feature.geometry.coordinates[0] ?? 0, feature.geometry.coordinates[1] ?? 0];
-        new maplibregl.Popup({ offset: 8 }).setLngLat(lngLat).setHTML(globalAirportPopupHtml(feature.properties)).addTo(map);
+        hoverPopup.setLngLat(lngLat).setHTML(globalAirportPopupHtml(feature.properties)).addTo(map);
+      });
+      map.on("mouseleave", GLOBAL_AIRPORTS_LAYER_ID, () => {
+        map.getCanvas().style.cursor = "";
+        hoverPopup.remove();
+      });
+      map.on("click", GLOBAL_AIRPORTS_LAYER_ID, (e) => {
+        const feature = e.features?.[0];
+        const id = feature?.properties?.id as string | undefined;
+        hoverPopup.remove();
+        if (id) onSelectGlobalAirportRef.current?.(id);
       });
     }
 

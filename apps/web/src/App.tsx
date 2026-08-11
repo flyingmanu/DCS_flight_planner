@@ -40,6 +40,7 @@ import southAtlantic from "@dcs-flight-planner/core/data/south-atlantic.json";
 import syria from "@dcs-flight-planner/core/data/syria.json";
 import theChannel from "@dcs-flight-planner/core/data/the-channel.json";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AirbaseInfoPanel } from "./AirbaseInfoPanel";
 import { BriefingDialog } from "./BriefingDialog";
 import { BullseyeEditPanel } from "./BullseyeEditPanel";
 import { CoordinateStatusBar } from "./CoordinateStatusBar";
@@ -159,6 +160,9 @@ function App() {
   const [bullseyes, setBullseyes] = useState<Bullseye[]>([]);
   const [selectedBullseyeSide, setSelectedBullseyeSide] = useState<Side | null>(null);
   const selectedBullseye = bullseyes.find((b) => b.side === selectedBullseyeSide) ?? null;
+  const [selectedAirbaseId, setSelectedAirbaseId] = useState<string | null>(null);
+  const selectedAirbase = theater.airbases.find((a) => a.id === selectedAirbaseId) ?? null;
+  const [selectedGlobalAirportId, setSelectedGlobalAirportId] = useState<string | null>(null);
   const [packages, setPackages] = useState<Package[]>([]);
   const [briefing, setBriefing] = useState<MissionBriefing>({});
   const [briefingOpen, setBriefingOpen] = useState(false);
@@ -178,6 +182,8 @@ function App() {
       .then(setAllGlobalAirports)
       .catch((err: unknown) => console.error("Failed to load OurAirports reference data", err));
   }, [allGlobalAirports.length]);
+
+  const selectedGlobalAirport = allGlobalAirports.find((a) => a.id === selectedGlobalAirportId) ?? null;
 
   const visibleGlobalAirports = useMemo(() => {
     if (allGlobalAirports.length === 0) return [];
@@ -223,6 +229,8 @@ function App() {
     setFlights([]);
     setBullseyes([]);
     setSelectedBullseyeSide(null);
+    setSelectedAirbaseId(null);
+    setSelectedGlobalAirportId(null);
     setPackages([]);
     setBriefing({});
     setMissionDate(undefined);
@@ -238,6 +246,8 @@ function App() {
     setFlights([]);
     setBullseyes([]);
     setSelectedBullseyeSide(null);
+    setSelectedAirbaseId(null);
+    setSelectedGlobalAirportId(null);
     setPackages([]);
     setBriefing({});
     setMissionDate(undefined);
@@ -256,6 +266,8 @@ function App() {
     setFlights(mission.flights ?? []);
     setBullseyes(mission.bullseyes ?? []);
     setSelectedBullseyeSide(null);
+    setSelectedAirbaseId(null);
+    setSelectedGlobalAirportId(null);
     setPackages(mission.packages ?? []);
     setBriefing(mission.briefing ?? {});
     setMissionDate(mission.date);
@@ -565,11 +577,27 @@ function App() {
           onSelectObject={(id) => {
             setSelectedObjectId(id);
             setSelectedBullseyeSide(null);
+            setSelectedAirbaseId(null);
+            setSelectedGlobalAirportId(null);
           }}
           onSelectFlight={handleEditFlight}
           onSelectBullseye={(side) => {
             setSelectedBullseyeSide(side);
             setSelectedObjectId(null);
+            setSelectedAirbaseId(null);
+            setSelectedGlobalAirportId(null);
+          }}
+          onSelectAirbase={(id) => {
+            setSelectedAirbaseId(id);
+            setSelectedGlobalAirportId(null);
+            setSelectedObjectId(null);
+            setSelectedBullseyeSide(null);
+          }}
+          onSelectGlobalAirport={(id) => {
+            setSelectedGlobalAirportId(id);
+            setSelectedAirbaseId(null);
+            setSelectedObjectId(null);
+            setSelectedBullseyeSide(null);
           }}
           onMovePoint={handleMovePoint}
           onMovePolygon={handleMovePolygon}
@@ -598,6 +626,10 @@ function App() {
           onClose={() => setSelectedBullseyeSide(null)}
         />
       )}
+      {selectedAirbase && <AirbaseInfoPanel kind="dcs" airbase={selectedAirbase} onClose={() => setSelectedAirbaseId(null)} />}
+      {selectedGlobalAirport && (
+        <AirbaseInfoPanel kind="world" airport={selectedGlobalAirport} onClose={() => setSelectedGlobalAirportId(null)} />
+      )}
       {objectListOpen && (
         <ObjectListDialog
           theaterId={theater.id}
@@ -608,6 +640,8 @@ function App() {
           packages={packages}
           onSelect={(id) => {
             setSelectedObjectId(id);
+            setSelectedAirbaseId(null);
+            setSelectedGlobalAirportId(null);
             setObjectListOpen(false);
           }}
           onDelete={handleObjectDelete}
