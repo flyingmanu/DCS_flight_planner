@@ -1,0 +1,2267 @@
+{
+  "id": "sinai",
+  "name": "Sinai",
+  "airbases": [
+    {
+      "id": "abu-rudeis",
+      "name": "Abu Rudeis",
+      "callsign": "Abu Rudeis",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.899714,
+        "lon": 33.202261,
+        "altM": 12
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 1920.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.200",
+        "vhfLowMhz": "39.300",
+        "vhfHighMhz": "118.500",
+        "uhfMhz": "250.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "abu-suwayr",
+      "name": "Abu Suwayr",
+      "callsign": "Abu Suwayr",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.575424,
+        "lon": 32.096328,
+        "altM": 6
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2865.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.95"
+        },
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2865.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.300",
+        "vhfLowMhz": "39.500",
+        "vhfHighMhz": "118.850",
+        "uhfMhz": "251.100"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "al-bahr-al-ahmar",
+      "name": "Al Bahr al Ahmar",
+      "callsign": "Al Bahr al Ahmar",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 26.557345,
+        "lon": 33.122601,
+        "altM": 355
+      },
+      "runways": [
+        {
+          "id": "14L/32R",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "14R/32L",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.700",
+        "vhfLowMhz": "40.300",
+        "vhfHighMhz": "119.500",
+        "uhfMhz": "251.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "al-ismailiyah",
+      "name": "Al Ismailiyah",
+      "callsign": "Al Ismailiyah",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.598869,
+        "lon": 32.234465,
+        "altM": 4
+      },
+      "runways": [
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 3078.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.750",
+        "vhfLowMhz": "40.400",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "252.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "al-khatatbah",
+      "name": "Al Khatatbah",
+      "callsign": "Al Khatatbah",
+      "category": "helipad",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.312428,
+        "lon": 30.874296,
+        "altM": 14
+      },
+      "runways": [
+        {
+          "id": "02L/20R",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 182.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "02R/20L",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 304.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "11L/29R",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 335.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.350",
+        "vhfLowMhz": "39.600",
+        "vhfHighMhz": "118.950",
+        "uhfMhz": "251.200"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "al-mansurah",
+      "name": "Al Mansurah",
+      "callsign": "Al Mansurah",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.965253,
+        "lon": 31.431636,
+        "altM": 2
+      },
+      "runways": [
+        {
+          "id": "14/32",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2834.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2651.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.875",
+        "vhfLowMhz": "38.650",
+        "vhfHighMhz": "118.250",
+        "uhfMhz": "250.250"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "al-rahmaniyah",
+      "name": "Al Rahmaniyah Air Base",
+      "callsign": "Al Rahmaniyah Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.043501,
+        "lon": 30.664406,
+        "altM": 3
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2529.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.375",
+        "vhfLowMhz": "39.650",
+        "vhfHighMhz": "119.050",
+        "uhfMhz": "251.250"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "as-salihiyah",
+      "name": "As Salihiyah",
+      "callsign": "As Salihiyah",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.795196,
+        "lon": 32.042653,
+        "altM": 4
+      },
+      "runways": [
+        {
+          "id": "02L/20R",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.70"
+        },
+        {
+          "id": "02R/20L",
+          "designators": [
+            2,
+            20
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.575",
+        "vhfLowMhz": "40.050",
+        "vhfHighMhz": "119.350",
+        "uhfMhz": "251.650"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "azzaqaziq",
+      "name": "AzZaqaziq",
+      "callsign": "AzZaqaziq",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.594913,
+        "lon": 31.664687,
+        "altM": 2
+      },
+      "runways": [
+        {
+          "id": "18L/36R",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18R/36L",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.900",
+        "vhfLowMhz": "38.700",
+        "vhfHighMhz": "118.300",
+        "uhfMhz": "250.300"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "baluza",
+      "name": "Baluza",
+      "callsign": "Baluza",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.999996,
+        "lon": 32.551981,
+        "altM": 37
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 1767.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.225",
+        "vhfLowMhz": "39.350",
+        "vhfHighMhz": "118.750",
+        "uhfMhz": "250.950"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ben-gurion-sinai",
+      "name": "Ben-Gurion",
+      "callsign": "Ben-Gurion",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 32.007061,
+        "lon": 34.893218,
+        "altM": 30
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2682.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.70"
+        },
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 2956.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.90 / 108.70"
+        },
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2956.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30 / 111.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.150",
+        "vhfLowMhz": "39.200",
+        "vhfHighMhz": "134.600",
+        "uhfMhz": "250.800"
+      },
+      "tacanChannel": "82X",
+      "vorFrequencyMhz": "113.50"
+    },
+    {
+      "id": "beni-suef",
+      "name": "Beni Suef",
+      "callsign": "Beni Suef",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 29.19802,
+        "lon": 31.018927,
+        "altM": 30
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 2865.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18L/36R",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 3444.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18R/36L",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 3474.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.400",
+        "vhfLowMhz": "39.700",
+        "vhfHighMhz": "127.100",
+        "uhfMhz": "251.300"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "bilbeis",
+      "name": "Bilbeis Air Base",
+      "callsign": "Bilbeis Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.398866,
+        "lon": 31.607343,
+        "altM": 28
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 3383.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 1402.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "09R/27L",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2438.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "17L/35R",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2895.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.30"
+        },
+        {
+          "id": "17R/35L",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 1432.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.925",
+        "vhfLowMhz": "38.750",
+        "vhfHighMhz": "118.350",
+        "uhfMhz": "250.350"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "bir-hasanah",
+      "name": "Bir Hasanah",
+      "callsign": "Bir Hasanah",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.194632,
+        "lon": 33.412991,
+        "altM": 373
+      },
+      "runways": [
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.250",
+        "vhfLowMhz": "39.400",
+        "vhfHighMhz": "118.800",
+        "uhfMhz": "251.000"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "birma",
+      "name": "Birma Air Base",
+      "callsign": "Birma Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.837006,
+        "lon": 30.935878,
+        "altM": 6
+      },
+      "runways": [
+        {
+          "id": "14L/32R",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2834.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "14R/32L",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2865.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.425",
+        "vhfLowMhz": "39.750",
+        "vhfHighMhz": "119.150",
+        "uhfMhz": "251.350"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "borg-el-arab",
+      "name": "Borg El Arab Intl",
+      "callsign": "Borg El Arab Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.91667,
+        "lon": 29.694065,
+        "altM": 26
+      },
+      "runways": [
+        {
+          "id": "14L/32R",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 3322.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.30"
+        },
+        {
+          "id": "14R/32L",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 3322.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.450",
+        "vhfLowMhz": "39.800",
+        "vhfHighMhz": "119.100",
+        "uhfMhz": "251.400"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "115.90"
+    },
+    {
+      "id": "cairo-intl",
+      "name": "Cairo International Airport",
+      "callsign": "Cairo International Airport",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.109038,
+        "lon": 31.434748,
+        "altM": 120
+      },
+      "runways": [
+        {
+          "id": "05L/23R",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 3230.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.90 / 110.30"
+        },
+        {
+          "id": "05C/23C",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.90 / 109.50"
+        },
+        {
+          "id": "05R/23L",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.90 / 108.70"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.950",
+        "vhfLowMhz": "38.800",
+        "vhfHighMhz": "118.100",
+        "uhfMhz": "250.400"
+      },
+      "tacanChannel": "110X"
+    },
+    {
+      "id": "cairo-west",
+      "name": "Cairo West",
+      "callsign": "Cairo West",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.108473,
+        "lon": 30.89576,
+        "altM": 134
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2956.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "16L/34R",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "16R/34L",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 3566.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.975",
+        "vhfLowMhz": "38.850",
+        "vhfHighMhz": "131.200",
+        "uhfMhz": "250.450"
+      },
+      "tacanChannel": "114X"
+    },
+    {
+      "id": "damascus-intl-sinai",
+      "name": "Damascus Intl",
+      "callsign": "Damascus Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 33.39548,
+        "lon": 36.51017,
+        "altM": 611
+      },
+      "runways": [
+        {
+          "id": "05L/23R",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 3505.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.90"
+        },
+        {
+          "id": "05R/23L",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 3505.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.10"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.025",
+        "vhfLowMhz": "40.950",
+        "vhfHighMhz": "118.500",
+        "uhfMhz": "226.100"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "116.00"
+    },
+    {
+      "id": "difarsuwar",
+      "name": "Difarsuwar Airfield",
+      "callsign": "Difarsuwar Airfield",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.425706,
+        "lon": 32.335312,
+        "altM": 2
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 365.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 518.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.025",
+        "vhfLowMhz": "38.950",
+        "vhfHighMhz": "118.450",
+        "uhfMhz": "250.550"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ein-shamer",
+      "name": "Ein Shamer",
+      "callsign": "Ein Shamer",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 32.440958,
+        "lon": 35.007625,
+        "altM": 15
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 1158.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.875",
+        "vhfLowMhz": "41.450",
+        "vhfHighMhz": "124.550",
+        "uhfMhz": "227.850"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "el-arish",
+      "name": "El Arish",
+      "callsign": "El Arish",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.073444,
+        "lon": 33.835596,
+        "altM": 71
+      },
+      "runways": [
+        {
+          "id": "16L/34R",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "16R/34L",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2895.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.275",
+        "vhfLowMhz": "39.450",
+        "vhfHighMhz": "121.000",
+        "uhfMhz": "251.050"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "113.60"
+    },
+    {
+      "id": "el-gora",
+      "name": "El Gora",
+      "callsign": "El Gora",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.072883,
+        "lon": 34.148584,
+        "altM": 129
+      },
+      "runways": [
+        {
+          "id": "08/26",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 2133.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.325",
+        "vhfLowMhz": "39.550",
+        "vhfHighMhz": "118.200",
+        "uhfMhz": "251.150"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "el-minya",
+      "name": "El Minya",
+      "callsign": "El Minya",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.100851,
+        "lon": 30.729661,
+        "altM": 38
+      },
+      "runways": [
+        {
+          "id": "16L/34R",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "16R/34L",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.475",
+        "vhfLowMhz": "39.850",
+        "vhfHighMhz": "119.200",
+        "uhfMhz": "251.450"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "fayed",
+      "name": "Fayed",
+      "callsign": "Fayed",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.329096,
+        "lon": 32.267236,
+        "altM": 8
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.15"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.800",
+        "vhfLowMhz": "40.500",
+        "vhfHighMhz": "119.700",
+        "uhfMhz": "252.100"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "gebel-el-basur",
+      "name": "Gebel El Basur Air Base",
+      "callsign": "Gebel El Basur Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.538137,
+        "lon": 30.552544,
+        "altM": 24
+      },
+      "runways": [
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2956.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 3139.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.500",
+        "vhfLowMhz": "39.900",
+        "vhfHighMhz": "119.250",
+        "uhfMhz": "251.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "hatzerim",
+      "name": "Hatzerim",
+      "callsign": "Hatzerim",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.238699,
+        "lon": 34.658475,
+        "altM": 209
+      },
+      "runways": [
+        {
+          "id": "10L/28R",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "10R/28L",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 2834.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.30"
+        },
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 1645.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.825",
+        "vhfLowMhz": "40.550",
+        "vhfHighMhz": "119.750",
+        "uhfMhz": "252.150"
+      },
+      "tacanChannel": "96X",
+      "vorFrequencyMhz": "114.90"
+    },
+    {
+      "id": "hatzor",
+      "name": "Hatzor",
+      "callsign": "Hatzor",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.760452,
+        "lon": 34.725422,
+        "altM": 31
+      },
+      "runways": [
+        {
+          "id": "05/23",
+          "designators": [
+            5,
+            23
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.50"
+        },
+        {
+          "id": "11L/29R",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2347.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "11R/29L",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.050",
+        "vhfLowMhz": "39.000",
+        "vhfHighMhz": "118.550",
+        "uhfMhz": "250.600"
+      },
+      "tacanChannel": "106X",
+      "vorFrequencyMhz": "115.90"
+    },
+    {
+      "id": "hurghada-intl",
+      "name": "Hurghada Intl",
+      "callsign": "Hurghada Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 27.176552,
+        "lon": 33.791806,
+        "altM": 13
+      },
+      "runways": [
+        {
+          "id": "16L/34R",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 3596.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.30"
+        },
+        {
+          "id": "16R/34L",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.525",
+        "vhfLowMhz": "39.950",
+        "vhfHighMhz": "119.600",
+        "uhfMhz": "251.550"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "116.50"
+    },
+    {
+      "id": "inshas",
+      "name": "Inshas Airbase",
+      "callsign": "Inshas Airbase",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.334182,
+        "lon": 31.446609,
+        "altM": 47
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2499.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.35"
+        },
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2499.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.000",
+        "vhfLowMhz": "38.900",
+        "vhfHighMhz": "118.400",
+        "uhfMhz": "250.500"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "jiyanklis",
+      "name": "Jiyanklis Air Base",
+      "callsign": "Jiyanklis Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.822316,
+        "lon": 30.192373,
+        "altM": 8
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2804.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "12/30",
+          "designators": [
+            12,
+            30
+          ],
+          "lengthM": 2804.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.550",
+        "vhfLowMhz": "40.000",
+        "vhfHighMhz": "119.300",
+        "uhfMhz": "251.600"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kedem",
+      "name": "Kedem",
+      "callsign": "Kedem",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.260732,
+        "lon": 34.639832,
+        "altM": 195
+      },
+      "runways": [
+        {
+          "id": "10/28",
+          "designators": [
+            10,
+            28
+          ],
+          "lengthM": 1828.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.825",
+        "vhfLowMhz": "38.550",
+        "vhfHighMhz": "118.150",
+        "uhfMhz": "250.150"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "khalkhalah",
+      "name": "Khalkhalah Air Base",
+      "callsign": "Khalkhalah Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 33.079093,
+        "lon": 36.540678,
+        "altM": 715
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2804.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2621.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.925",
+        "vhfLowMhz": "40.700",
+        "vhfHighMhz": "128.400",
+        "uhfMhz": "227.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kibrit",
+      "name": "Kibrit Air Base",
+      "callsign": "Kibrit Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.243503,
+        "lon": 32.491242,
+        "altM": 4
+      },
+      "runways": [
+        {
+          "id": "14L/32R",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2590.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "14R/32L",
+          "designators": [
+            14,
+            32
+          ],
+          "lengthM": 2590.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.800",
+        "vhfLowMhz": "38.500",
+        "vhfHighMhz": "118.050",
+        "uhfMhz": "250.100"
+      },
+      "tacanChannel": "55X"
+    },
+    {
+      "id": "king-feisal",
+      "name": "King Feisal Air Base",
+      "callsign": "King Feisal Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.343784,
+        "lon": 36.147457,
+        "altM": 872
+      },
+      "runways": [
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 3444.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.950",
+        "vhfLowMhz": "40.750",
+        "vhfHighMhz": "129.200",
+        "uhfMhz": "227.950"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "kom-awshim",
+      "name": "Kom Awshim",
+      "callsign": "Kom Awshim",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 29.553393,
+        "lon": 30.893503,
+        "altM": 2
+      },
+      "runways": [
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2286.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2286.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.600",
+        "vhfLowMhz": "40.100",
+        "vhfHighMhz": "119.400",
+        "uhfMhz": "251.700"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "megiddo-sinai",
+      "name": "Megiddo",
+      "callsign": "Megiddo",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 32.597174,
+        "lon": 35.230225,
+        "altM": 40
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 1920.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.975",
+        "vhfLowMhz": "41.150",
+        "vhfHighMhz": "123.000",
+        "uhfMhz": "225.900"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "melez",
+      "name": "Melez",
+      "callsign": "Melez",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.409887,
+        "lon": 33.149996,
+        "altM": 306
+      },
+      "runways": [
+        {
+          "id": "15L/33R",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2987.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "15R/33L",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2407.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.775",
+        "vhfLowMhz": "40.450",
+        "vhfHighMhz": "119.650",
+        "uhfMhz": "252.050"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "115.65"
+    },
+    {
+      "id": "mezzeh",
+      "name": "Mezzeh Air Base",
+      "callsign": "Mezzeh Air Base",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 33.477683,
+        "lon": 36.223727,
+        "altM": 729
+      },
+      "runways": [
+        {
+          "id": "06/24",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 2682.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.450",
+        "vhfLowMhz": "41.350",
+        "vhfHighMhz": "126.000",
+        "uhfMhz": "227.200"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "nevatim",
+      "name": "Nevatim",
+      "callsign": "Nevatim",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.208472,
+        "lon": 35.012146,
+        "altM": 402
+      },
+      "runways": [
+        {
+          "id": "07/25",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 3718.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.50"
+        },
+        {
+          "id": "08L/26R",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 2499.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "108.30"
+        },
+        {
+          "id": "08R/26L",
+          "designators": [
+            8,
+            26
+          ],
+          "lengthM": 3261.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.850",
+        "vhfLowMhz": "40.600",
+        "vhfHighMhz": "132.400",
+        "uhfMhz": "252.200"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "ovda",
+      "name": "Ovda",
+      "callsign": "Ovda",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 29.94068,
+        "lon": 34.933902,
+        "altM": 438
+      },
+      "runways": [
+        {
+          "id": "03L/21R",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2529.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.70"
+        },
+        {
+          "id": "03R/21L",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.775",
+        "vhfLowMhz": "38.450",
+        "vhfHighMhz": "129.900",
+        "uhfMhz": "250.050"
+      },
+      "tacanChannel": "88X",
+      "vorFrequencyMhz": "114.10"
+    },
+    {
+      "id": "palmachim-sinai",
+      "name": "Palmachim",
+      "callsign": "Palmachim",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.901696,
+        "lon": 34.692936,
+        "altM": 10
+      },
+      "runways": [
+        {
+          "id": "03L/21R",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 914.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "03R/21L",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.075",
+        "vhfLowMhz": "39.050",
+        "vhfHighMhz": "118.600",
+        "uhfMhz": "250.650"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "quwaysina",
+      "name": "Quwaysina",
+      "callsign": "Quwaysina",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.579094,
+        "lon": 31.129095,
+        "altM": 10
+      },
+      "runways": [
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 2712.7,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.725",
+        "vhfLowMhz": "40.350",
+        "vhfHighMhz": "119.550",
+        "uhfMhz": "251.950"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "rafic-hariri",
+      "name": "Rafic Hariri Intl",
+      "callsign": "Rafic Hariri Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 33.824574,
+        "lon": 35.483331,
+        "altM": 6
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 2133.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.70"
+        },
+        {
+          "id": "16/34",
+          "designators": [
+            16,
+            34
+          ],
+          "lengthM": 3048.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.10"
+        },
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "112.60"
+    },
+    {
+      "id": "ramat-david",
+      "name": "Ramat David",
+      "callsign": "Ramat David",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 32.666663,
+        "lon": 35.183901,
+        "altM": 31
+      },
+      "runways": [
+        {
+          "id": "09/27",
+          "designators": [
+            9,
+            27
+          ],
+          "lengthM": 2286.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "11/29",
+          "designators": [
+            11,
+            29
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "15/33",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.750",
+        "vhfLowMhz": "38.400",
+        "vhfHighMhz": "118.000",
+        "uhfMhz": "251.100"
+      },
+      "tacanChannel": "84X",
+      "vorFrequencyMhz": "113.70"
+    },
+    {
+      "id": "ramon-airbase",
+      "name": "Ramon Airbase",
+      "callsign": "Ramon Airbase",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.777682,
+        "lon": 34.66638,
+        "altM": 619
+      },
+      "runways": [
+        {
+          "id": "07L/25R",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2621.3,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.70"
+        },
+        {
+          "id": "07R/25L",
+          "designators": [
+            7,
+            25
+          ],
+          "lengthM": 2926.1,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.875",
+        "vhfLowMhz": "40.650",
+        "vhfHighMhz": "119.800",
+        "uhfMhz": "252.250"
+      },
+      "tacanChannel": "105X",
+      "vorFrequencyMhz": "115.80"
+    },
+    {
+      "id": "ramon-intl",
+      "name": "Ramon Intl",
+      "callsign": "Ramon Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 29.727117,
+        "lon": 35.014122,
+        "altM": 69
+      },
+      "runways": [
+        {
+          "id": "01/19",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3505.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "110.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.625",
+        "vhfLowMhz": "40.150",
+        "vhfHighMhz": "119.000",
+        "uhfMhz": "251.750"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "113.85"
+    },
+    {
+      "id": "sde-dov",
+      "name": "Sde Dov",
+      "callsign": "Sde Dov",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 32.114689,
+        "lon": 34.782482,
+        "altM": 6
+      },
+      "runways": [
+        {
+          "id": "03/21",
+          "designators": [
+            3,
+            21
+          ],
+          "lengthM": 1371.6,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.100",
+        "vhfLowMhz": "39.100",
+        "vhfHighMhz": "118.650",
+        "uhfMhz": "250.700"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "sharm-el-sheikh",
+      "name": "Sharm El Sheikh Intl",
+      "callsign": "Sharm El Sheikh Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 27.978812,
+        "lon": 34.393221,
+        "altM": 30
+      },
+      "runways": [
+        {
+          "id": "04L/22R",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2987.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.50"
+        },
+        {
+          "id": "04R/22L",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 2987.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.650",
+        "vhfLowMhz": "40.200",
+        "vhfHighMhz": "118.900",
+        "uhfMhz": "251.800"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.20"
+    },
+    {
+      "id": "st-catherine",
+      "name": "St Catherine",
+      "callsign": "St Catherine",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.685031,
+        "lon": 34.06271,
+        "altM": 1297
+      },
+      "runways": [
+        {
+          "id": "17/35",
+          "designators": [
+            17,
+            35
+          ],
+          "lengthM": 2042.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.175",
+        "vhfLowMhz": "39.250",
+        "vhfHighMhz": "124.500",
+        "uhfMhz": "250.850"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "taba-intl",
+      "name": "Taba Intl",
+      "callsign": "Taba Intl",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 29.587856,
+        "lon": 34.778249,
+        "altM": 709
+      },
+      "runways": [
+        {
+          "id": "04/22",
+          "designators": [
+            4,
+            22
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.50"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.925",
+        "vhfLowMhz": "42.200",
+        "vhfHighMhz": "121.900",
+        "uhfMhz": "227.150"
+      },
+      "tacanChannel": "N/A",
+      "vorFrequencyMhz": "114.50"
+    },
+    {
+      "id": "tabuk",
+      "name": "Tabuk",
+      "callsign": "Tabuk",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.370906,
+        "lon": 36.606213,
+        "altM": 775
+      },
+      "runways": [
+        {
+          "id": "06L/24R",
+          "designators": [
+            6,
+            24
+          ],
+          "lengthM": 3230.9,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.50"
+        },
+        {
+          "id": "13/31",
+          "designators": [
+            13,
+            31
+          ],
+          "lengthM": 2651.8,
+          "widthM": 60,
+          "ilsFrequencyMhz": "111.90"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.225",
+        "vhfLowMhz": "42.150",
+        "vhfHighMhz": "125.900",
+        "uhfMhz": "229.400"
+      },
+      "tacanChannel": "104X",
+      "vorFrequencyMhz": "115.70"
+    },
+    {
+      "id": "tabuk-helibase",
+      "name": "Tabuk HeliBase",
+      "callsign": "Tabuk HeliBase",
+      "category": "helipad",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.311579,
+        "lon": 36.689833,
+        "altM": 795
+      },
+      "runways": [],
+      "radio": {
+        "hfMhz": "N/A",
+        "vhfLowMhz": "N/A",
+        "vhfHighMhz": "N/A",
+        "uhfMhz": "N/A"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "tel-nof-sinai",
+      "name": "Tel Nof",
+      "callsign": "Tel Nof",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 31.835877,
+        "lon": 34.817797,
+        "altM": 42
+      },
+      "runways": [
+        {
+          "id": "15L/33R",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "15R/33L",
+          "designators": [
+            15,
+            33
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "18/36",
+          "designators": [
+            18,
+            36
+          ],
+          "lengthM": 2316.5,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.10"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.125",
+        "vhfLowMhz": "39.150",
+        "vhfHighMhz": "118.700",
+        "uhfMhz": "250.750"
+      },
+      "tacanChannel": "87X"
+    },
+    {
+      "id": "wadi-abu-rish",
+      "name": "Wadi Abu Rish",
+      "callsign": "Wadi Abu Rish",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 28.970906,
+        "lon": 31.698867,
+        "altM": 288
+      },
+      "runways": [
+        {
+          "id": "01L/19R",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        },
+        {
+          "id": "01R/19L",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3901.4,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "4.675",
+        "vhfLowMhz": "40.250",
+        "vhfHighMhz": "119.450",
+        "uhfMhz": "251.850"
+      },
+      "tacanChannel": "N/A"
+    },
+    {
+      "id": "wadi-al-jandali",
+      "name": "Wadi al Jandali",
+      "callsign": "Wadi al Jandali",
+      "category": "airdrome",
+      "initialCoalition": 0,
+      "position": {
+        "lat": 30.072598,
+        "lon": 31.833333,
+        "altM": 230
+      },
+      "runways": [
+        {
+          "id": "01L/19R",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3566.2,
+          "widthM": 60,
+          "ilsFrequencyMhz": "109.70"
+        },
+        {
+          "id": "01R/19L",
+          "designators": [
+            1,
+            19
+          ],
+          "lengthM": 3109.0,
+          "widthM": 60,
+          "ilsFrequencyMhz": "N/A"
+        }
+      ],
+      "radio": {
+        "hfMhz": "3.850",
+        "vhfLowMhz": "38.600",
+        "vhfHighMhz": "118.900",
+        "uhfMhz": "250.200"
+      },
+      "tacanChannel": "N/A"
+    }
+  ]
+}
