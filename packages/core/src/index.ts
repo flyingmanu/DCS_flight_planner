@@ -5,6 +5,7 @@ export { bearingDeg, distanceKm, distanceNm } from "./geo.js";
 export type { LatLon } from "./geo.js";
 export { addMinutesToClock, computeRouteLegs, computeWaypointEtas, formatEte, totalRouteDistanceNm } from "./route.js";
 export type { RouteLeg } from "./route.js";
+export { casToTasKt, isaTemperatureC, machNumber, pressureAtAltitudeHpa, qfeHpa, speedOfSoundKt, tasToCasKt } from "./atmosphere.js";
 export type { IceHaloMode, MapView, Mission, MissionBriefing, MissionDate, MissionWeather, PrecipitationKind, WeatherMode, WindLayer } from "./mission.js";
 export {
   defaultMissionWeather,

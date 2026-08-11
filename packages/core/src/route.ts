@@ -1,3 +1,4 @@
+import { casToTasKt, machNumber, tasToCasKt } from "./atmosphere.js";
 import { bearingDeg, distanceNm } from "./geo.js";
 import type { Waypoint } from "./flights.js";
 
@@ -9,9 +10,15 @@ export interface RouteLeg {
   trackDeg: number;
   /** Estimated time enroute, in minutes; undefined if `to.airspeedKt` isn't set. */
   eteMin?: number;
+  /** Calibrated airspeed at `to`, kt - derived from `to.airspeedKt`/`speedType`/`altitudeFt` via the ISA model. Undefined for GS (no wind data to back out an airspeed) or a missing altitude/speed. */
+  casKt?: number;
+  /** True airspeed at `to`, kt - same availability as `casKt`. */
+  tasKt?: number;
+  /** Mach number at `to` - same availability as `casKt`. */
+  mach?: number;
 }
 
-/** Leg-by-leg distance/track/ETE for a flight's route (Combat Flite-style leg table). */
+/** Leg-by-leg distance/track/ETE/CAS/TAS/Mach for a flight's route (Combat Flite-style leg table). */
 export function computeRouteLegs(route: Waypoint[]): RouteLeg[] {
   const legs: RouteLeg[] = [];
   for (let i = 1; i < route.length; i++) {
@@ -20,7 +27,25 @@ export function computeRouteLegs(route: Waypoint[]): RouteLeg[] {
     const legDistanceNm = distanceNm(from.position, to.position);
     const trackDeg = bearingDeg(from.position, to.position);
     const eteMin = to.airspeedKt ? (legDistanceNm / to.airspeedKt) * 60 : undefined;
-    legs.push({ from, to, distanceNm: legDistanceNm, trackDeg, eteMin });
+
+    // Treats altitudeFt as MSL regardless of altitudeReference - an AGL waypoint
+    // over high terrain will read a slightly optimistic CAS/TAS split, but core
+    // has no ground-elevation lookup to correct for it (that's browser-side).
+    let casKt: number | undefined;
+    let tasKt: number | undefined;
+    let mach: number | undefined;
+    if (to.airspeedKt && to.altitudeFt !== undefined && to.speedType !== "GS") {
+      if (to.speedType === "TAS") {
+        tasKt = to.airspeedKt;
+        casKt = tasToCasKt(tasKt, to.altitudeFt);
+      } else {
+        casKt = to.airspeedKt;
+        tasKt = casToTasKt(casKt, to.altitudeFt);
+      }
+      mach = machNumber(tasKt, to.altitudeFt);
+    }
+
+    legs.push({ from, to, distanceNm: legDistanceNm, trackDeg, eteMin, casKt, tasKt, mach });
   }
   return legs;
 }

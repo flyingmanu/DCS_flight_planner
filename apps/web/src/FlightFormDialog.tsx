@@ -548,6 +548,8 @@ export function FlightFormDialog({
                   {leg.distanceNm.toFixed(1)} NM · TRK {Math.round(leg.trackDeg).toString().padStart(3, "0")}°
                   {leg.eteMin !== undefined && <> · ETE {formatEte(leg.eteMin)}</>}
                   {eta && <> · ETA {eta}</>}
+                  {leg.tasKt !== undefined && <> · TAS {Math.round(leg.tasKt)} kt</>}
+                  {leg.mach !== undefined && <> · M {leg.mach.toFixed(2)}</>}
                 </div>
               )}
               <CoordinateFields point={wp.position} onChange={(position: LatLon) => updateWaypoint(wp.id, { position })} />

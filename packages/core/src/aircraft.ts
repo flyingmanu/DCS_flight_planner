@@ -92,6 +92,9 @@ const PLAYABLE_FIXED_WING: Aircraft[] = [
   { id: "p-51d", name: "P-51D Mustang", manufacturer: "North American", category: "fixed-wing", playable: true, standardTasks: ["CAP", "ESCORT"] },
   { id: "p-47d", name: "P-47D Thunderbolt", manufacturer: "Republic", category: "fixed-wing", playable: true, standardTasks: ["CAP", "ESCORT", "CAS"] },
   { id: "mosquito-fb-vi", name: "Mosquito FB Mk. VI", manufacturer: "de Havilland", category: "fixed-wing", playable: true, standardTasks: ["STRIKE", "CAS"] },
+  { id: "la-7", name: "La-7", manufacturer: "Lavochkin", category: "fixed-wing", playable: true, standardTasks: ["CAP"] },
+  { id: "fw-190a-8", name: "Fw 190 A-8", manufacturer: "Focke-Wulf", category: "fixed-wing", playable: true, standardTasks: ["CAP", "CAS"] },
+  { id: "f4u-1d", name: "F4U-1D Corsair", manufacturer: "Chance Vought", category: "fixed-wing", playable: true, standardTasks: ["CAP", "CAS"] },
   {
     id: "christen-eagle-ii",
     name: "Christen Eagle II",

@@ -216,6 +216,8 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                           <Th>Coordinates</Th>
                           <Th>Alt</Th>
                           <Th>Speed</Th>
+                          <Th>TAS</Th>
+                          <Th>Mach</Th>
                           <Th>Dist</Th>
                           <Th>Trk</Th>
                           <Th>ETE</Th>
@@ -231,6 +233,8 @@ export function MissionOverviewDialog({ missionName, theaterName, airbases, flig
                               <Td mono>{formatLatLonDdm(wp.position)}</Td>
                               <Td mono>{wp.altitudeFt ? `${wp.altitudeFt.toLocaleString()} ft` : "—"}</Td>
                               <Td mono>{wp.airspeedKt ? `${wp.airspeedKt} kt` : "—"}</Td>
+                              <Td mono>{leg?.tasKt !== undefined ? `${Math.round(leg.tasKt)} kt` : "—"}</Td>
+                              <Td mono>{leg?.mach !== undefined ? leg.mach.toFixed(2) : "—"}</Td>
                               <Td mono>{leg ? `${leg.distanceNm.toFixed(1)} NM` : "—"}</Td>
                               <Td mono>{leg ? `${Math.round(leg.trackDeg).toString().padStart(3, "0")}°` : "—"}</Td>
                               <Td mono>{leg?.eteMin !== undefined ? formatEte(leg.eteMin) : "—"}</Td>
